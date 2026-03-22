@@ -1,0 +1,38 @@
+services:
+  quiz-db:
+    image: postgres:16-alpine
+    container_name: microservice_quiz_db_dev
+    environment:
+      POSTGRES_DB: quizdb
+      POSTGRES_USER: quiz
+      POSTGRES_PASSWORD: quiz
+    ports:
+      - "7432:5432"
+    volumes:
+      - quiz_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quiz -d quizdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  microservice-quiz:
+    container_name: microservice_quiz_dev
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    environment:
+      AI_ENGINE_BASE_URL: http://host.docker.internal:7001
+      DATABASE_URL: postgresql://quiz:quiz@quiz-db:5432/quizdb?schema=public
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      quiz-db:
+        condition: service_healthy
+    env_file:
+      - ./src/.env
+    ports:
+      - "7100:7100"
+
+volumes:
+  quiz_db_data:
