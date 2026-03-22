@@ -34,6 +34,59 @@ Default ai-engine endpoint configured by this service: `/generate/quiz`.
 - GET /games/models/grouped
 - GET /games/history
 
+## Private API Docs (Swagger-like)
+
+The service exposes private OpenAPI docs for internal testing.
+
+- UI route: `/private/docs` (configurable with `PRIVATE_DOCS_PREFIX`)
+- Access header: `X-Private-Docs-Token: <token>`
+- Alternative header: `Authorization: Bearer <token>`
+
+Token resolution:
+
+- Uses `PRIVATE_DOCS_TOKEN` when provided.
+- Falls back to `AI_ENGINE_API_KEY` if `PRIVATE_DOCS_TOKEN` is empty.
+
+Key env vars:
+
+- `PRIVATE_DOCS_ENABLED=true|false`
+- `PRIVATE_DOCS_PREFIX=/private/docs`
+- `PRIVATE_DOCS_TOKEN=quiz_private_docs_token`
+
+### Quick verification (private docs)
+
+With service running on localhost:
+
+```bash
+# expected 401 (no token)
+python - <<'PY'
+import urllib.request, urllib.error
+try:
+	urllib.request.urlopen('http://localhost:7100/private/docs/json')
+except urllib.error.HTTPError as e:
+	print(e.code)
+PY
+
+# expected 200 (with token)
+python - <<'PY'
+import urllib.request
+req = urllib.request.Request(
+	'http://localhost:7100/private/docs/json',
+	headers={'X-Private-Docs-Token': 'quiz_private_docs_token'}
+)
+with urllib.request.urlopen(req) as r:
+	print(r.getcode())
+PY
+```
+
+### CI in repository scope
+
+This repository has its own GitHub Actions workflow:
+
+- `.github/workflows/ci.yml`
+
+The workflow runs build, tests, lint, production audit and docker smoke checks for private docs.
+
 ## Core responsibilities
 - Ingest game-specific knowledge into ai-engine RAG via /games/ingest.
 - Generate and persist quiz models in local database via /games/generate.
