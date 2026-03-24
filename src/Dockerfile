@@ -19,7 +19,11 @@ RUN apt-get update \
 COPY --from=deps /workspace/microservice-quizz/src/node_modules ./node_modules
 COPY --from=deps /workspace/shared-sdk-client/typescript /workspace/shared-sdk-client/typescript
 COPY --from=deps /workspace/shared-sdk-client/typescript /shared-sdk-client/typescript
-COPY microservice-quizz/src .
+COPY microservice-quizz/src/package.json ./package.json
+COPY microservice-quizz/src/tsconfig*.json ./
+COPY microservice-quizz/src/.env.example ./.env.example
+COPY microservice-quizz/src/prisma ./prisma
+COPY microservice-quizz/src/app ./app
 RUN npm run db:generate && npm run build
 
 FROM node:20-bookworm-slim AS runtime
