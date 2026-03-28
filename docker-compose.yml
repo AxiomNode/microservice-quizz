@@ -23,6 +23,7 @@ services:
       dockerfile: microservice-quizz/src/Dockerfile
     environment:
       AI_ENGINE_BASE_URL: http://host.docker.internal:7001
+      AI_ENGINE_API_KEY: dev_games_test_key_2026
       DATABASE_URL: postgresql://quiz:quiz@quiz-db:5432/quizdb?schema=public
     extra_hosts:
       - "host.docker.internal:host-gateway"
