@@ -2,6 +2,10 @@
 
 TypeScript microservice that requests **quiz** generation from **ai-engine** and persists generated sessions in a database.
 
+## Responsabilidad principal
+
+- Generacion y persistencia de contenido quiz con control de calidad.
+
 ## Stack
 - Runtime: Node.js 20+
 - Framework: Fastify
