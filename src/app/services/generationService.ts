@@ -973,6 +973,27 @@ export class GenerationService {
   }
 
   private sanitizeGeneratedPayload(payload: unknown): unknown {
+    if (!payload || typeof payload !== "object") {
+      throw new Error("Generated payload is not a valid object");
+    }
+    const obj = payload as Record<string, unknown>;
+    const game = (obj.game ?? obj) as Record<string, unknown>;
+    const questions = game.questions;
+    if (!Array.isArray(questions) || questions.length === 0) {
+      throw new Error("Generated quiz has no questions — rejecting incomplete content");
+    }
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i] as Record<string, unknown>;
+      if (!q.question || typeof q.question !== "string") {
+        throw new Error(`Question ${i} is missing the 'question' text`);
+      }
+      if (!Array.isArray(q.options) || q.options.length < 2) {
+        throw new Error(`Question ${i} has fewer than 2 options`);
+      }
+      if (typeof q.correct_index !== "number" || q.correct_index < 0 || q.correct_index >= q.options.length) {
+        throw new Error(`Question ${i} has invalid correct_index`);
+      }
+    }
     return payload;
   }
 
