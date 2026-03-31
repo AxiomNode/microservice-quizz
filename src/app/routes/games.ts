@@ -22,6 +22,9 @@ const GenerateProcessSchema = GenerateSchema.extend({
 
 const GenerateProcessWaitSchema = GenerateProcessSchema;
 
+/** @module games — Fastify routes for quiz generation, ingestion, history, and model retrieval. */
+
+/** Register all /games/* routes on the Fastify instance. */
 export async function gameRoutes(
   app: FastifyInstance,
   generationService: GenerationService,

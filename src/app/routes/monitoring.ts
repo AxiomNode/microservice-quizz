@@ -7,6 +7,9 @@ const LogsQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(2000).default(200)
 });
 
+/** @module monitoring — Routes for service stats, logs, and Prometheus-compatible metrics. */
+
+/** Register /monitor/* and /metrics routes. */
 export async function monitoringRoutes(
   app: FastifyInstance,
   metrics: ServiceMetrics,

@@ -2,6 +2,8 @@ import { AppConfig } from "../config.js";
 import { BatchGenerationResult, GenerationProcessSnapshot } from "./generationService.js";
 import { OutboundRequestMetric } from "./aiEngineClient.js";
 
+/** @module serviceMetrics — In-memory counters, log buffer, and Prometheus exporter for the quiz service. */
+
 interface LogEvent {
   ts: string;
   level: "info" | "warn" | "error";
@@ -18,6 +20,7 @@ interface AiAuthCircuitState {
   openedTotal: number;
 }
 
+/** Collects traffic, generation, and batch metrics; exposes snapshots and Prometheus output. */
 export class ServiceMetrics {
   private readonly startedAt = Date.now();
   private readonly routeCounters = new Map<string, number>();

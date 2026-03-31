@@ -7,10 +7,14 @@ import {
 
 import { AppConfig } from "../config.js";
 
+/** @module privateDocs — Fastify plugin for token-protected Swagger UI documentation. */
+
+/** Resolve the token used to protect private docs, with fallback to the AI engine key. */
 export function resolvePrivateDocsToken(config: AppConfig): string | null {
   return resolvePrivateDocsTokenShared(config, { fallbackToAiEngineKey: true });
 }
 
+/** Check whether an incoming request carries a valid private-docs authorization token. */
 export function isAuthorizedForPrivateDocs(
   request: FastifyRequest,
   expectedToken: string
@@ -18,6 +22,7 @@ export function isAuthorizedForPrivateDocs(
   return isAuthorizedForPrivateDocsShared(request.headers, expectedToken);
 }
 
+/** Register the Swagger UI plugin behind token authentication, if enabled. */
 export async function registerPrivateDocs(app: FastifyInstance, config: AppConfig): Promise<void> {
   if (!config.PRIVATE_DOCS_ENABLED) {
     return;

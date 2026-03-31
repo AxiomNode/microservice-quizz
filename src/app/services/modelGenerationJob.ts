@@ -2,6 +2,9 @@ import type { FastifyBaseLogger } from "fastify";
 import { AppConfig } from "../config.js";
 import { GenerationService } from "./generationService.js";
 
+/** @module modelGenerationJob — Periodic scheduler that triggers batch quiz generation cycles. */
+
+/** Scheduled job that periodically generates quiz models via GenerationService. */
 export class ModelGenerationJob {
   private timer: NodeJS.Timeout | undefined;
   private running = false;

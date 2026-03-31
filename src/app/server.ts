@@ -15,6 +15,8 @@ import { ModelGenerationJob } from "./services/modelGenerationJob.js";
 import { monitoringRoutes } from "./routes/monitoring.js";
 import { ServiceMetrics } from "./services/serviceMetrics.js";
 
+/** @module server — Fastify application bootstrap, hooks, and startup orchestration. */
+
 async function buildServer() {
   const config = loadConfig();
   const app = Fastify({ logger: true });

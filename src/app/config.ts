@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+/** @module config — Zod-validated environment configuration for the quiz microservice. */
+
 const OptionalEnvString = z.preprocess(
   (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
   z.string().min(1).optional()
@@ -48,8 +50,10 @@ const ConfigSchema = z.object({
   DATABASE_URL: z.string().min(1)
 });
 
+/** Fully validated application configuration derived from environment variables. */
 export type AppConfig = z.infer<typeof ConfigSchema>;
 
+/** Parse and validate environment variables into an AppConfig, throwing on invalid values. */
 export function loadConfig(): AppConfig {
   const parsed = ConfigSchema.safeParse(process.env);
   if (!parsed.success) {

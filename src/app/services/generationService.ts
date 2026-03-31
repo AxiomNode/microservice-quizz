@@ -17,6 +17,9 @@ import {
   GameCategory
 } from "./triviaCategories.js";
 
+/** @module generationService — Core quiz generation logic: AI calls, dedup, batch runs, and history. */
+
+/** Snapshot of the currently loaded trivia catalogs (categories + languages). */
 export interface CatalogSnapshot {
   source: "local-fallback" | "ai-engine";
   categories: { id: string; name: string }[];
@@ -24,6 +27,7 @@ export interface CatalogSnapshot {
   updatedAt: string;
 }
 
+/** Current state of the AI-engine authentication circuit breaker. */
 export interface AiAuthCircuitSnapshot {
   open: boolean;
   failureStreak: number;
@@ -33,6 +37,7 @@ export interface AiAuthCircuitSnapshot {
   openedTotal: number;
 }
 
+/** Event callbacks emitted by GenerationService for metrics/observability. */
 export interface GenerationServiceObserver {
   onModelStored?: () => void;
   onModelDuplicate?: (reason: "content") => void;
@@ -44,6 +49,7 @@ export interface GenerationServiceObserver {
   onOutboundRequest?: AiEngineClientObserver["onOutboundRequest"];
 }
 
+/** Input payload for a single quiz generation request. */
 export interface GenerateInput {
   categoryId: string;
   language: string;
@@ -52,6 +58,7 @@ export interface GenerateInput {
   requestedBy?: "api" | "backoffice";
 }
 
+/** Input payload for manually creating a quiz model from the backoffice. */
 export interface ManualModelInput {
   categoryId: string;
   language: string;
@@ -60,10 +67,12 @@ export interface ManualModelInput {
   status?: "manual" | "validated";
 }
 
+/** Input for a multi-item async generation process. */
 export interface GenerationProcessInput extends GenerateInput {
   count: number;
 }
 
+/** Progress snapshot of an in-flight or completed generation process. */
 export interface GenerationProcessSnapshot {
   taskId: string;
   requestedBy: "api" | "backoffice";
@@ -92,6 +101,7 @@ interface ResolvedGenerateInput extends GenerateInput {
   query: string;
 }
 
+/** Filters for retrieving random quiz models from the database. */
 export interface RandomModelsFilters {
   count: number;
   categoryId?: string;
@@ -102,18 +112,21 @@ export interface RandomModelsFilters {
   createdBefore?: Date;
 }
 
+/** Filters for retrieving quiz generation history. */
 export interface HistoryFilters {
   categoryId?: string;
   language?: string;
   difficultyPercentage?: number;
 }
 
+/** Aggregated counts of stored models grouped by category and language. */
 export interface GroupedModelsSummary {
   categories: Array<{ categoryId: string; categoryName: string; total: number }>;
   languages: Array<{ language: string; total: number }>;
   matrix: Array<{ categoryId: string; categoryName: string; language: string; total: number }>;
 }
 
+/** Summary result of a periodic batch generation run. */
 export interface BatchGenerationResult {
   runId: string;
   requested: number;
@@ -208,6 +221,7 @@ const QUESTION_STYLES = [
   "preguntas comparativas"
 ];
 
+/** Orchestrates quiz generation, deduplication, batch runs, and catalog management. */
 export class GenerationService {
   private readonly client: AiEngineClient;
   private readonly generationProcesses = new Map<string, GenerationProcessTask>();
