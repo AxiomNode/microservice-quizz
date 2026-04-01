@@ -1,7 +1,7 @@
 services:
   quiz-db:
     image: postgres:16-alpine
-    container_name: microservice_quiz_db_dev
+    container_name: "microservice_quizz_db_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
     restart: unless-stopped
     environment:
       POSTGRES_DB: quizdb
@@ -10,7 +10,7 @@ services:
     ports:
       - "7432:5432"
     volumes:
-      - quiz_db_data:/var/lib/postgresql/data
+      - quizz_db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U quiz -d quizdb"]
       interval: 10s
@@ -21,7 +21,8 @@ services:
     cpus: "1.0"
 
   microservice-quiz:
-    container_name: microservice_quiz_dev
+    image: "microservice_quizz_api_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
+    container_name: "microservice_quizz_api_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
     restart: unless-stopped
     build:
       context: ..
@@ -51,4 +52,5 @@ services:
     cpus: "1.0"
 
 volumes:
-  quiz_db_data:
+  quizz_db_data:
+    name: "microservice_quizz_db_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}_data"
