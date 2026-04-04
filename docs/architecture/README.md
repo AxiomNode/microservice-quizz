@@ -1,8 +1,9 @@
 # Architecture
 
-microservice-quiz follows a simple layered design:
-- Route layer (Fastify routes)
-- Service layer (ai-engine client + orchestration)
-- Persistence layer (Prisma)
+`microservice-quizz` follows a layered design:
 
-The service is scoped to one game type: \.
+- Route layer (Fastify handlers)
+- Service layer (AI orchestration + business rules)
+- Persistence layer (Prisma + PostgreSQL)
+
+The service is intentionally scoped to a single game type: `quiz`.
