@@ -109,7 +109,9 @@ jobs:
           path: microservice-quizz
 
       - name: Prepare env file
-        run: cp microservice-quizz/src/.env.example microservice-quizz/src/.env
+        run: |
+          cp microservice-quizz/src/.env.example microservice-quizz/src/.env
+          : > microservice-quizz/src/.env.secrets
 
       - name: Start stack
         run: docker compose -f microservice-quizz/docker-compose.yml up -d --build
