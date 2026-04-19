@@ -120,4 +120,62 @@ describe("GenerationService", () => {
       "Generated quiz has no questions — rejecting incomplete content"
     );
   });
+
+  it("keeps invalid persisted quiz entries visible in history with a validation error", async () => {
+    const service = new GenerationService(createConfig());
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    prismaMocks.findMany.mockResolvedValue([
+      {
+        id: "invalid-quiz",
+        gameType: "quiz",
+        query: "invalid quiz",
+        language: "es",
+        status: "created",
+        categoryId: "9",
+        categoryName: "General Knowledge",
+        requestJson: JSON.stringify({ language: "es" }),
+        responseJson: JSON.stringify({ game_type: "quiz", game: { questions: [] } }),
+        createdAt: new Date("2026-04-15T18:00:00.000Z"),
+      },
+      {
+        id: "valid-quiz",
+        gameType: "quiz",
+        query: "valid quiz",
+        language: "es",
+        status: "created",
+        categoryId: "9",
+        categoryName: "General Knowledge",
+        requestJson: JSON.stringify({ language: "es", item_count: "3" }),
+        responseJson: JSON.stringify({
+          game_type: "quiz",
+          game: {
+            questions: [
+              {
+                question: "Capital de Francia",
+                options: ["Paris", "Roma", "Berlin", "Lisboa"],
+                correct_index: 0,
+              },
+            ],
+          },
+        }),
+        createdAt: new Date("2026-04-15T18:01:00.000Z"),
+      },
+    ]);
+
+    const result = await service.history(10, { language: "es" });
+
+    expect(result).toHaveLength(2);
+    expect(result[0]?.id).toBe("invalid-quiz");
+    expect(result[0]?.responseValidationError).toBe(
+      "Generated quiz has no questions — rejecting incomplete content"
+    );
+    expect(result[1]?.id).toBe("valid-quiz");
+    expect(result[1]?.request).toEqual({ language: "es", item_count: "3" });
+    expect(warnSpy).toHaveBeenCalledWith(
+      "Stored quiz history item is invalid but still exposed for backoffice",
+      "invalid-quiz",
+      "Generated quiz has no questions — rejecting incomplete content"
+    );
+  });
 });
