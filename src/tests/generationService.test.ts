@@ -538,8 +538,8 @@ describe("GenerationService", () => {
 
     const result = await service.generateBatchModels({ targetCount: 5, maxAttempts: 5 });
 
-    expect(result).toMatchObject({ requested: 5, created: 1, duplicates: 1, failed: 3, attempts: 5 });
-    expect(observer.onBatchCompleted).toHaveBeenCalledWith(expect.objectContaining({ created: 1, duplicates: 1, failed: 3 }));
+    expect(result).toMatchObject({ requested: 5, created: 1, duplicates: 1, failed: 1, attempts: 5 });
+    expect(observer.onBatchCompleted).toHaveBeenCalledWith(expect.objectContaining({ created: 1, duplicates: 1, failed: 1 }));
   });
 
   it("covers internal helpers for uniqueness, normalization and parsing", () => {

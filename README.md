@@ -1,5 +1,7 @@
 # microservice-quizz
 
+[![codecov](https://codecov.io/gh/AxiomNode/microservice-quizz/branch/main/graph/badge.svg)](https://codecov.io/gh/AxiomNode/microservice-quizz)
+
 TypeScript microservice for quiz generation and persistence.
 
 ## Architectural role
