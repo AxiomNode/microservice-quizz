@@ -1,5 +1,20 @@
 # Getting Started
 
+## Scope
+
+This guide covers local development and basic runtime verification for `microservice-quizz`.
+
+## Prerequisites
+
+Before starting, ensure:
+
+- Node.js and npm are available
+- PostgreSQL is reachable for the configured local environment
+- required secrets have been prepared from the private `secrets` repository
+- downstream AI integration is available if generation endpoints will be tested end-to-end
+
+## Local setup
+
 1. Install dependencies:
 
 ```bash
@@ -33,6 +48,8 @@ npm run db:push
 npm run dev
 ```
 
+## Smoke path examples
+
 5. Generate a quiz session:
 
 ```bash
@@ -52,6 +69,12 @@ curl "http://localhost:7100/games/models/random?count=10&language=es&categoryId=
 ```bash
 curl "http://localhost:7100/games/models/grouped"
 ```
+
+## Development notes
+
+- generation success depends on downstream AI availability and content validity, not only service health
+- random-model reads may surface persistence-quality problems that do not appear on the write path
+- category and language behavior should stay aligned with shared SDK catalogs
 
 ## Fixed language policy
 

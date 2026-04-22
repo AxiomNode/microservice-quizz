@@ -11,6 +11,7 @@ function createClient() {
     AI_ENGINE_API_KEY: "games-key",
     AI_ENGINE_INGEST_API_KEY: "bridge-key",
     AI_ENGINE_REQUEST_TIMEOUT_MS: 5000,
+    AI_ENGINE_CATALOGS_CACHE_TTL_MS: 60000,
     AI_ENGINE_RETRY_MAX_ATTEMPTS: 3,
     AI_ENGINE_RETRY_INITIAL_DELAY_MS: 10,
     AI_ENGINE_RETRY_MAX_DELAY_MS: 20,
@@ -59,5 +60,63 @@ describe("AiEngineClient retry policy", () => {
 
     await assertion;
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("reuses cached catalogs within the TTL window", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(createResponse(200, {
+        categories: [{ id: "science", name: "Science" }],
+        languages: [{ code: "es", name: "Espanol" }],
+      }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = createClient();
+
+    await expect(client.getCatalogs()).resolves.toEqual({
+      categories: [{ id: "science", name: "Science" }],
+      languages: [{ code: "es", name: "Espanol" }],
+    });
+    await expect(client.getCatalogs()).resolves.toEqual({
+      categories: [{ id: "science", name: "Science" }],
+      languages: [{ code: "es", name: "Espanol" }],
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("deduplicates concurrent catalog requests", async () => {
+    let resolveFetch: ((value: Response) => void) | undefined;
+    const fetchMock = vi.fn().mockImplementation(
+      () =>
+        new Promise<Response>((resolve) => {
+          resolveFetch = resolve;
+        })
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = createClient();
+    const firstRequest = client.getCatalogs();
+    const secondRequest = client.getCatalogs();
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    resolveFetch?.(
+      createResponse(200, {
+        categories: [{ id: "science", name: "Science" }],
+        languages: [{ code: "es", name: "Espanol" }],
+      })
+    );
+
+    await expect(Promise.all([firstRequest, secondRequest])).resolves.toEqual([
+      {
+        categories: [{ id: "science", name: "Science" }],
+        languages: [{ code: "es", name: "Espanol" }],
+      },
+      {
+        categories: [{ id: "science", name: "Science" }],
+        languages: [{ code: "es", name: "Espanol" }],
+      },
+    ]);
   });
 });
