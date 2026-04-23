@@ -2,6 +2,10 @@ import { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { GenerationService } from "../services/generationService.js";
 import {
+  RuntimeDifficultyLevel,
+  RuntimeGenerationWorker,
+} from "../services/runtimeGenerationWorker.js";
+import {
   BaseGenerateSchema,
   IngestSchema,
   RandomModelsQuerySchema,
@@ -22,13 +26,20 @@ const GenerateProcessSchema = GenerateSchema.extend({
 
 const GenerateProcessWaitSchema = GenerateProcessSchema;
 
+const RuntimeGenerationStartSchema = z.object({
+  countPerIteration: z.coerce.number().int().min(1).max(200).default(10),
+  categoryIds: z.array(z.string().min(1)).max(500).optional(),
+  difficultyLevels: z.array(z.enum(["easy", "medium", "hard"]).transform((value) => value as RuntimeDifficultyLevel)).max(3).optional(),
+});
+
 /** @module games — Fastify routes for quiz generation, ingestion, history, and model retrieval. */
 
 /** Register all /games/* routes on the Fastify instance. */
 export async function gameRoutes(
   app: FastifyInstance,
   generationService: GenerationService,
-  onIngestedDocuments?: (total: number) => void
+  onIngestedDocuments?: (total: number) => void,
+  runtimeGenerationWorker?: RuntimeGenerationWorker
 ): Promise<void> {
   app.post("/games/generate", async (request, reply) => {
     const parsed = GenerateSchema.safeParse(request.body);
@@ -165,6 +176,40 @@ export async function gameRoutes(
       task
     });
   });
+
+  if (runtimeGenerationWorker) {
+    app.get("/games/generate/worker", async (_request, reply) => {
+      const worker = await runtimeGenerationWorker.getSnapshot();
+      return reply.send({
+        gameType: "quiz",
+        worker,
+      });
+    });
+
+    app.post("/games/generate/worker/start", async (request, reply) => {
+      const parsed = RuntimeGenerationStartSchema.safeParse(request.body ?? {});
+      if (!parsed.success) {
+        return reply.status(400).send({
+          message: "Invalid payload",
+          errors: parsed.error.flatten(),
+        });
+      }
+
+      const worker = await runtimeGenerationWorker.start(parsed.data);
+      return reply.send({
+        gameType: "quiz",
+        worker,
+      });
+    });
+
+    app.post("/games/generate/worker/stop", async (_request, reply) => {
+      const worker = await runtimeGenerationWorker.stop();
+      return reply.send({
+        gameType: "quiz",
+        worker,
+      });
+    });
+  }
 
   app.post("/games/ingest", async (request, reply) => {
     const parsed = IngestSchema.safeParse(request.body);
