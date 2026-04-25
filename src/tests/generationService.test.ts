@@ -90,7 +90,7 @@ describe("GenerationService", () => {
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
-        requestJson: JSON.stringify({ language: "es" }),
+        requestJson: JSON.stringify({}),
         responseJson: JSON.stringify({ game_type: "quiz", game: { questions: [] } }),
         createdAt: new Date("2026-04-15T18:00:00.000Z"),
       },
@@ -101,7 +101,7 @@ describe("GenerationService", () => {
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
-        requestJson: JSON.stringify({ language: "es" }),
+        requestJson: JSON.stringify({}),
         responseJson: JSON.stringify({
           game_type: "quiz",
           game: {
@@ -141,7 +141,7 @@ describe("GenerationService", () => {
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
-        requestJson: JSON.stringify({ language: "es" }),
+        requestJson: JSON.stringify({}),
         responseJson: JSON.stringify({ game_type: "quiz", game: { questions: [] } }),
         createdAt: new Date("2026-04-15T18:00:00.000Z"),
       },
