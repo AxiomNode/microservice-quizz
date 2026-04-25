@@ -4,6 +4,7 @@ import {
   buildCategoryDimensionMatrix,
   buildStoredRequestPayload,
   ensureAiAuthCircuitClosedState,
+  extractStringArrayFromObjects as extractStringArrayFromObjectsShared,
   extractAiEngineStatusCode as extractAiEngineStatusCodeShared,
   extractDifficultyFromRequest as extractDifficultyFromRequestShared,
   getGameCategoryOrThrow,
@@ -1135,25 +1136,7 @@ export class GenerationService {
   }
 
   private extractStringArrayFromObjects(payload: unknown, arrayKey: string, fieldKey: string): string[] {
-    if (!payload || typeof payload !== "object") {
-      return [];
-    }
-
-    const asRecord = payload as Record<string, unknown>;
-    const candidate = asRecord[arrayKey];
-    if (!Array.isArray(candidate)) {
-      return [];
-    }
-
-    return candidate
-      .map((item) => {
-        if (!item || typeof item !== "object") {
-          return "";
-        }
-        const value = (item as Record<string, unknown>)[fieldKey];
-        return typeof value === "string" ? value : "";
-      })
-      .filter((item) => item.trim().length > 0);
+    return extractStringArrayFromObjectsShared(payload, arrayKey, fieldKey);
   }
 
   private normalizeContentToken(value: string): string {
