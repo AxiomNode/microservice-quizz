@@ -55,16 +55,16 @@ npm run dev
 ```bash
 curl -X POST http://localhost:7100/games/generate \
   -H "Content-Type: application/json" \
-  -d '{"categoryId":"17","language":"es","difficultyPercentage":55,"numQuestions":8}'
+  -d '{"categoryId":"17","difficultyPercentage":55,"numQuestions":8}'
 ```
 
-6. Retrieve random models filtered by language and category:
+6. Retrieve random models filtered by category:
 
 ```bash
-curl "http://localhost:7100/games/models/random?count=10&language=es&categoryId=17"
+curl "http://localhost:7100/games/models/random?count=10&categoryId=17"
 ```
 
-7. Group model counts by category and language:
+7. Group model counts by category:
 
 ```bash
 curl "http://localhost:7100/games/models/grouped"
@@ -74,9 +74,9 @@ curl "http://localhost:7100/games/models/grouped"
 
 - generation success depends on downstream AI availability and content validity, not only service health
 - random-model reads may surface persistence-quality problems that do not appear on the write path
-- category and language behavior should stay aligned with shared SDK catalogs
+- category behavior should stay aligned with the shared SDK catalogs and English-only contracts
 
-## Fixed language policy
+## English-only policy
 
-- Active fixed languages: `es`, `en`, `fr`, `de`, `it`.
-- To add a new language later, edit `shared-sdk-client/typescript/src/trivia-categories.ts` and then restart/rebuild.
+- The public generation contract is English-only and does not accept a client-supplied language field.
+- If the runtime catalog changes later, update [shared-sdk-client/typescript/src/game-schemas.ts](shared-sdk-client/typescript/src/game-schemas.ts) and [shared-sdk-client/typescript/src/game-categories.ts](shared-sdk-client/typescript/src/game-categories.ts), then restart and rebuild the service.
