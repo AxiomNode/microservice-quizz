@@ -1,2 +1,2 @@
-/** @module triviaCategories — Re-exports game categories and supported languages from the shared SDK. */
+/** @module triviaCategories — Re-exports the shared game category catalog. */
 export * from "@axiomnode/shared-sdk-client/game-categories";
