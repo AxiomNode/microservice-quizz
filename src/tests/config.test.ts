@@ -46,6 +46,18 @@ describe("loadConfig", () => {
     expect(config.BATCH_GENERATION_INTERVAL_MINUTES).toBe(15);
   });
 
+  it("parses BATCH_GENERATION_ENABLED=false as disabled", () => {
+    withEnv({
+      DATABASE_URL: "postgresql://quiz:quiz@localhost:7432/quizdb?schema=public",
+      PRIVATE_DOCS_ENABLED: "false",
+      BATCH_GENERATION_ENABLED: "false",
+    });
+
+    const config = loadConfig();
+
+    expect(config.BATCH_GENERATION_ENABLED).toBe(false);
+  });
+
   it("accepts private docs when only AI_ENGINE_API_KEY is configured", () => {
     withEnv({
       DATABASE_URL: "postgresql://quiz:quiz@localhost:7432/quizdb?schema=public",
