@@ -233,7 +233,7 @@ describe("GenerationService", () => {
     prismaMocks.update.mockResolvedValue({
       id: "entry-2",
       gameType: "quiz",
-      query: "General Knowledge manual curation es difficulty 70",
+      query: "General Knowledge manual curation difficulty 70",
       status: "pending_review",
       categoryId: "9",
       categoryName: "General Knowledge",
@@ -375,7 +375,7 @@ describe("GenerationService", () => {
     prismaMocks.create.mockResolvedValue({
       id: "manual-1",
       gameType: "quiz",
-      query: "General Knowledge manual curation es difficulty 45",
+      query: "General Knowledge manual curation difficulty 45",
       status: "validated",
       categoryId: "9",
       categoryName: "General Knowledge",
@@ -806,7 +806,7 @@ describe("GenerationService", () => {
     prismaMocks.create.mockResolvedValueOnce({
       id: "manual-default",
       gameType: "quiz",
-      query: "General Knowledge manual curation es difficulty 40",
+      query: "General Knowledge manual curation difficulty 40",
       status: "manual",
       categoryId: "9",
       categoryName: "General Knowledge",
