@@ -226,7 +226,6 @@ export async function gameRoutes(
         metadata: {
           ...(document.metadata ?? {}),
           ...(parsed.data.categoryId ? { categoryId: parsed.data.categoryId } : {}),
-          ...(parsed.data.language ? { language: parsed.data.language } : {}),
           ...(typeof parsed.data.difficultyPercentage === "number"
             ? { difficultyPercentage: parsed.data.difficultyPercentage }
             : {}),
@@ -278,7 +277,6 @@ export async function gameRoutes(
       page: parsed.data.page,
       pageSize: parsed.data.pageSize,
       categoryId: parsed.data.categoryId,
-      language: parsed.data.language,
       difficultyPercentage: parsed.data.difficultyPercentage,
       status: parsed.data.status,
     });
@@ -372,7 +370,7 @@ export async function gameRoutes(
     const summary = await generationService.groupedModelsSummary();
     return reply.send({
       gameType: "quiz",
-      groupedBy: ["category", "language"],
+      groupedBy: ["category"],
       ...summary
     });
   });

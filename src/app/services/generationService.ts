@@ -10,8 +10,6 @@ import {
   IngestResponse
 } from "./aiEngineClient.js";
 import {
-  SUPPORTED_LANGUAGES,
-  SUPPORTED_LANGUAGE_BY_CODE,
   GAME_CATEGORIES,
   GAME_CATEGORY_BY_ID,
   GameCategory
@@ -19,11 +17,10 @@ import {
 
 /** @module generationService — Core quiz generation logic: AI calls, dedup, batch runs, and history. */
 
-/** Snapshot of the currently loaded trivia catalogs (categories + languages). */
+/** Snapshot of the currently loaded game catalogs (categories only — English-only stack). */
 export interface CatalogSnapshot {
   source: "local-fallback" | "ai-engine";
   categories: { id: string; name: string }[];
-  languages: { code: string; name: string }[];
   updatedAt: string;
 }
 
@@ -52,7 +49,6 @@ export interface GenerationServiceObserver {
 /** Input payload for a single quiz generation request. */
 export interface GenerateInput {
   categoryId: string;
-  language: string;
   difficultyPercentage?: number;
   itemCount?: number;
   numQuestions?: number;
@@ -62,7 +58,6 @@ export interface GenerateInput {
 /** Input payload for manually creating a quiz model from the backoffice. */
 export interface ManualModelInput {
   categoryId: string;
-  language: string;
   difficultyPercentage: number;
   content: Record<string, unknown>;
   status?: "manual" | "validated" | "pending_review";
@@ -70,7 +65,6 @@ export interface ManualModelInput {
 
 export interface ManualModelUpdateInput {
   categoryId?: string;
-  language?: string;
   difficultyPercentage?: number;
   content?: Record<string, unknown>;
   status?: "manual" | "validated" | "pending_review";
@@ -114,7 +108,6 @@ interface ResolvedGenerateInput extends GenerateInput {
 export interface RandomModelsFilters {
   count: number;
   categoryId?: string;
-  language?: string;
   difficultyPercentage?: number;
   status?: string;
   createdAfter?: Date;
@@ -124,7 +117,6 @@ export interface RandomModelsFilters {
 /** Filters for retrieving quiz generation history. */
 export interface HistoryFilters {
   categoryId?: string;
-  language?: string;
   difficultyPercentage?: number;
   status?: string;
 }
@@ -136,11 +128,10 @@ export interface HistoryPageResult {
   pageSize: number;
 }
 
-/** Aggregated counts of stored models grouped by category and language. */
+/** Aggregated counts of stored models grouped by category. */
 export interface GroupedModelsSummary {
   categories: Array<{ categoryId: string; categoryName: string; total: number }>;
-  languages: Array<{ language: string; total: number }>;
-  matrix: Array<{ categoryId: string; categoryName: string; language: string; total: number }>;
+  matrix: Array<{ categoryId: string; categoryName: string; total: number }>;
 }
 
 /** Summary result of a periodic batch generation run. */
@@ -173,7 +164,6 @@ interface StoredGameModel {
   id: string;
   gameType: string;
   query: string;
-  language: string;
   status: string;
   categoryId: string | null;
   categoryName: string | null;
@@ -201,42 +191,42 @@ interface GenerationProcessTask {
 }
 
 const PROMPT_VARIANTS = [
-  "fundamentos",
-  "curiosidades",
-  "personajes clave",
-  "eventos historicos",
-  "conceptos esenciales",
-  "hechos poco conocidos",
-  "hitos recientes",
-  "contexto global",
-  "impacto cultural",
-  "innovaciones",
-  "aplicaciones practicas",
-  "retos actuales",
-  "clasicos",
-  "perspectiva internacional",
-  "datos sorprendentes",
-  "figuras influyentes"
+  "fundamentals",
+  "curiosities",
+  "key figures",
+  "historical events",
+  "essential concepts",
+  "little known facts",
+  "recent milestones",
+  "global context",
+  "cultural impact",
+  "innovations",
+  "practical applications",
+  "current challenges",
+  "classics",
+  "international perspective",
+  "surprising data",
+  "influential figures"
 ];
 
 const CONTEXT_FRAMES = [
-  "introduccion",
-  "nivel intermedio",
-  "nivel avanzado",
-  "comparativa historica",
-  "enfoque moderno",
-  "casos emblematicos",
-  "enfoque educativo",
-  "vision interdisciplinar"
+  "introduction",
+  "intermediate level",
+  "advanced level",
+  "historical comparison",
+  "modern approach",
+  "emblematic cases",
+  "educational focus",
+  "interdisciplinary view"
 ];
 
 const QUESTION_STYLES = [
-  "preguntas directas",
-  "preguntas con contexto",
-  "preguntas de razonamiento",
-  "preguntas de cultura general",
-  "preguntas cronologicas",
-  "preguntas comparativas"
+  "direct questions",
+  "contextual questions",
+  "reasoning questions",
+  "general culture questions",
+  "chronological questions",
+  "comparative questions"
 ];
 
 /** Orchestrates quiz generation, deduplication, batch runs, and catalog management. */
@@ -250,9 +240,7 @@ export class GenerationService {
   private aiAuthCircuitOpenedUntilMs = 0;
   private aiAuthCircuitOpenedTotal = 0;
   private categories: { id: string; name: string }[] = [...GAME_CATEGORIES];
-  private languages: { code: string; name: string }[] = [...SUPPORTED_LANGUAGES];
   private categoryById = new Map(GAME_CATEGORY_BY_ID);
-  private languageByCode = new Map(SUPPORTED_LANGUAGE_BY_CODE);
   private catalogSource: CatalogSnapshot["source"] = "local-fallback";
   private catalogUpdatedAt = new Date().toISOString();
   private groupedSummaryCache: { data: GroupedModelsSummary; expiresAt: number } | null = null;
@@ -275,11 +263,7 @@ export class GenerationService {
       const payload = await this.client.getCatalogs();
       this.registerAiAuthSuccess();
       this.categories = payload.categories;
-      this.languages = payload.languages;
       this.categoryById = new Map(payload.categories.map((item) => [item.id, item] as const));
-      this.languageByCode = new Map(
-        payload.languages.map((item) => [item.code.toLowerCase(), item] as const)
-      );
       this.catalogSource = "ai-engine";
       this.catalogUpdatedAt = new Date().toISOString();
     } catch (error) {
@@ -325,17 +309,15 @@ export class GenerationService {
     return {
       source: this.catalogSource,
       categories: this.categories,
-      languages: this.languages,
       updatedAt: this.catalogUpdatedAt
     };
   }
 
   async generateAndStore(input: GenerateInput): Promise<unknown> {
     const category = this.getCategoryOrThrow(input.categoryId);
-    const language = this.getLanguageOrThrow(input.language);
     const itemCount = this.resolveRequestedItemCount(input);
 
-    const resolved = this.buildResolvedInput(Math.floor(Math.random() * 10_000), category, language);
+    const resolved = this.buildResolvedInput(Math.floor(Math.random() * 10_000), category);
     const result = await this.generateAndStoreWithResult({
       ...resolved,
       difficultyPercentage: input.difficultyPercentage,
@@ -347,12 +329,11 @@ export class GenerationService {
 
   async storeManualModel(input: ManualModelInput): Promise<StoredGameModel> {
     const category = this.getCategoryOrThrow(input.categoryId);
-    const language = this.getLanguageOrThrow(input.language);
     const difficulty = Math.max(0, Math.min(100, Math.trunc(input.difficultyPercentage)));
 
     const normalizedContent = this.normalizeManualContent(input.content);
-    const query = `${category.name} manual curation ${language} difficulty ${difficulty}`;
-    const uniquenessKey = this.buildUniquenessKey("quiz", normalizedContent, language);
+    const query = `${category.name} manual curation difficulty ${difficulty}`;
+    const uniquenessKey = this.buildUniquenessKey("quiz", normalizedContent);
 
     const existing = await prisma.gameGeneration.findFirst({
       where: { uniquenessKey },
@@ -367,7 +348,6 @@ export class GenerationService {
       data: {
         gameType: "quiz",
         query,
-        language,
         status: input.status ?? "manual",
         categoryId: category.id,
         categoryName: category.name,
@@ -376,7 +356,6 @@ export class GenerationService {
         requestJson: JSON.stringify({
           source: "backoffice-manual",
           categoryId: category.id,
-          language,
           difficulty_percentage: difficulty,
         }),
         responseJson: JSON.stringify(normalizedContent),
@@ -407,7 +386,6 @@ export class GenerationService {
     }
 
     const nextCategoryId = input.categoryId ?? existing.categoryId ?? undefined;
-    const nextLanguage = input.language ?? existing.language;
     const nextDifficulty = typeof input.difficultyPercentage === "number"
       ? Math.max(0, Math.min(100, Math.trunc(input.difficultyPercentage)))
       : existing.difficultyPercentage ?? this.extractDifficultyFromRequest(this.parseJson(existing.requestJson));
@@ -417,13 +395,12 @@ export class GenerationService {
     }
 
     const category = this.getCategoryOrThrow(nextCategoryId);
-    const language = this.getLanguageOrThrow(nextLanguage);
     const currentResponse = this.parseJson(existing.responseJson) as Record<string, unknown>;
     const normalizedContent = input.content
       ? this.normalizeManualContent(input.content)
       : this.normalizeManualContent(currentResponse);
-    const query = `${category.name} manual curation ${language} difficulty ${nextDifficulty}`;
-    const uniquenessKey = this.buildUniquenessKey("quiz", normalizedContent, language);
+    const query = `${category.name} manual curation difficulty ${nextDifficulty}`;
+    const uniquenessKey = this.buildUniquenessKey("quiz", normalizedContent);
 
     const duplicate = await prisma.gameGeneration.findFirst({
       where: {
@@ -441,7 +418,6 @@ export class GenerationService {
       where: { id },
       data: {
         query,
-        language,
         status: input.status ?? existing.status,
         categoryId: category.id,
         categoryName: category.name,
@@ -450,7 +426,6 @@ export class GenerationService {
         requestJson: JSON.stringify({
           source: "backoffice-manual",
           categoryId: category.id,
-          language,
           difficulty_percentage: nextDifficulty,
         }),
         responseJson: JSON.stringify(normalizedContent),
@@ -562,11 +537,7 @@ export class GenerationService {
           attempts += 1;
 
           const selection = dimensions[(matrixOffset + attemptNumber) % dimensions.length];
-          const candidateInput = this.buildResolvedInput(
-            attemptNumber,
-            selection.category,
-            selection.language
-          );
+          const candidateInput = this.buildResolvedInput(attemptNumber, selection.category);
 
           try {
             const result = await this.generateAndStoreWithResult(candidateInput, {
@@ -613,7 +584,6 @@ export class GenerationService {
     id: true,
     gameType: true,
     query: true,
-    language: true,
     status: true,
     categoryId: true,
     categoryName: true,
@@ -629,9 +599,6 @@ export class GenerationService {
       ...(filters.status ? {} : { status: { not: "pending_review" } }),
     };
 
-    if (filters.language) {
-      where.language = this.getLanguageOrThrow(filters.language);
-    }
     if (filters.categoryId) {
       where.categoryId = this.getCategoryOrThrow(filters.categoryId).id;
     }
@@ -679,7 +646,7 @@ export class GenerationService {
     }
 
     const rows = await prisma.gameGeneration.groupBy({
-      by: ["categoryId", "categoryName", "language"],
+      by: ["categoryId", "categoryName"],
       where: { gameType: "quiz" },
       _count: { _all: true }
     });
@@ -689,7 +656,6 @@ export class GenerationService {
       .map((row) => ({
         categoryId: row.categoryId as string,
         categoryName: row.categoryName as string,
-        language: row.language,
         total: row._count._all
       }));
 
@@ -704,16 +670,8 @@ export class GenerationService {
       };
     });
 
-    const languages = this.languages.map((item) => item.code).map((language) => {
-      const total = matrix
-        .filter((row) => row.language === language)
-        .reduce((sum, row) => sum + row.total, 0);
-      return { language, total };
-    });
-
     const result: GroupedModelsSummary = {
       categories,
-      languages,
       matrix
     };
 
@@ -731,7 +689,6 @@ export class GenerationService {
       where: {
         gameType: "quiz",
         ...(filters?.categoryId ? { categoryId: this.getCategoryOrThrow(filters.categoryId).id } : {}),
-        ...(filters?.language ? { language: this.getLanguageOrThrow(filters.language) } : {}),
         ...(typeof filters?.difficultyPercentage === "number"
           ? { difficultyPercentage: Math.max(0, Math.min(100, Math.trunc(filters.difficultyPercentage))) }
           : {}),
@@ -752,7 +709,6 @@ export class GenerationService {
     const where = {
       gameType: "quiz",
       ...(options?.categoryId ? { categoryId: this.getCategoryOrThrow(options.categoryId).id } : {}),
-      ...(options?.language ? { language: this.getLanguageOrThrow(options.language) } : {}),
       ...(options?.status ? { status: options.status } : {}),
       ...(typeof options?.difficultyPercentage === "number"
         ? { difficultyPercentage: Math.max(0, Math.min(100, Math.trunc(options.difficultyPercentage))) }
@@ -786,11 +742,10 @@ export class GenerationService {
 
     try {
       const category = this.getCategoryOrThrow(input.categoryId);
-      const language = this.getLanguageOrThrow(input.language);
       const concurrency = Math.min(3, input.count);
 
       const processOne = async (index: number): Promise<void> => {
-        const resolved = this.buildResolvedInput(index, category, language);
+        const resolved = this.buildResolvedInput(index, category);
         const itemCount = this.resolveRequestedItemCount(input) ?? resolved.numQuestions;
         const payload: ResolvedGenerateInput = {
           ...resolved,
@@ -899,8 +854,7 @@ export class GenerationService {
 
   private buildResolvedInput(
     attempt: number,
-    category: { id: string; name: string },
-    language: string
+    category: { id: string; name: string }
   ): ResolvedGenerateInput {
     const categoryCount = this.categories.length;
     const variant = PROMPT_VARIANTS[Math.floor(attempt / categoryCount) % PROMPT_VARIANTS.length];
@@ -926,10 +880,9 @@ export class GenerationService {
 
     return {
       categoryId: category.id,
-      language,
       difficultyPercentage: difficulty,
       numQuestions,
-      query: `${category.name} ${variant} ${frame} ${style} trivia ${language} opcion multiple evitar verdadero falso`
+      query: `${category.name} ${variant} ${frame} ${style} trivia multiple choice avoid true false`
     };
   }
 
@@ -947,14 +900,12 @@ export class GenerationService {
     input: ResolvedGenerateInput,
     metadata?: GenerateStoreMetadata
   ): Promise<GenerateAndStoreResult> {
-    const language = this.getLanguageOrThrow(input.language);
     const category = this.getCategoryOrThrow(input.categoryId);
 
     const requestPayload: Record<string, string> = {
       query: input.query,
       max_tokens: "512",
-      use_cache: "true",
-      language
+      use_cache: "true"
     };
 
     if (input.itemCount) {
@@ -977,7 +928,7 @@ export class GenerationService {
     }
 
     const sanitizedResponsePayload = this.sanitizeGeneratedPayload(responsePayload);
-    const uniquenessKey = this.buildUniquenessKey("quiz", sanitizedResponsePayload, language);
+    const uniquenessKey = this.buildUniquenessKey("quiz", sanitizedResponsePayload);
 
     const existingContent = await prisma.gameGeneration.findFirst({
       where: { uniquenessKey },
@@ -992,7 +943,7 @@ export class GenerationService {
       };
     }
 
-    const requestPayloadForStorage = this.buildStoredRequestPayload(requestPayload, category, language);
+    const requestPayloadForStorage = this.buildStoredRequestPayload(requestPayload, category);
     const storedDifficulty = this.extractDifficultyFromRequest(requestPayloadForStorage);
 
     try {
@@ -1000,7 +951,6 @@ export class GenerationService {
         data: {
           gameType: "quiz",
           query: input.query,
-          language,
           status: "created",
           categoryId: metadata?.category?.id ?? category.id,
           categoryName: metadata?.category?.name ?? category.name,
@@ -1032,18 +982,14 @@ export class GenerationService {
     };
   }
 
-  private buildDimensionMatrix(): Array<{ language: string; category: { id: string; name: string } }> {
-    const languageCodes = this.languages.map((item) => item.code);
-    return languageCodes.flatMap((language) =>
-      this.categories.map((category) => ({ language, category }))
-    );
+  private buildDimensionMatrix(): Array<{ category: { id: string; name: string } }> {
+    return this.categories.map((category) => ({ category }));
   }
 
   private mapStoredModel(item: {
     id: string;
     gameType: string;
     query: string;
-    language: string;
     status: string;
     categoryId: string | null;
     categoryName: string | null;
@@ -1055,7 +1001,6 @@ export class GenerationService {
       id: item.id,
       gameType: item.gameType,
       query: item.query,
-      language: item.language,
       status: item.status,
       categoryId: item.categoryId,
       categoryName: item.categoryName,
@@ -1069,7 +1014,6 @@ export class GenerationService {
     id: string;
     gameType: string;
     query: string;
-    language: string;
     status: string;
     categoryId: string | null;
     categoryName: string | null;
@@ -1085,7 +1029,6 @@ export class GenerationService {
       id: item.id,
       gameType: item.gameType,
       query: item.query,
-      language: item.language,
       status: item.status,
       categoryId: item.categoryId,
       categoryName: item.categoryName,
@@ -1101,7 +1044,6 @@ export class GenerationService {
       id: string;
       gameType: string;
       query: string;
-      language: string;
       status: string;
       categoryId: string | null;
       categoryName: string | null;
@@ -1132,7 +1074,6 @@ export class GenerationService {
       id: string;
       gameType: string;
       query: string;
-      language: string;
       status: string;
       categoryId: string | null;
       categoryName: string | null;
@@ -1171,14 +1112,12 @@ export class GenerationService {
 
   private buildStoredRequestPayload(
     requestPayload: Record<string, string>,
-    category: { id: string; name: string },
-    language: string
+    category: { id: string; name: string }
   ): Record<string, string> {
     return {
       ...requestPayload,
       category_id: category.id,
       category_name: category.name,
-      language,
     };
   }
 
@@ -1230,13 +1169,13 @@ export class GenerationService {
     return compact;
   }
 
-  private buildUniquenessKey(gameType: string, payload: unknown, language: string): string {
+  private buildUniquenessKey(gameType: string, payload: unknown): string {
     const primarySignature = this.extractPrimaryContentSignature(gameType, payload);
     const stablePayload = primarySignature
       ? `primary:${primarySignature}`
       : this.stableStringify(payload);
     return createHash("sha256")
-      .update(`${gameType}|${language.toLowerCase()}|${stablePayload}`)
+      .update(`${gameType}|${stablePayload}`)
       .digest("hex");
   }
 
@@ -1342,14 +1281,6 @@ export class GenerationService {
       throw new Error(`Unsupported categoryId: ${categoryId}`);
     }
     return category;
-  }
-
-  private getLanguageOrThrow(language: string): string {
-    const normalized = language.toLowerCase();
-    if (!this.languageByCode.has(normalized)) {
-      throw new Error(`Unsupported language: ${language}`);
-    }
-    return normalized;
   }
 
   private ensureAiAuthCircuitClosed(): void {

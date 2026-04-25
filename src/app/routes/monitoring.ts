@@ -21,25 +21,15 @@ export async function monitoringRoutes(
     const grouped = await generationService.groupedModelsSummary();
 
     const totalCategories = catalogs.categories.length;
-    const totalLanguages = catalogs.languages.length;
     const categoriesWithData = grouped.categories.filter((item) => item.total > 0).length;
-    const languagesWithData = grouped.languages.filter((item) => item.total > 0).length;
-    const totalMatrixSlots = totalCategories * totalLanguages;
-    const matrixSlotsWithData = grouped.matrix.length;
 
     return reply.send({
       ...stats,
       coverage: {
         catalogSource: catalogs.source,
         totalCategories,
-        totalLanguages,
         categoriesWithData,
-        languagesWithData,
         categoryCoverageRatio: totalCategories > 0 ? categoriesWithData / totalCategories : 0,
-        languageCoverageRatio: totalLanguages > 0 ? languagesWithData / totalLanguages : 0,
-        matrixSlotsWithData,
-        totalMatrixSlots,
-        matrixCoverageRatio: totalMatrixSlots > 0 ? matrixSlotsWithData / totalMatrixSlots : 0
       }
     });
   });

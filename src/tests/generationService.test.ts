@@ -86,7 +86,6 @@ describe("GenerationService", () => {
         id: "invalid-quiz",
         gameType: "quiz",
         query: "invalid quiz",
-        language: "es",
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
@@ -98,7 +97,6 @@ describe("GenerationService", () => {
         id: "valid-quiz",
         gameType: "quiz",
         query: "valid quiz",
-        language: "es",
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
@@ -119,7 +117,7 @@ describe("GenerationService", () => {
       },
     ]);
 
-    const result = await service.randomModels({ count: 2, language: "es" });
+    const result = await service.randomModels({ count: 2 });
 
     expect(result).toHaveLength(1);
     expect(result[0]?.id).toBe("valid-quiz");
@@ -139,7 +137,6 @@ describe("GenerationService", () => {
         id: "invalid-quiz",
         gameType: "quiz",
         query: "invalid quiz",
-        language: "es",
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
@@ -151,11 +148,10 @@ describe("GenerationService", () => {
         id: "valid-quiz",
         gameType: "quiz",
         query: "valid quiz",
-        language: "es",
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
-        requestJson: JSON.stringify({ language: "es", item_count: "3" }),
+        requestJson: JSON.stringify({ item_count: "3" }),
         responseJson: JSON.stringify({
           game_type: "quiz",
           game: {
@@ -172,7 +168,7 @@ describe("GenerationService", () => {
       },
     ]);
 
-    const result = await service.history(10, { language: "es" });
+    const result = await service.history(10, {});
 
     expect(result).toHaveLength(2);
     expect(result[0]?.id).toBe("invalid-quiz");
@@ -180,7 +176,7 @@ describe("GenerationService", () => {
       "Generated quiz has no questions — rejecting incomplete content"
     );
     expect(result[1]?.id).toBe("valid-quiz");
-    expect(result[1]?.request).toEqual({ language: "es", item_count: "3" });
+    expect(result[1]?.request).toEqual({ item_count: "3" });
     expect(warnSpy).toHaveBeenCalledWith(
       "Stored quiz history item is invalid but still exposed for backoffice",
       "invalid-quiz",
@@ -193,7 +189,7 @@ describe("GenerationService", () => {
 
     prismaMocks.findMany.mockResolvedValue([]);
 
-    await service.randomModels({ count: 2, language: "es" });
+    await service.randomModels({ count: 2 });
 
     expect(prismaMocks.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -213,11 +209,10 @@ describe("GenerationService", () => {
         id: "entry-2",
         gameType: "quiz",
         query: "old",
-        language: "es",
         status: "manual",
         categoryId: "9",
         categoryName: "General Knowledge",
-        requestJson: JSON.stringify({ categoryId: "9", language: "es", difficulty_percentage: 40 }),
+        requestJson: JSON.stringify({ categoryId: "9", difficulty_percentage: 40 }),
         responseJson: JSON.stringify({
           game_type: "quiz",
           game: {
@@ -238,11 +233,10 @@ describe("GenerationService", () => {
       id: "entry-2",
       gameType: "quiz",
       query: "General Knowledge manual curation es difficulty 70",
-      language: "es",
       status: "pending_review",
       categoryId: "9",
       categoryName: "General Knowledge",
-      requestJson: JSON.stringify({ source: "backoffice-manual", categoryId: "9", language: "es", difficulty_percentage: 70 }),
+      requestJson: JSON.stringify({ source: "backoffice-manual", categoryId: "9", difficulty_percentage: 70 }),
       responseJson: JSON.stringify({
         game_type: "quiz",
         game: {
@@ -281,13 +275,12 @@ describe("GenerationService", () => {
     prismaMocks.count.mockResolvedValue(1);
     prismaMocks.findMany.mockResolvedValue([]);
 
-    await service.historyPage(500, { page: 2, pageSize: 25, difficultyPercentage: 60, language: "es" });
+    await service.historyPage(500, { page: 2, pageSize: 25, difficultyPercentage: 60 });
 
     expect(prismaMocks.count).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
           gameType: "quiz",
-          language: "es",
           difficultyPercentage: 60,
         }),
       }),
@@ -296,7 +289,6 @@ describe("GenerationService", () => {
       expect.objectContaining({
         where: expect.objectContaining({
           gameType: "quiz",
-          language: "es",
           difficultyPercentage: 60,
         }),
         skip: 25,
@@ -340,7 +332,6 @@ describe("GenerationService", () => {
     (service as any).client.getCatalogs = vi.fn()
       .mockResolvedValueOnce({
         categories: [{ id: "11", name: "Film" }],
-        languages: [{ code: "ES", name: "Spanish" }],
       })
       .mockRejectedValueOnce(new Error("ai-engine error 401 unauthorized"));
 
@@ -350,7 +341,6 @@ describe("GenerationService", () => {
     expect(refreshed).toMatchObject({
       source: "ai-engine",
       categories: [{ id: "11", name: "Film" }],
-      languages: [{ code: "ES", name: "Spanish" }],
     });
     expect(service.getCatalogSnapshot().source).toBe("ai-engine");
     expect(smoke).toEqual({ ok: false, reason: "ai-engine error 401 unauthorized" });
@@ -385,7 +375,6 @@ describe("GenerationService", () => {
       id: "manual-1",
       gameType: "quiz",
       query: "General Knowledge manual curation es difficulty 45",
-      language: "es",
       status: "validated",
       categoryId: "9",
       categoryName: "General Knowledge",
@@ -410,7 +399,6 @@ describe("GenerationService", () => {
 
     const stored = await service.storeManualModel({
       categoryId: "9",
-      language: "ES",
       difficultyPercentage: 45.8,
       content: { question: "Nueva", hint: null },
       status: "validated",
@@ -419,7 +407,6 @@ describe("GenerationService", () => {
     await expect(
       service.storeManualModel({
         categoryId: "9",
-        language: "es",
         difficultyPercentage: 45,
         content: { question: "Nueva" },
       })
@@ -428,11 +415,10 @@ describe("GenerationService", () => {
     await expect(service.deleteHistoryItem("missing")).resolves.toBe(false);
     await expect(service.deleteHistoryItem("manual-1")).resolves.toBe(true);
 
-    expect(stored).toMatchObject({ id: "manual-1", status: "validated", language: "es" });
+    expect(stored).toMatchObject({ id: "manual-1", status: "validated" });
     expect(prismaMocks.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
-          language: "es",
           status: "validated",
           difficultyPercentage: 45,
         }),
@@ -444,8 +430,8 @@ describe("GenerationService", () => {
     const service = new GenerationService(createConfig());
     (service as any).client.ingest = vi.fn().mockResolvedValue({ ingested: 3 });
     prismaMocks.groupBy.mockResolvedValue([
-      { categoryId: "9", categoryName: "General Knowledge", language: "es", _count: { _all: 2 } },
-      { categoryId: "10", categoryName: "Books", language: "en", _count: { _all: 1 } },
+      { categoryId: "9", categoryName: "General Knowledge", _count: { _all: 2 } },
+      { categoryId: "10", categoryName: "Books", _count: { _all: 1 } },
     ]);
 
     const explicit = await service.ingestToRag([{ content: "A" }], "custom-source");
@@ -469,7 +455,6 @@ describe("GenerationService", () => {
     const service = new GenerationService(createConfig());
     (service as any).buildResolvedInput = vi.fn().mockReturnValue({
       categoryId: "9",
-      language: "es",
       difficultyPercentage: 15,
       numQuestions: 7,
       query: "resolved query",
@@ -481,7 +466,6 @@ describe("GenerationService", () => {
 
     const result = await service.generateAndStore({
       categoryId: "9",
-      language: "ES",
       difficultyPercentage: 60,
       numQuestions: 4,
     });
@@ -490,7 +474,6 @@ describe("GenerationService", () => {
     expect((service as any).generateAndStoreWithResult).toHaveBeenCalledWith(
       expect.objectContaining({
         categoryId: "9",
-        language: "es",
         difficultyPercentage: 60,
         itemCount: 4,
         query: "resolved query",
@@ -516,8 +499,8 @@ describe("GenerationService", () => {
       observer.onProcessCompleted((service as any).toGenerationProcessSnapshot(task, true));
     });
 
-    const started = service.startGenerationProcess({ categoryId: "9", language: "es", count: 2, requestedBy: "backoffice" });
-    const completed = await service.runGenerationProcessBlocking({ categoryId: "9", language: "es", count: 2 });
+    const started = service.startGenerationProcess({ categoryId: "9", count: 2, requestedBy: "backoffice" });
+    const completed = await service.runGenerationProcessBlocking({ categoryId: "9", count: 2 });
 
     expect(started).toMatchObject({ status: "completed", requestedBy: "backoffice", requested: 2 });
     expect(completed).toMatchObject({ status: "completed", created: 1, duplicates: 1 });
@@ -529,8 +512,8 @@ describe("GenerationService", () => {
   it("aggregates batch generation results including duplicates and ai-auth circuit stops", async () => {
     const observer = { onBatchCompleted: vi.fn() };
     const service = new GenerationService(createConfig({ BATCH_GENERATION_CONCURRENCY: 1 }), observer);
-    (service as any).buildDimensionMatrix = vi.fn().mockReturnValue([{ category: { id: "9", name: "General Knowledge" }, language: "es" }]);
-    (service as any).buildResolvedInput = vi.fn().mockReturnValue({ categoryId: "9", language: "es", query: "resolved" });
+    (service as any).buildDimensionMatrix = vi.fn().mockReturnValue([{ category: { id: "9", name: "General Knowledge" } }]);
+    (service as any).buildResolvedInput = vi.fn().mockReturnValue({ categoryId: "9", query: "resolved" });
     (service as any).generateAndStoreWithResult = vi.fn()
       .mockResolvedValueOnce({ stored: true, responsePayload: {} })
       .mockResolvedValueOnce({ stored: false, duplicateReason: "content", responsePayload: {} })
@@ -562,7 +545,6 @@ describe("GenerationService", () => {
     expect(serviceAny.validateStoredHistoryPayload({ game: { questions: [] } }, "item-1", "quiz")).toContain("Generated quiz has no questions");
     expect(serviceAny.stableStringify({ b: 1, a: [2, 1] })).toBe('{"a":[2,1],"b":1}');
     expect(() => serviceAny.getCategoryOrThrow("unknown")).toThrow("Unsupported categoryId: unknown");
-    expect(() => serviceAny.getLanguageOrThrow("zz")).toThrow("Unsupported language: zz");
     expect(serviceAny.extractAiEngineStatusCode(new Error("ai-engine error 403 forbidden"))).toBe(403);
     expect(serviceAny.extractAiEngineStatusCode("bad")).toBeNull();
     expect(serviceAny.isAiAuthCircuitOpenError(new Error("AI auth circuit open until tomorrow"))).toBe(true);
@@ -588,13 +570,13 @@ describe("GenerationService", () => {
       generatedItems: [],
       errors: [],
     });
-    serviceAny.buildResolvedInput = vi.fn().mockReturnValue({ categoryId: "9", language: "es", query: "resolved", numQuestions: 5 });
+    serviceAny.buildResolvedInput = vi.fn().mockReturnValue({ categoryId: "9", query: "resolved", numQuestions: 5 });
     serviceAny.generateAndStoreWithResult = vi.fn()
       .mockResolvedValueOnce({ stored: true, responsePayload: { id: "a" } })
       .mockResolvedValueOnce({ stored: false, duplicateReason: "content", responsePayload: { id: "b" } })
       .mockRejectedValueOnce(new Error("third failed"));
 
-    await serviceAny.runGenerationProcess("task-run", { categoryId: "9", language: "es", count: 3 });
+    await serviceAny.runGenerationProcess("task-run", { categoryId: "9", count: 3 });
 
     const finalTask = service.getGenerationProcess("task-run", true);
     expect(finalTask).toMatchObject({
@@ -634,7 +616,7 @@ describe("GenerationService", () => {
       throw new Error("Unsupported categoryId: xx");
     });
 
-    await serviceAny.runGenerationProcess("task-fail", { categoryId: "xx", language: "es", count: 2 });
+    await serviceAny.runGenerationProcess("task-fail", { categoryId: "xx", count: 2 });
 
     expect(service.getGenerationProcess("task-fail")).toMatchObject({
       status: "failed",
@@ -711,19 +693,16 @@ describe("GenerationService", () => {
 
     const success = await serviceAny.generateAndStoreWithResult({
       categoryId: "9",
-      language: "ES",
       query: "query",
       itemCount: 3,
       difficultyPercentage: 55,
     });
     const duplicate = await serviceAny.generateAndStoreWithResult({
       categoryId: "9",
-      language: "es",
       query: "query",
     });
     const racedDuplicate = await serviceAny.generateAndStoreWithResult({
       categoryId: "9",
-      language: "es",
       query: "query-2",
     });
 
@@ -747,10 +726,10 @@ describe("GenerationService", () => {
       .mockRejectedValueOnce(new Error("ai-engine error 500 upstream"));
 
     await expect(
-      serviceAny.generateAndStoreWithResult({ categoryId: "9", language: "es", query: "query" })
+      serviceAny.generateAndStoreWithResult({ categoryId: "9", query: "query" })
     ).rejects.toThrow("ai-engine error 401 unauthorized");
     await expect(
-      serviceAny.generateAndStoreWithResult({ categoryId: "9", language: "es", query: "query" })
+      serviceAny.generateAndStoreWithResult({ categoryId: "9", query: "query" })
     ).rejects.toThrow("AI auth circuit open until");
 
     expect(service.getAiAuthCircuitSnapshot()).toMatchObject({ open: true, failureStreak: 1, openedTotal: 1 });
@@ -767,7 +746,6 @@ describe("GenerationService", () => {
         id: "entry-1",
         gameType: "quiz",
         query: "old",
-        language: "es",
         status: "manual",
         categoryId: null,
         categoryName: null,
@@ -780,7 +758,6 @@ describe("GenerationService", () => {
         id: "entry-2",
         gameType: "quiz",
         query: "old",
-        language: "es",
         status: "manual",
         categoryId: "9",
         categoryName: "General Knowledge",
@@ -799,7 +776,6 @@ describe("GenerationService", () => {
       query: "x",
       category_id: "9",
       category_name: "General Knowledge",
-      language: "es",
     });
     expect(serviceAny.extractPrimaryContentSignature("wordpass", { words: [{ answer: "Árbol" }, { answer: "Casa" }] })).toBe("arbol|casa");
     expect(serviceAny.extractStringArrayFromObjects({ words: [{ answer: "Uno" }, { nope: true }] }, "words", "answer")).toEqual(["Uno"]);
@@ -813,7 +789,7 @@ describe("GenerationService", () => {
     const serviceAny = service as any;
 
     serviceAny.client.getCatalogs = vi.fn()
-      .mockResolvedValueOnce({ categories: [], languages: [] })
+      .mockResolvedValueOnce({ categories: [] })
       .mockRejectedValueOnce("boom");
 
     await expect(service.runAiAuthSmokeCheck()).resolves.toEqual({ ok: true });
@@ -830,7 +806,6 @@ describe("GenerationService", () => {
       id: "manual-default",
       gameType: "quiz",
       query: "General Knowledge manual curation es difficulty 40",
-      language: "es",
       status: "manual",
       categoryId: "9",
       categoryName: "General Knowledge",
@@ -841,7 +816,6 @@ describe("GenerationService", () => {
 
     const stored = await service.storeManualModel({
       categoryId: "9",
-      language: "es",
       difficultyPercentage: 40,
       content: { question: "Q", options: ["A", "B"], correct_index: 0 },
     });
@@ -899,8 +873,8 @@ describe("GenerationService", () => {
     serviceAny.config.BATCH_GENERATION_TARGET_COUNT = 2;
     serviceAny.config.BATCH_GENERATION_MAX_ATTEMPTS = 2;
 
-    serviceAny.buildDimensionMatrix = vi.fn().mockReturnValue([{ category: { id: "9", name: "General Knowledge" }, language: "es" }]);
-    serviceAny.buildResolvedInput = vi.fn().mockReturnValue({ categoryId: "9", language: "es", query: "resolved" });
+    serviceAny.buildDimensionMatrix = vi.fn().mockReturnValue([{ category: { id: "9", name: "General Knowledge" } }]);
+    serviceAny.buildResolvedInput = vi.fn().mockReturnValue({ categoryId: "9", query: "resolved" });
     serviceAny.generateAndStoreWithResult = vi.fn().mockRejectedValue("boom");
     serviceAny.client.ingest = vi.fn().mockResolvedValue({ ingested: 1 });
     prismaMocks.findMany
@@ -918,14 +892,13 @@ describe("GenerationService", () => {
     const random = await service.randomModels({
       count: 2,
       categoryId: "9",
-      language: "es",
       difficultyPercentage: 60,
       status: "validated",
       createdAfter: new Date("2026-04-01T00:00:00.000Z"),
       createdBefore: new Date("2026-04-30T00:00:00.000Z"),
     });
-    const history = await service.history(5, { categoryId: "9", language: "es", difficultyPercentage: 60 });
-    const historyPage = await service.historyPage(5, { categoryId: "9", language: "es", difficultyPercentage: 60, status: "validated" });
+    const history = await service.history(5, { categoryId: "9", difficultyPercentage: 60 });
+    const historyPage = await service.historyPage(5, { categoryId: "9", difficultyPercentage: 60, status: "validated" });
 
     expect(batch).toMatchObject({ requested: 2, attempts: 2, created: 0 });
     expect(ingest).toEqual({ ingested: 1 });
@@ -938,7 +911,6 @@ describe("GenerationService", () => {
       expect.objectContaining({
         where: expect.objectContaining({
           categoryId: "9",
-          language: "es",
           status: "validated",
           difficultyPercentage: 60,
           createdAt: expect.objectContaining({ gte: expect.any(Date), lte: expect.any(Date) }),
@@ -951,7 +923,7 @@ describe("GenerationService", () => {
     const service = new GenerationService(createConfig());
     const serviceAny = service as any;
 
-    await expect(serviceAny.runGenerationProcess("missing-task", { categoryId: "9", language: "es", count: 1 })).resolves.toBeUndefined();
+    await expect(serviceAny.runGenerationProcess("missing-task", { categoryId: "9", count: 1 })).resolves.toBeUndefined();
 
     serviceAny.generationProcesses.set("task-only-fail", {
       taskId: "task-only-fail",
@@ -968,10 +940,10 @@ describe("GenerationService", () => {
       generatedItems: [],
       errors: [],
     });
-    serviceAny.buildResolvedInput = vi.fn().mockReturnValue({ categoryId: "9", language: "es", query: "resolved", numQuestions: 5 });
+    serviceAny.buildResolvedInput = vi.fn().mockReturnValue({ categoryId: "9", query: "resolved", numQuestions: 5 });
     serviceAny.generateAndStoreWithResult = vi.fn().mockRejectedValue("boom");
 
-    await serviceAny.runGenerationProcess("task-only-fail", { categoryId: "9", language: "es", count: 1 });
+    await serviceAny.runGenerationProcess("task-only-fail", { categoryId: "9", count: 1 });
 
     expect(service.getGenerationProcess("task-only-fail")).toMatchObject({
       status: "failed",
@@ -998,7 +970,7 @@ describe("GenerationService", () => {
       throw "bad-input";
     });
 
-    await serviceAny.runGenerationProcess("task-invalid-non-error", { categoryId: "9", language: "es", count: 1 });
+    await serviceAny.runGenerationProcess("task-invalid-non-error", { categoryId: "9", count: 1 });
 
     expect(service.getGenerationProcess("task-invalid-non-error")).toMatchObject({
       status: "failed",

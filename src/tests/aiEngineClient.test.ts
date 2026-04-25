@@ -67,7 +67,6 @@ describe("AiEngineClient retry policy", () => {
       .fn()
       .mockResolvedValue(createResponse(200, {
         categories: [{ id: "science", name: "Science" }],
-        languages: [{ code: "es", name: "Espanol" }],
       }));
     vi.stubGlobal("fetch", fetchMock);
 
@@ -75,11 +74,9 @@ describe("AiEngineClient retry policy", () => {
 
     await expect(client.getCatalogs()).resolves.toEqual({
       categories: [{ id: "science", name: "Science" }],
-      languages: [{ code: "es", name: "Espanol" }],
     });
     await expect(client.getCatalogs()).resolves.toEqual({
       categories: [{ id: "science", name: "Science" }],
-      languages: [{ code: "es", name: "Espanol" }],
     });
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -104,18 +101,15 @@ describe("AiEngineClient retry policy", () => {
     resolveFetch?.(
       createResponse(200, {
         categories: [{ id: "science", name: "Science" }],
-        languages: [{ code: "es", name: "Espanol" }],
       })
     );
 
     await expect(Promise.all([firstRequest, secondRequest])).resolves.toEqual([
       {
         categories: [{ id: "science", name: "Science" }],
-        languages: [{ code: "es", name: "Espanol" }],
       },
       {
         categories: [{ id: "science", name: "Science" }],
-        languages: [{ code: "es", name: "Espanol" }],
       },
     ]);
   });
