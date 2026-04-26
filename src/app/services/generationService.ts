@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import {
   type AiAuthCircuitState,
+  buildGameHistoryWhere,
   buildCategoryDimensionMatrix,
   buildStoredRequestPayload,
   createGameGenerationProcessTask,
@@ -14,6 +15,8 @@ import {
   mapStoredHistoryModels as mapStoredHistoryModelsShared,
   mapStoredModel as mapStoredModelShared,
   mapStoredModelsSafely as mapStoredModelsSafelyShared,
+  normalizeGameHistoryLimit,
+  normalizeGameHistoryPage,
   normalizeManualContent as normalizeManualContentShared,
   normalizeContentToken as normalizeContentTokenShared,
   parseJson as parseJsonShared,
@@ -638,15 +641,9 @@ export class GenerationService {
   }
 
   async history(limit = 20, filters?: HistoryFilters): Promise<StoredGameModel[]> {
-    const normalizedLimit = Math.max(1, Math.min(1000, Math.trunc(limit)));
+    const normalizedLimit = normalizeGameHistoryLimit(limit);
     const rows = await prisma.gameGeneration.findMany({
-      where: {
-        gameType: "quiz",
-        ...(filters?.categoryId ? { categoryId: this.getCategoryOrThrow(filters.categoryId).id } : {}),
-        ...(typeof filters?.difficultyPercentage === "number"
-          ? { difficultyPercentage: Math.max(0, Math.min(100, Math.trunc(filters.difficultyPercentage))) }
-          : {}),
-      },
+      where: buildGameHistoryWhere("quiz", filters, (categoryId) => this.getCategoryOrThrow(categoryId).id),
       select: GenerationService.storedModelSelect,
       orderBy: { createdAt: "desc" },
       take: normalizedLimit
@@ -656,18 +653,13 @@ export class GenerationService {
   }
 
   async historyPage(limit = 20, options?: HistoryFilters & { page?: number; pageSize?: number }): Promise<HistoryPageResult> {
-    const normalizedLimit = Math.max(1, Math.min(1000, Math.trunc(limit)));
-    const normalizedPage = Math.max(1, Math.trunc(options?.page ?? 1));
-    const normalizedPageSize = Math.max(1, Math.min(200, Math.trunc(options?.pageSize ?? Math.min(20, normalizedLimit))));
-    const skip = (normalizedPage - 1) * normalizedPageSize;
-    const where = {
-      gameType: "quiz",
-      ...(options?.categoryId ? { categoryId: this.getCategoryOrThrow(options.categoryId).id } : {}),
-      ...(options?.status ? { status: options.status } : {}),
-      ...(typeof options?.difficultyPercentage === "number"
-        ? { difficultyPercentage: Math.max(0, Math.min(100, Math.trunc(options.difficultyPercentage))) }
-        : {}),
-    } as const;
+    const { normalizedPage, normalizedPageSize, skip } = normalizeGameHistoryPage(limit, options);
+    const where = buildGameHistoryWhere(
+      "quiz",
+      options,
+      (categoryId) => this.getCategoryOrThrow(categoryId).id,
+      { includeStatus: true }
+    );
 
     const [total, rows] = await Promise.all([
       prisma.gameGeneration.count({ where }),
