@@ -256,7 +256,7 @@ describe("GenerationService", () => {
     const result = await service.updateHistoryItem("entry-2", {
       difficultyPercentage: 70,
       status: "pending_review",
-      content: { question: "Nueva" },
+      content: { question: "Nueva", answers: ["A", "B", "C", "D"], correctIndex: 0 },
     });
 
     expect(result?.status).toBe("pending_review");
@@ -401,7 +401,7 @@ describe("GenerationService", () => {
     const stored = await service.storeManualModel({
       categoryId: "9",
       difficultyPercentage: 45.8,
-      content: { question: "Nueva", hint: null },
+      content: { question: "Nueva", answers: ["A", "B", "C", "D"], correctIndex: 0, hint: null },
       status: "validated",
     });
 
@@ -409,7 +409,7 @@ describe("GenerationService", () => {
       service.storeManualModel({
         categoryId: "9",
         difficultyPercentage: 45,
-        content: { question: "Nueva" },
+        content: { question: "Nueva", answers: ["A", "B", "C", "D"], correctIndex: 0 },
       })
     ).rejects.toThrow("Duplicate content");
 
@@ -530,8 +530,12 @@ describe("GenerationService", () => {
     const service = new GenerationService(createConfig());
     const serviceAny = service as any;
 
-    expect(serviceAny.normalizeManualContent({ question: "Nueva", hint: null })).toEqual({ question: "Nueva" });
-    expect(() => serviceAny.normalizeManualContent({})).toThrow("Invalid content payload");
+    expect(serviceAny.normalizeManualContent({ question: "Nueva", answers: ["A", "B"], correctIndex: 0, hint: null })).toEqual({
+      game: {
+        questions: [{ id: "q-1", question: "Nueva", answers: ["A", "B"], correctIndex: 0 }],
+      },
+    });
+    expect(() => serviceAny.normalizeManualContent({})).toThrow("Generated quiz has no questions");
     expect(serviceAny.buildUniquenessKey("quiz", {
       questions: [{ question: "¿Capital de Perú?" }],
     }, "ES")).toBe(
@@ -778,7 +782,7 @@ describe("GenerationService", () => {
       category_id: "9",
       category_name: "General Knowledge",
     });
-    expect(serviceAny.extractPrimaryContentSignature("wordpass", { words: [{ answer: "Árbol" }, { answer: "Casa" }] })).toBe("arbol|casa");
+    expect(serviceAny.extractPrimaryContentSignature("wordpass", { words: [{ word: "Árbol" }, { word: "Casa" }] })).toBe("arbol|casa");
     expect(serviceAny.extractStringArrayFromObjects({ words: [{ answer: "Uno" }, { nope: true }] }, "words", "answer")).toEqual(["Uno"]);
     expect(serviceAny.parseJson("not-json")).toBe("not-json");
     expect(serviceAny.resolveRequestedItemCount({ itemCount: 3, numQuestions: 7 })).toBe(3);

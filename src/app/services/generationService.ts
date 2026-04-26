@@ -6,8 +6,10 @@ import {
   buildCategoryDimensionMatrix,
   buildGameRandomModelsWhere,
   buildStoredRequestPayload,
+  canonicalizeQuizModel,
   createGameGenerationProcessTask,
   ensureAiAuthCircuitClosedState,
+  extractQuizQuestionTexts,
   extractStringArrayFromObjects as extractStringArrayFromObjectsShared,
   extractAiEngineStatusCode as extractAiEngineStatusCodeShared,
   extractDifficultyFromRequest as extractDifficultyFromRequestShared,
@@ -20,7 +22,6 @@ import {
   normalizeGameHistoryLimit,
   normalizeGameHistoryPage,
   pickRandomGameModels,
-  normalizeManualContent as normalizeManualContentShared,
   normalizeContentToken as normalizeContentTokenShared,
   parseJson as parseJsonShared,
   parseStoredJsonSafely as parseStoredJsonSafelyShared,
@@ -896,28 +897,7 @@ export class GenerationService {
   }
 
   private sanitizeGeneratedPayload(payload: unknown): unknown {
-    if (!payload || typeof payload !== "object") {
-      throw new Error("Generated payload is not a valid object");
-    }
-    const obj = payload as Record<string, unknown>;
-    const game = (obj.game ?? obj) as Record<string, unknown>;
-    const questions = game.questions;
-    if (!Array.isArray(questions) || questions.length === 0) {
-      throw new Error("Generated quiz has no questions — rejecting incomplete content");
-    }
-    for (let i = 0; i < questions.length; i++) {
-      const q = questions[i] as Record<string, unknown>;
-      if (!q.question || typeof q.question !== "string") {
-        throw new Error(`Question ${i} is missing the 'question' text`);
-      }
-      if (!Array.isArray(q.options) || q.options.length < 2) {
-        throw new Error(`Question ${i} has fewer than 2 options`);
-      }
-      if (typeof q.correct_index !== "number" || q.correct_index < 0 || q.correct_index >= q.options.length) {
-        throw new Error(`Question ${i} has invalid correct_index`);
-      }
-    }
-    return payload;
+    return canonicalizeQuizModel(payload);
   }
 
   private parseJson(value: string): unknown {
@@ -925,7 +905,7 @@ export class GenerationService {
   }
 
   private normalizeManualContent(content: Record<string, unknown>): Record<string, unknown> {
-    return normalizeManualContentShared(content);
+    return canonicalizeQuizModel(content) as unknown as Record<string, unknown>;
   }
 
   private buildUniquenessKey(gameType: string, payload: unknown): string {
@@ -944,7 +924,7 @@ export class GenerationService {
     }
 
     if (gameType === "quiz") {
-      const rawQuestions = this.extractStringArrayFromObjects(payload, "questions", "question");
+      const rawQuestions = extractQuizQuestionTexts(payload);
       if (rawQuestions.length === 0) {
         return null;
       }
@@ -954,7 +934,7 @@ export class GenerationService {
         .join("|");
     }
 
-    const words = this.extractStringArrayFromObjects(payload, "words", "answer");
+    const words = this.extractStringArrayFromObjects(payload, "words", "word");
     if (words.length === 0) {
       return null;
     }
@@ -966,7 +946,7 @@ export class GenerationService {
   }
 
   private extractStringArrayFromObjects(payload: unknown, arrayKey: string, fieldKey: string): string[] {
-    return extractStringArrayFromObjectsShared(payload, arrayKey, fieldKey);
+    return extractStringArrayFromObjectsShared(payload, arrayKey, fieldKey, { allowNestedGame: true });
   }
 
   private normalizeContentToken(value: string): string {
