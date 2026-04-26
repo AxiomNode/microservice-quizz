@@ -1,11 +1,11 @@
 import { FastifyInstance } from "fastify";
-import { z } from "zod";
+import {
+  buildMonitoringLogsPayload,
+  buildMonitoringStatsPayload,
+  MonitoringLogsQuerySchema,
+} from "@axiomnode/shared-sdk-client";
 import { ServiceMetrics } from "../services/serviceMetrics.js";
 import { GenerationService } from "../services/generationService.js";
-
-const LogsQuerySchema = z.object({
-  limit: z.coerce.number().int().min(1).max(2000).default(200)
-});
 
 /** @module monitoring — Routes for service stats, logs, and Prometheus-compatible metrics. */
 
@@ -20,23 +20,12 @@ export async function monitoringRoutes(
     const catalogs = generationService.getCatalogSnapshot();
     const grouped = await generationService.groupedModelsSummary();
 
-    const totalCategories = catalogs.categories.length;
-    const categoriesWithData = grouped.categories.filter((item) => item.total > 0).length;
-
-    return reply.send({
-      ...stats,
-      coverage: {
-        catalogSource: catalogs.source,
-        totalCategories,
-        categoriesWithData,
-        categoryCoverageRatio: totalCategories > 0 ? categoriesWithData / totalCategories : 0,
-      }
-    });
+    return reply.send(buildMonitoringStatsPayload(stats, catalogs, grouped));
   });
 
   app.get("/monitor/logs", async (request, reply) => {
     /* v8 ignore next -- Fastify always materializes request.query for matched routes; the nullish fallback is defensive only */
-    const parsed = LogsQuerySchema.safeParse(request.query ?? {});
+    const parsed = MonitoringLogsQuerySchema.safeParse(request.query ?? {});
     if (!parsed.success) {
       return reply.status(400).send({
         message: "Invalid query parameters",
@@ -46,11 +35,7 @@ export async function monitoringRoutes(
 
     const logs = metrics.recentLogs(parsed.data.limit);
 
-    return reply.send({
-      service: "microservice-quiz",
-      total: logs.length,
-      logs
-    });
+    return reply.send(buildMonitoringLogsPayload("microservice-quiz", logs));
   });
 
   app.get("/metrics", async (_request, reply) => {
