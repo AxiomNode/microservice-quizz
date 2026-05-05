@@ -1,22 +1,26 @@
 # microservice-quizz
 
+Last updated: 2026-05-03.
+
 [![codecov](https://codecov.io/gh/AxiomNode/microservice-quizz/branch/main/graph/badge.svg)](https://codecov.io/gh/AxiomNode/microservice-quizz)
 
 TypeScript microservice for quiz generation and persistence.
 
-## Architectural role
+## Responsibility
 
 `microservice-quizz` is the quiz domain service responsible for generation orchestration, persistence of generated content, and read APIs for reusable quiz models.
 
 It depends on `ai-engine` for content generation but remains the domain owner for request shaping, validation, persistence, and retrieval semantics.
 
-## Responsibilities
+## Runtime role
+
+### Main responsibilities
 
 - Request quiz generation from `ai-engine`.
 - Persist generated quiz models and history in PostgreSQL.
 - Expose quiz catalog and generation APIs for BFF consumers.
 
-## Ownership boundary
+### Ownership boundary
 
 `microservice-quizz` owns quiz-domain correctness even when `ai-engine` produced the raw content.
 
@@ -27,7 +31,9 @@ That includes:
 - rejection of incomplete or invalid stored/generated rows
 - persistence and retrieval semantics for quiz models
 
-## Primary use cases
+## Runtime surface
+
+### Primary use cases
 
 - request quiz generation for a user-facing category and language
 - ingest externally generated quiz content into the domain store
@@ -35,7 +41,9 @@ That includes:
 - inspect historical generated content
 - expose private docs and health surfaces for deployment validation
 
-## Stack
+Detailed generation semantics, duplicate handling, and inventory behavior are documented in the quiz capability dossier so this README can stay at repository level.
+
+### Stack
 
 - Node.js 20+
 - Fastify
@@ -44,12 +52,14 @@ That includes:
 - PostgreSQL
 - Vitest
 
-## Project layout
+## Local setup
+
+### Project layout
 
 - `src/`: service code, Prisma schema, tests, and Docker assets.
 - `docs/`: architecture, guides, and operations docs.
 
-## Local development
+### Local development
 
 ```bash
 cd src
@@ -65,16 +75,13 @@ Inject real secrets from the private `secrets` repository when needed:
 node scripts/prepare-runtime-secrets.mjs dev
 ```
 
-## API highlights
+### Route note
 
-- `GET /health`
-- `POST /games/generate`
-- `POST /games/ingest`
-- `GET /games/models/random`
-- `GET /games/models/grouped`
-- `GET /games/history`
+This service owns quiz generation, ingest, random inventory, grouped inventory, and history routes. Use `docs/architecture/README.md` and the quiz inventory capability dossier for the concrete contract inventory.
 
-## Dependency model
+## Dependencies and contracts
+
+### Dependency model
 
 Primary infrastructure dependency:
 
@@ -90,42 +97,41 @@ Primary consumers:
 - `bff-mobile`
 - `bff-backoffice`
 
-## Private docs
+### Private docs
 
 - Route: `/private/docs`
 - JSON: `/private/docs/json`
 - Auth headers: `X-Private-Docs-Token` or `Authorization: Bearer <token>`
 
-## CI/CD workflow behavior
+## Documentation
 
-- `.github/workflows/ci.yml`
-  - Trigger: push (`main`, `develop`), pull request, manual dispatch.
-  - Job `build-test-lint-audit`: build, test, lint, npm production audit.
-  - Job `docker-smoke-private-docs`: validates container startup + private docs auth behavior.
-  - Job `trigger-platform-infra-build`:
-    - Runs on push to `main`.
-    - Waits for `build-test-lint-audit` and `docker-smoke-private-docs` to succeed before dispatching `platform-infra`.
-    - Dispatches `platform-infra/.github/workflows/build-push.yaml` with `service=microservice-quizz`.
-    - Requires `PLATFORM_INFRA_DISPATCH_TOKEN` in this repo.
+- `docs/README.md`
+- `docs/architecture/README.md`
+- `docs/guides/README.md`
+- `docs/operations/README.md`
 
-## Deployment automation chain
+## Deployment and operations notes
 
-Push to `main` triggers image rebuild in `platform-infra`, followed by automatic deployment to `stg`.
+### CI/CD and rollout note
 
-## Resilience notes
+CI, smoke checks, and staging rollout behavior are documented in `docs/operations/README.md` and `../docs/operations/cicd-workflow-map.md`.
+
+### Resilience notes
 
 - This service is expected to tolerate bad persisted rows without failing the whole read path where possible.
 - Retry behavior toward `ai-engine` should be driven by explicit environment configuration, not ad hoc hardcoded retries.
 - Docker smoke validation and private docs validation are part of the delivery contract.
 
-## Failure boundaries
+### Failure boundaries
 
 - AI request returns invalid structured content
 - AI request rejected because generation capacity is saturated
 - database write or read failure after otherwise valid generation
 - stored invalid rows degrade selection or history endpoints
 
-## Related documents
+## References
 
 - `docs/architecture/`
 - `docs/operations/`
+- `../docs/guides/capabilities/domain/quiz-inventory-and-generation.md`
+- `../docs/operations/cicd-workflow-map.md`

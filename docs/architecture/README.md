@@ -1,5 +1,13 @@
 # Architecture
 
+Last updated: 2026-05-03.
+
+## Purpose
+
+This section documents the repository-local architecture of `microservice-quizz`.
+
+## Scope
+
 `microservice-quizz` follows a layered design:
 
 - Route layer (Fastify handlers)
