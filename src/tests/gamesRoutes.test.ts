@@ -203,6 +203,11 @@ describe("games routes", () => {
       url: "/games/generate/process",
       payload: { categoryId: "9", count: 4 },
     });
+    const startedFromItemCount = await app.inject({
+      method: "POST",
+      url: "/games/generate/process",
+      payload: { categoryId: "9", itemCount: 1 },
+    });
     const completed = await app.inject({
       method: "POST",
       url: "/games/generate/process/wait",
@@ -242,6 +247,10 @@ describe("games routes", () => {
     expect(invalidStart.statusCode).toBe(400);
     expect(unavailableStart.statusCode).toBe(503);
     expect(started.statusCode).toBe(202);
+    expect(startedFromItemCount.statusCode).toBe(202);
+    expect(generationService.startGenerationProcess).toHaveBeenLastCalledWith(
+      expect.objectContaining({ categoryId: "9", itemCount: 1, count: 1 })
+    );
     expect(completed.statusCode).toBe(201);
     expect(circuitWait.statusCode).toBe(503);
     expect(failedWait.statusCode).toBe(502);
