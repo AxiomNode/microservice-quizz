@@ -1,6 +1,6 @@
 # microservice-quizz
 
-Last updated: 2026-05-03.
+Last updated: 2026-05-08.
 
 [![codecov](https://codecov.io/gh/AxiomNode/microservice-quizz/branch/main/graph/badge.svg)](https://codecov.io/gh/AxiomNode/microservice-quizz)
 
@@ -11,6 +11,8 @@ TypeScript microservice for quiz generation and persistence.
 `microservice-quizz` is the quiz domain service responsible for generation orchestration, persistence of generated content, and read APIs for reusable quiz models.
 
 It depends on `ai-engine` for content generation but remains the domain owner for request shaping, validation, persistence, and retrieval semantics.
+
+Current platform status: this service participates in the CI-gated image build and automatic staging rollout chain. Generated content should remain inventory-backed for mobile consumption, with AI runtime behavior observable through Backoffice diagnostics.
 
 ## Runtime role
 

@@ -1,6 +1,6 @@
 # microservice-quizz docs
 
-Last updated: 2026-05-03.
+Last updated: 2026-05-08.
 
 Technical documentation for the quiz domain service.
 
