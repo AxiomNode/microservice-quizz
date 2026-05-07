@@ -120,6 +120,7 @@ CI, smoke checks, and staging rollout behavior are documented in `docs/operation
 
 - This service is expected to tolerate bad persisted rows without failing the whole read path where possible.
 - Retry behavior toward `ai-engine` should be driven by explicit environment configuration, not ad hoc hardcoded retries.
+- Async generation process items use `GAME_GENERATION_ITEM_TIMEOUT_MS` and `GAME_GENERATION_ITEM_RETRY_MAX_ATTEMPTS` so blocked LLM calls become explicit `timeout` item progress events instead of indefinite `running` tasks.
 - Docker smoke validation and private docs validation are part of the delivery contract.
 
 ### Failure boundaries
