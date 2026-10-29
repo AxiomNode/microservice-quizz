@@ -1051,3 +1051,11 @@ describe("GenerationService", () => {
     });
   });
 });
+describe("GenerationService content signature helpers", () => {
+  it("returns no primary signature for empty or non-object payloads", () => {
+    const service = new GenerationService(createConfig()) as any;
+    expect(service.extractPrimaryContentSignature("quiz", null)).toBeNull();
+    expect(service.extractPrimaryContentSignature("quiz", {})).toBeNull();
+    expect(service.extractPrimaryContentSignature("word-pass", {})).toBeNull();
+  });
+});
