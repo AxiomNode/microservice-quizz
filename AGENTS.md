@@ -15,7 +15,7 @@ Quiz generation and persistence microservice backed by ai-engine and PostgreSQL.
 
 ## CI/CD notes
 - Push to main dispatches platform-infra build-push with service=microservice-quizz.
-- Deployment to dev is automated from platform-infra.
+- Platform-infra builds and publishes the image to GHCR; the automatic staging rollout is currently disabled.
 
 ## LLM editing rules
 - Preserve API behavior for generate/ingest/model endpoints.

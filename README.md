@@ -12,7 +12,7 @@ TypeScript microservice for quiz generation and persistence.
 
 It depends on `ai-engine` for content generation but remains the domain owner for request shaping, validation, persistence, and retrieval semantics.
 
-Current platform status: this service participates in the CI-gated image build and automatic staging rollout chain. Generated content should remain inventory-backed for mobile consumption, with AI runtime behavior observable through Backoffice diagnostics.
+Current platform status: this service participates in the CI-gated image build chain (the automatic staging rollout is currently disabled). Generated content should remain inventory-backed for mobile consumption, with AI runtime behavior observable through Backoffice diagnostics.
 
 ## Runtime role
 
@@ -47,7 +47,7 @@ Detailed generation semantics, duplicate handling, and inventory behavior are do
 
 ### Stack
 
-- Node.js 20+
+- Node.js 22+
 - Fastify
 - Zod
 - Prisma
@@ -116,7 +116,7 @@ Primary consumers:
 
 ### CI/CD and rollout note
 
-CI, smoke checks, and staging rollout behavior are documented in `docs/operations/README.md` and `../docs/operations/cicd-workflow-map.md`.
+CI, smoke checks, and image publishing are documented in `docs/operations/README.md` and `../docs/operations/cicd-workflow-map.md`.
 
 ### Resilience notes
 
