@@ -248,7 +248,7 @@ jobs:
             -H "Authorization: Bearer ${DISPATCH_TOKEN}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/AxiomNode/platform-infra/actions/workflows/build-push.yaml/dispatches \
-            -d '{"ref":"main","inputs":{"service":"microservice-quizz"}}')
+            -d '{"ref":"main","inputs":{"service":"microservice-games"}}')
 
           if [[ "${STATUS_CODE}" != "204" ]]; then
             echo "Failed to dispatch platform-infra workflow (HTTP ${STATUS_CODE})."
@@ -256,7 +256,7 @@ jobs:
             exit 1
           fi
 
-          echo "Dispatched platform-infra Build & Push for microservice-quizz."
+          echo "Dispatched platform-infra Build & Push for microservice-games."
 
       - name: Skip platform-infra dispatch for docs-only changes
         if: steps.dispatch_scope.outputs.should_dispatch != 'true'
