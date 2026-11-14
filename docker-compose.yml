@@ -1,3 +1,26 @@
+# One image (microservice-quizz/src/Dockerfile) run as two services; GAME_TYPE selects the game.
+# The databases stay separate until the data merge (a later step of the games merge plan).
+x-games-api: &games-api
+  image: "microservice_games_api_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
+  restart: unless-stopped
+  build:
+    context: ..
+    dockerfile: microservice-quizz/src/Dockerfile
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  env_file:
+    - ./src/.env
+    - ./src/.env.secrets
+  healthcheck:
+    test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:7100/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+    interval: 15s
+    timeout: 5s
+    start_period: 30s
+    retries: 3
+  mem_limit: 512m
+  mem_reservation: 256m
+  cpus: "1.0"
+
 services:
   quiz-db:
     image: postgres:16-alpine
@@ -20,37 +43,59 @@ services:
     mem_reservation: 256m
     cpus: "1.0"
 
-  microservice-quiz:
-    image: "microservice_quizz_api_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
-    container_name: "microservice_quizz_api_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
+  wordpass-db:
+    image: postgres:16-alpine
+    container_name: "microservice_wordpass_db_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
     restart: unless-stopped
-    build:
-      context: ..
-      dockerfile: microservice-quizz/src/Dockerfile
     environment:
-      AI_ENGINE_BASE_URL: http://host.docker.internal:7001
-      AI_ENGINE_API_KEY: dev_games_test_key_2026
-      DATABASE_URL: postgresql://quiz:quiz@quiz-db:5432/quizdb?schema=public&connection_limit=10&pool_timeout=20
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      quiz-db:
-        condition: service_healthy
-    env_file:
-      - ./src/.env
-      - ./src/.env.secrets
+      POSTGRES_DB: wordpassdb
+      POSTGRES_USER: wordpass
+      POSTGRES_PASSWORD: wordpass
     ports:
-      - "7100:7100"
+      - "7433:5432"
+    volumes:
+      - wordpass_db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:7100/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
-      interval: 15s
+      test: ["CMD-SHELL", "pg_isready -U wordpass -d wordpassdb"]
+      interval: 10s
       timeout: 5s
-      start_period: 30s
-      retries: 3
+      retries: 10
     mem_limit: 512m
     mem_reservation: 256m
     cpus: "1.0"
 
+  microservice-quiz:
+    <<: *games-api
+    container_name: "microservice_quizz_api_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
+    environment:
+      GAME_TYPE: quiz
+      AI_ENGINE_BASE_URL: http://host.docker.internal:7001
+      AI_ENGINE_API_KEY: dev_games_test_key_2026
+      PRIVATE_DOCS_TOKEN: quiz_private_docs_token
+      DATABASE_URL: postgresql://quiz:quiz@quiz-db:5432/quizdb?schema=public&connection_limit=10&pool_timeout=20
+    depends_on:
+      quiz-db:
+        condition: service_healthy
+    ports:
+      - "7100:7100"
+
+  microservice-wordpass:
+    <<: *games-api
+    container_name: "microservice_wordpass_api_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
+    environment:
+      GAME_TYPE: word-pass
+      AI_ENGINE_BASE_URL: http://host.docker.internal:7001
+      AI_ENGINE_API_KEY: dev_games_test_key_2026
+      PRIVATE_DOCS_TOKEN: wordpass_private_docs_token
+      DATABASE_URL: postgresql://wordpass:wordpass@wordpass-db:5432/wordpassdb?schema=public&connection_limit=10&pool_timeout=20
+    depends_on:
+      wordpass-db:
+        condition: service_healthy
+    ports:
+      - "7101:7100"
+
 volumes:
   quizz_db_data:
     name: "microservice_quizz_db_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}_data"
+  wordpass_db_data:
+    name: "microservice_wordpass_db_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}_data"

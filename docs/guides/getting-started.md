@@ -48,6 +48,8 @@ npm run db:push
 npm run dev
 ```
 
+To run word-pass, set `GAME_TYPE=word-pass` in `.env` (and a word-pass `DATABASE_URL`); `docker compose up --build` starts both games (quiz on 7100, word-pass on 7101).
+
 ## Smoke path examples
 
 5. Generate a quiz session:
