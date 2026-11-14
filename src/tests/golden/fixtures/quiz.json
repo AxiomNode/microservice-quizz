@@ -1,0 +1,2664 @@
+{
+  "batch generation (service)": {
+    "aiEngineCalls": [
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/quiz?difficulty_percentage=55&max_tokens=512&query=Sports fundamentals introduction direct questions trivia multiple choice avoid true false&use_cache=true"
+      },
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/quiz?difficulty_percentage=55&max_tokens=512&query=Geography fundamentals introduction direct questions trivia multiple choice avoid true false&use_cache=true"
+      },
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/quiz?difficulty_percentage=55&max_tokens=512&query=History fundamentals introduction direct questions trivia multiple choice avoid true false&use_cache=true"
+      },
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/quiz?difficulty_percentage=55&max_tokens=512&query=Politics fundamentals introduction direct questions trivia multiple choice avoid true false&use_cache=true"
+      }
+    ],
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "2228bd95e556bdcfdf43b8ff71767843296c85f49d1c443004cdf6c6d160fdf6"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "21",
+            "categoryName": "Sports",
+            "difficultyPercentage": 55,
+            "gameType": "quiz",
+            "query": "Sports fundamentals introduction direct questions trivia multiple choice avoid true false",
+            "requestJson": "{\"query\":\"Sports fundamentals introduction direct questions trivia multiple choice avoid true false\",\"max_tokens\":\"512\",\"use_cache\":\"true\",\"difficulty_percentage\":\"55\",\"category_id\":\"21\",\"category_name\":\"Sports\"}",
+            "responseJson": "{\"game\":{\"questions\":[{\"id\":\"q-1\",\"question\":\"Golden question number 6?\",\"answers\":[\"Alpha\",\"Beta\",\"Gamma\",\"Delta\"],\"correctIndex\":2}]}}",
+            "status": "created",
+            "uniquenessKey": "2228bd95e556bdcfdf43b8ff71767843296c85f49d1c443004cdf6c6d160fdf6"
+          }
+        },
+        "method": "create"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "3d45eb764fb184459e9e6879ba0f3e7817d15e4a7936a29ce8c396d8e7bb952d"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "22",
+            "categoryName": "Geography",
+            "difficultyPercentage": 55,
+            "gameType": "quiz",
+            "query": "Geography fundamentals introduction direct questions trivia multiple choice avoid true false",
+            "requestJson": "{\"query\":\"Geography fundamentals introduction direct questions trivia multiple choice avoid true false\",\"max_tokens\":\"512\",\"use_cache\":\"true\",\"difficulty_percentage\":\"55\",\"category_id\":\"22\",\"category_name\":\"Geography\"}",
+            "responseJson": "{\"game\":{\"questions\":[{\"id\":\"q-1\",\"question\":\"Golden question number 7?\",\"answers\":[\"Alpha\",\"Beta\",\"Gamma\",\"Delta\"],\"correctIndex\":3}]}}",
+            "status": "created",
+            "uniquenessKey": "3d45eb764fb184459e9e6879ba0f3e7817d15e4a7936a29ce8c396d8e7bb952d"
+          }
+        },
+        "method": "create"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "a0b67e58a265f535c5861ab747d947067fc3a0ca148c784a55767a9157f4847b"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "23",
+            "categoryName": "History",
+            "difficultyPercentage": 55,
+            "gameType": "quiz",
+            "query": "History fundamentals introduction direct questions trivia multiple choice avoid true false",
+            "requestJson": "{\"query\":\"History fundamentals introduction direct questions trivia multiple choice avoid true false\",\"max_tokens\":\"512\",\"use_cache\":\"true\",\"difficulty_percentage\":\"55\",\"category_id\":\"23\",\"category_name\":\"History\"}",
+            "responseJson": "{\"game\":{\"questions\":[{\"id\":\"q-1\",\"question\":\"Golden question number 8?\",\"answers\":[\"Alpha\",\"Beta\",\"Gamma\",\"Delta\"],\"correctIndex\":0}]}}",
+            "status": "created",
+            "uniquenessKey": "a0b67e58a265f535c5861ab747d947067fc3a0ca148c784a55767a9157f4847b"
+          }
+        },
+        "method": "create"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "692a979a708ac450849ae778d36d7b13c2ddc6fad75ff9312b88f8d3d39f4ded"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "24",
+            "categoryName": "Politics",
+            "difficultyPercentage": 55,
+            "gameType": "quiz",
+            "query": "Politics fundamentals introduction direct questions trivia multiple choice avoid true false",
+            "requestJson": "{\"query\":\"Politics fundamentals introduction direct questions trivia multiple choice avoid true false\",\"max_tokens\":\"512\",\"use_cache\":\"true\",\"difficulty_percentage\":\"55\",\"category_id\":\"24\",\"category_name\":\"Politics\"}",
+            "responseJson": "{\"game\":{\"questions\":[{\"id\":\"q-1\",\"question\":\"Golden question number 9?\",\"answers\":[\"Alpha\",\"Beta\",\"Gamma\",\"Delta\"],\"correctIndex\":1}]}}",
+            "status": "created",
+            "uniquenessKey": "692a979a708ac450849ae778d36d7b13c2ddc6fad75ff9312b88f8d3d39f4ded"
+          }
+        },
+        "method": "create"
+      }
+    ],
+    "result": {
+      "attempts": 4,
+      "created": 4,
+      "duplicates": 0,
+      "failed": 0,
+      "requested": 4,
+      "runId": "<uuid>"
+    }
+  },
+  "catalogs": {
+    "aiEngineCalls": [],
+    "body": {
+      "categories": [
+        {
+          "id": "9",
+          "name": "General Knowledge"
+        },
+        {
+          "id": "10",
+          "name": "Entertainment: Books"
+        },
+        {
+          "id": "11",
+          "name": "Entertainment: Film"
+        },
+        {
+          "id": "12",
+          "name": "Entertainment: Music"
+        },
+        {
+          "id": "13",
+          "name": "Entertainment: Musicals & Theatres"
+        },
+        {
+          "id": "14",
+          "name": "Entertainment: Television"
+        },
+        {
+          "id": "15",
+          "name": "Entertainment: Video Games"
+        },
+        {
+          "id": "16",
+          "name": "Entertainment: Board Games"
+        },
+        {
+          "id": "17",
+          "name": "Science & Nature"
+        },
+        {
+          "id": "18",
+          "name": "Science: Computers"
+        },
+        {
+          "id": "19",
+          "name": "Science: Mathematics"
+        },
+        {
+          "id": "20",
+          "name": "Mythology"
+        },
+        {
+          "id": "21",
+          "name": "Sports"
+        },
+        {
+          "id": "22",
+          "name": "Geography"
+        },
+        {
+          "id": "23",
+          "name": "History"
+        },
+        {
+          "id": "24",
+          "name": "Politics"
+        },
+        {
+          "id": "25",
+          "name": "Art"
+        },
+        {
+          "id": "26",
+          "name": "Celebrities"
+        },
+        {
+          "id": "27",
+          "name": "Animals"
+        },
+        {
+          "id": "28",
+          "name": "Vehicles"
+        },
+        {
+          "id": "29",
+          "name": "Entertainment: Comics"
+        },
+        {
+          "id": "30",
+          "name": "Science: Gadgets"
+        },
+        {
+          "id": "31",
+          "name": "Entertainment: Japanese Anime & Manga"
+        },
+        {
+          "id": "32",
+          "name": "Entertainment: Cartoon & Animations"
+        }
+      ],
+      "source": "local-fallback",
+      "updatedAt": "2026-11-14T12:00:00.000Z"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/catalogs"
+    },
+    "status": 200
+  },
+  "generate": {
+    "aiEngineCalls": [
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/quiz?difficulty_percentage=55&item_count=3&max_tokens=512&query=Science & Nature fundamentals emblematic cases contextual questions trivia multiple choice avoid true false&use_cache=true"
+      }
+    ],
+    "body": {
+      "gameType": "quiz",
+      "generated": {
+        "game": {
+          "questions": [
+            {
+              "answers": [
+                "Alpha",
+                "Beta",
+                "Gamma",
+                "Delta"
+              ],
+              "correctIndex": 1,
+              "id": "q-1",
+              "question": "Golden question number 1?"
+            }
+          ]
+        }
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "de7a92833b78be743ca9b6747fe43a3db888adb09c27072e27f3c903b8c8f5f5"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "categoryId": "17",
+            "categoryName": "Science & Nature",
+            "difficultyPercentage": 55,
+            "gameType": "quiz",
+            "query": "Science & Nature fundamentals emblematic cases contextual questions trivia multiple choice avoid true false",
+            "requestJson": "{\"query\":\"Science & Nature fundamentals emblematic cases contextual questions trivia multiple choice avoid true false\",\"max_tokens\":\"512\",\"use_cache\":\"true\",\"item_count\":\"3\",\"difficulty_percentage\":\"55\",\"category_id\":\"17\",\"category_name\":\"Science & Nature\"}",
+            "responseJson": "{\"game\":{\"questions\":[{\"id\":\"q-1\",\"question\":\"Golden question number 1?\",\"answers\":[\"Alpha\",\"Beta\",\"Gamma\",\"Delta\"],\"correctIndex\":1}]}}",
+            "status": "created",
+            "uniquenessKey": "de7a92833b78be743ca9b6747fe43a3db888adb09c27072e27f3c903b8c8f5f5"
+          }
+        },
+        "method": "create"
+      }
+    ],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "17",
+        "difficultyPercentage": 55,
+        "itemCount": 3
+      },
+      "url": "/games/generate"
+    },
+    "status": 201
+  },
+  "generate duplicate": {
+    "aiEngineCalls": [
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/quiz?difficulty_percentage=20&max_tokens=512&query=General Knowledge fundamentals emblematic cases contextual questions trivia multiple choice avoid true false&use_cache=true"
+      }
+    ],
+    "body": {
+      "gameType": "quiz",
+      "generated": {
+        "game": {
+          "questions": [
+            {
+              "answers": [
+                "Alpha",
+                "Beta",
+                "Gamma",
+                "Delta"
+              ],
+              "correctIndex": 2,
+              "id": "q-1",
+              "question": "Golden question number 2?"
+            }
+          ]
+        }
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "e47355ae0b94babf5eb1825d5a7f4fc6f434469aa5dec55ba666f2e5bc3a09bd"
+          }
+        },
+        "method": "findFirst"
+      }
+    ],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "9",
+        "difficultyPercentage": 20
+      },
+      "url": "/games/generate"
+    },
+    "status": 201
+  },
+  "generate invalid": {
+    "aiEngineCalls": [],
+    "body": {
+      "errors": {
+        "fieldErrors": {
+          "categoryId": [
+            "Invalid input: expected string, received undefined"
+          ]
+        },
+        "formErrors": []
+      },
+      "message": "Invalid payload"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "POST",
+      "payload": {},
+      "url": "/games/generate"
+    },
+    "status": 400
+  },
+  "generate/process/wait": {
+    "aiEngineCalls": [
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/quiz?difficulty_percentage=55&item_count=9&max_tokens=512&query=General Knowledge fundamentals introduction direct questions trivia multiple choice avoid true false&use_cache=true"
+      },
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/quiz?difficulty_percentage=55&item_count=9&max_tokens=512&query=General Knowledge fundamentals introduction direct questions trivia multiple choice avoid true false&use_cache=true"
+      },
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/quiz?difficulty_percentage=55&item_count=9&max_tokens=512&query=General Knowledge fundamentals introduction direct questions trivia multiple choice avoid true false&use_cache=true"
+      }
+    ],
+    "body": {
+      "gameType": "quiz",
+      "message": "Generation process completed",
+      "task": {
+        "ageSeconds": 0,
+        "created": 3,
+        "duplicateReasons": {
+          "content": 0
+        },
+        "duplicates": 0,
+        "failed": 0,
+        "finishedAt": "2026-11-14T12:00:00.000Z",
+        "generatedItems": [
+          {
+            "game": {
+              "questions": [
+                {
+                  "answers": [
+                    "Alpha",
+                    "Beta",
+                    "Gamma",
+                    "Delta"
+                  ],
+                  "correctIndex": 3,
+                  "id": "q-1",
+                  "question": "Golden question number 3?"
+                }
+              ]
+            }
+          },
+          {
+            "game": {
+              "questions": [
+                {
+                  "answers": [
+                    "Alpha",
+                    "Beta",
+                    "Gamma",
+                    "Delta"
+                  ],
+                  "correctIndex": 0,
+                  "id": "q-1",
+                  "question": "Golden question number 4?"
+                }
+              ]
+            }
+          },
+          {
+            "game": {
+              "questions": [
+                {
+                  "answers": [
+                    "Alpha",
+                    "Beta",
+                    "Gamma",
+                    "Delta"
+                  ],
+                  "correctIndex": 1,
+                  "id": "q-1",
+                  "question": "Golden question number 5?"
+                }
+              ]
+            }
+          }
+        ],
+        "idleSeconds": 0,
+        "lastProgressAt": "2026-11-14T12:00:00.000Z",
+        "processed": 3,
+        "progress": {
+          "current": 3,
+          "ratio": 1,
+          "total": 3
+        },
+        "requested": 3,
+        "requestedBy": "backoffice",
+        "stalled": false,
+        "startedAt": "2026-11-14T12:00:00.000Z",
+        "status": "completed",
+        "taskId": "<uuid>",
+        "updatedAt": "2026-11-14T12:00:00.000Z"
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "bbc6180655df6a05e9e42985816228bd031f5defe4674aadee75945d40c086df"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "068571afdb2fe08a7664078465fd04a2164bcb7ae81df12dae6fc5f388716d83"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "9e1315787cda100258ac4714ea785196f321c774f9a21bcb9a69a33f331e2dd9"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "9",
+            "categoryName": "General Knowledge",
+            "difficultyPercentage": 55,
+            "gameType": "quiz",
+            "query": "General Knowledge fundamentals introduction direct questions trivia multiple choice avoid true false",
+            "requestJson": "{\"query\":\"General Knowledge fundamentals introduction direct questions trivia multiple choice avoid true false\",\"max_tokens\":\"512\",\"use_cache\":\"true\",\"item_count\":\"9\",\"difficulty_percentage\":\"55\",\"category_id\":\"9\",\"category_name\":\"General Knowledge\"}",
+            "responseJson": "{\"game\":{\"questions\":[{\"id\":\"q-1\",\"question\":\"Golden question number 3?\",\"answers\":[\"Alpha\",\"Beta\",\"Gamma\",\"Delta\"],\"correctIndex\":3}]}}",
+            "status": "created",
+            "uniquenessKey": "bbc6180655df6a05e9e42985816228bd031f5defe4674aadee75945d40c086df"
+          }
+        },
+        "method": "create"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "9",
+            "categoryName": "General Knowledge",
+            "difficultyPercentage": 55,
+            "gameType": "quiz",
+            "query": "General Knowledge fundamentals introduction direct questions trivia multiple choice avoid true false",
+            "requestJson": "{\"query\":\"General Knowledge fundamentals introduction direct questions trivia multiple choice avoid true false\",\"max_tokens\":\"512\",\"use_cache\":\"true\",\"item_count\":\"9\",\"difficulty_percentage\":\"55\",\"category_id\":\"9\",\"category_name\":\"General Knowledge\"}",
+            "responseJson": "{\"game\":{\"questions\":[{\"id\":\"q-1\",\"question\":\"Golden question number 4?\",\"answers\":[\"Alpha\",\"Beta\",\"Gamma\",\"Delta\"],\"correctIndex\":0}]}}",
+            "status": "created",
+            "uniquenessKey": "068571afdb2fe08a7664078465fd04a2164bcb7ae81df12dae6fc5f388716d83"
+          }
+        },
+        "method": "create"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "9",
+            "categoryName": "General Knowledge",
+            "difficultyPercentage": 55,
+            "gameType": "quiz",
+            "query": "General Knowledge fundamentals introduction direct questions trivia multiple choice avoid true false",
+            "requestJson": "{\"query\":\"General Knowledge fundamentals introduction direct questions trivia multiple choice avoid true false\",\"max_tokens\":\"512\",\"use_cache\":\"true\",\"item_count\":\"9\",\"difficulty_percentage\":\"55\",\"category_id\":\"9\",\"category_name\":\"General Knowledge\"}",
+            "responseJson": "{\"game\":{\"questions\":[{\"id\":\"q-1\",\"question\":\"Golden question number 5?\",\"answers\":[\"Alpha\",\"Beta\",\"Gamma\",\"Delta\"],\"correctIndex\":1}]}}",
+            "status": "created",
+            "uniquenessKey": "9e1315787cda100258ac4714ea785196f321c774f9a21bcb9a69a33f331e2dd9"
+          }
+        },
+        "method": "create"
+      }
+    ],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "9",
+        "count": 3,
+        "requestedBy": "backoffice"
+      },
+      "url": "/games/generate/process/wait"
+    },
+    "status": 201
+  },
+  "health": {
+    "aiEngineCalls": [],
+    "body": {
+      "catalogReady": false,
+      "catalogSource": "local-fallback",
+      "gameType": "quiz",
+      "service": "microservice-quiz",
+      "status": "ok"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/health"
+    },
+    "status": 200
+  },
+  "history": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "quiz",
+      "items": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "createdAt": "2026-04-15T18:00:00.000Z",
+          "gameType": "quiz",
+          "id": "golden-quiz-1",
+          "query": "General Knowledge seeded 1",
+          "request": {
+            "difficulty_percentage": "40",
+            "query": "General Knowledge seeded 1"
+          },
+          "response": {
+            "game": {
+              "questions": [
+                {
+                  "correct_index": 1,
+                  "options": [
+                    "Alpha",
+                    "Beta",
+                    "Gamma",
+                    "Delta"
+                  ],
+                  "question": "Golden question number 101?"
+                }
+              ]
+            },
+            "game_type": "quiz"
+          },
+          "status": "created"
+        },
+        {
+          "categoryId": "17",
+          "categoryName": "Science & Nature",
+          "createdAt": "2026-04-15T18:01:00.000Z",
+          "gameType": "quiz",
+          "id": "golden-quiz-2",
+          "query": "Science & Nature seeded 2",
+          "request": {
+            "difficulty_percentage": "60",
+            "query": "Science & Nature seeded 2"
+          },
+          "response": {
+            "game": {
+              "questions": [
+                {
+                  "correct_index": 2,
+                  "options": [
+                    "Alpha",
+                    "Beta",
+                    "Gamma",
+                    "Delta"
+                  ],
+                  "question": "Golden question number 102?"
+                }
+              ]
+            },
+            "game_type": "quiz"
+          },
+          "status": "created"
+        },
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "createdAt": "2026-04-15T18:02:00.000Z",
+          "gameType": "quiz",
+          "id": "golden-quiz-3",
+          "query": "General Knowledge seeded 3",
+          "request": {
+            "difficulty_percentage": "80",
+            "query": "General Knowledge seeded 3"
+          },
+          "response": {
+            "game": {
+              "questions": [
+                {
+                  "correct_index": 3,
+                  "options": [
+                    "Alpha",
+                    "Beta",
+                    "Gamma",
+                    "Delta"
+                  ],
+                  "question": "Golden question number 103?"
+                }
+              ]
+            },
+            "game_type": "quiz"
+          },
+          "status": "created"
+        }
+      ],
+      "page": 1,
+      "pageSize": 20,
+      "total": 3
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "where": {
+            "gameType": "quiz"
+          }
+        },
+        "method": "count"
+      },
+      {
+        "args": {
+          "orderBy": {
+            "createdAt": "desc"
+          },
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "skip": 0,
+          "take": 20,
+          "where": {
+            "gameType": "quiz"
+          }
+        },
+        "method": "findMany"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/history?limit=5"
+    },
+    "status": 200
+  },
+  "history delete": {
+    "aiEngineCalls": [],
+    "body": {
+      "deleted": true,
+      "gameType": "quiz",
+      "id": "golden-quiz-1"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "where": {
+            "gameType": "quiz",
+            "id": "golden-quiz-1"
+          }
+        },
+        "method": "deleteMany"
+      }
+    ],
+    "request": {
+      "method": "DELETE",
+      "url": "/games/history/golden-quiz-1"
+    },
+    "status": 200
+  },
+  "history paged": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "quiz",
+      "items": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "createdAt": "2026-04-15T18:00:00.000Z",
+          "gameType": "quiz",
+          "id": "golden-quiz-1",
+          "query": "General Knowledge seeded 1",
+          "request": {
+            "difficulty_percentage": "40",
+            "query": "General Knowledge seeded 1"
+          },
+          "response": {
+            "game": {
+              "questions": [
+                {
+                  "correct_index": 1,
+                  "options": [
+                    "Alpha",
+                    "Beta",
+                    "Gamma",
+                    "Delta"
+                  ],
+                  "question": "Golden question number 101?"
+                }
+              ]
+            },
+            "game_type": "quiz"
+          },
+          "status": "created"
+        },
+        {
+          "categoryId": "17",
+          "categoryName": "Science & Nature",
+          "createdAt": "2026-04-15T18:01:00.000Z",
+          "gameType": "quiz",
+          "id": "golden-quiz-2",
+          "query": "Science & Nature seeded 2",
+          "request": {
+            "difficulty_percentage": "60",
+            "query": "Science & Nature seeded 2"
+          },
+          "response": {
+            "game": {
+              "questions": [
+                {
+                  "correct_index": 2,
+                  "options": [
+                    "Alpha",
+                    "Beta",
+                    "Gamma",
+                    "Delta"
+                  ],
+                  "question": "Golden question number 102?"
+                }
+              ]
+            },
+            "game_type": "quiz"
+          },
+          "status": "created"
+        }
+      ],
+      "page": 1,
+      "pageSize": 2,
+      "total": 3
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "where": {
+            "categoryId": "9",
+            "gameType": "quiz",
+            "status": "created"
+          }
+        },
+        "method": "count"
+      },
+      {
+        "args": {
+          "orderBy": {
+            "createdAt": "desc"
+          },
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "skip": 0,
+          "take": 2,
+          "where": {
+            "categoryId": "9",
+            "gameType": "quiz",
+            "status": "created"
+          }
+        },
+        "method": "findMany"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/history?page=1&pageSize=2&categoryId=9&status=created"
+    },
+    "status": 200
+  },
+  "history patch": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "quiz",
+      "item": {
+        "categoryId": "9",
+        "categoryName": "General Knowledge",
+        "createdAt": "2026-04-15T18:00:00.000Z",
+        "gameType": "quiz",
+        "id": "golden-quiz-2",
+        "query": "General Knowledge manual curation difficulty 33",
+        "request": {
+          "categoryId": "9",
+          "difficulty_percentage": 33,
+          "source": "backoffice-manual"
+        },
+        "response": {
+          "game": {
+            "questions": [
+              {
+                "answers": [
+                  "Red",
+                  "Blue"
+                ],
+                "correctIndex": 0,
+                "id": "q-1",
+                "question": "Updated golden question?"
+              }
+            ]
+          }
+        },
+        "status": "created"
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "where": {
+            "gameType": "quiz",
+            "id": "golden-quiz-2"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "NOT": {
+              "id": "golden-quiz-2"
+            },
+            "uniquenessKey": "f9566c20a50f2ede5c3a716d8126821006026ab9fac5eaa6444bb5380d908166"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "categoryId": "9",
+            "categoryName": "General Knowledge",
+            "difficultyPercentage": 33,
+            "query": "General Knowledge manual curation difficulty 33",
+            "requestJson": "{\"source\":\"backoffice-manual\",\"categoryId\":\"9\",\"difficulty_percentage\":33}",
+            "responseJson": "{\"game\":{\"questions\":[{\"id\":\"q-1\",\"question\":\"Updated golden question?\",\"answers\":[\"Red\",\"Blue\"],\"correctIndex\":0}]}}",
+            "status": "created",
+            "uniquenessKey": "f9566c20a50f2ede5c3a716d8126821006026ab9fac5eaa6444bb5380d908166"
+          },
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "where": {
+            "id": "golden-quiz-2"
+          }
+        },
+        "method": "update"
+      }
+    ],
+    "request": {
+      "method": "PATCH",
+      "payload": {
+        "categoryId": "9",
+        "content": {
+          "game": {
+            "questions": [
+              {
+                "answers": [
+                  "Red",
+                  "Blue"
+                ],
+                "correctIndex": 0,
+                "question": "Updated golden question?"
+              }
+            ]
+          }
+        },
+        "difficultyPercentage": 33
+      },
+      "url": "/games/history/golden-quiz-2"
+    },
+    "status": 200
+  },
+  "history patch missing": {
+    "aiEngineCalls": [],
+    "body": {
+      "message": "History entry not found"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "where": {
+            "gameType": "quiz",
+            "id": "nope"
+          }
+        },
+        "method": "findFirst"
+      }
+    ],
+    "request": {
+      "method": "PATCH",
+      "payload": {
+        "difficultyPercentage": 1
+      },
+      "url": "/games/history/nope"
+    },
+    "status": 404
+  },
+  "history/insights": {
+    "aiEngineCalls": [],
+    "body": {
+      "categories": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "count": 2,
+          "latestCreatedAt": "2026-04-15T18:02:00.000Z"
+        },
+        {
+          "categoryId": "17",
+          "categoryName": "Science & Nature",
+          "count": 1,
+          "latestCreatedAt": "2026-04-15T18:01:00.000Z"
+        }
+      ],
+      "gameType": "quiz",
+      "total": 3
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "_count": {
+            "_all": true
+          },
+          "_max": {
+            "createdAt": true
+          },
+          "by": [
+            "categoryId",
+            "categoryName"
+          ],
+          "where": {
+            "gameType": "quiz",
+            "status": "created"
+          }
+        },
+        "method": "groupBy"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/history/insights?status=created"
+    },
+    "status": 200
+  },
+  "history/manual": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "quiz",
+      "item": {
+        "categoryId": "17",
+        "categoryName": "Science & Nature",
+        "createdAt": "2026-11-14T12:00:00.000Z",
+        "gameType": "quiz",
+        "id": "golden-created",
+        "query": "Science & Nature manual curation difficulty 70",
+        "request": {
+          "categoryId": "17",
+          "difficulty_percentage": 70,
+          "source": "backoffice-manual"
+        },
+        "response": {
+          "game": {
+            "questions": [
+              {
+                "answers": [
+                  "One",
+                  "Two",
+                  "Three"
+                ],
+                "correctIndex": 1,
+                "id": "q-1",
+                "question": "Manual golden question?"
+              }
+            ]
+          }
+        },
+        "status": "validated"
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "b8ac3afefc5ad2621cfcb6e09d3a77317ede0aa12793563285db8ce6fdb5bb83"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "categoryId": "17",
+            "categoryName": "Science & Nature",
+            "difficultyPercentage": 70,
+            "gameType": "quiz",
+            "query": "Science & Nature manual curation difficulty 70",
+            "requestJson": "{\"source\":\"backoffice-manual\",\"categoryId\":\"17\",\"difficulty_percentage\":70}",
+            "responseJson": "{\"game\":{\"questions\":[{\"id\":\"q-1\",\"question\":\"Manual golden question?\",\"answers\":[\"One\",\"Two\",\"Three\"],\"correctIndex\":1}]}}",
+            "status": "validated",
+            "uniquenessKey": "b8ac3afefc5ad2621cfcb6e09d3a77317ede0aa12793563285db8ce6fdb5bb83"
+          }
+        },
+        "method": "create"
+      }
+    ],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "17",
+        "content": {
+          "game": {
+            "questions": [
+              {
+                "answers": [
+                  "One",
+                  "Two",
+                  "Three"
+                ],
+                "correctIndex": 1,
+                "question": "Manual golden question?"
+              }
+            ]
+          }
+        },
+        "difficultyPercentage": 70,
+        "status": "validated"
+      },
+      "url": "/games/history/manual"
+    },
+    "status": 201
+  },
+  "history/manual duplicate": {
+    "aiEngineCalls": [],
+    "body": {
+      "error": "Duplicate content",
+      "message": "Failed to store manual model"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "b8ac3afefc5ad2621cfcb6e09d3a77317ede0aa12793563285db8ce6fdb5bb83"
+          }
+        },
+        "method": "findFirst"
+      }
+    ],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "17",
+        "content": {
+          "game": {
+            "questions": [
+              {
+                "answers": [
+                  "One",
+                  "Two",
+                  "Three"
+                ],
+                "correctIndex": 1,
+                "question": "Manual golden question?"
+              }
+            ]
+          }
+        },
+        "difficultyPercentage": 70
+      },
+      "url": "/games/history/manual"
+    },
+    "status": 409
+  },
+  "ingest": {
+    "aiEngineCalls": [
+      {
+        "body": {
+          "documents": [
+            {
+              "content": "alpha",
+              "doc_id": "d1",
+              "metadata": {
+                "categoryId": "9",
+                "difficultyPercentage": 40
+              }
+            },
+            {
+              "content": "beta",
+              "metadata": {
+                "categoryId": "9",
+                "difficultyPercentage": 40
+              }
+            }
+          ]
+        },
+        "headers": {
+          "content-type": "application/json",
+          "x-api-key": "golden-ai-key",
+          "x-ingest-source": "microservice-quiz"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/ingest/quiz?"
+      }
+    ],
+    "body": {
+      "gameType": "quiz",
+      "ingested": 2
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "9",
+        "difficultyPercentage": 40,
+        "documents": [
+          {
+            "content": "alpha",
+            "docId": "d1"
+          },
+          {
+            "content": "beta"
+          }
+        ]
+      },
+      "url": "/games/ingest"
+    },
+    "status": 202
+  },
+  "metrics": {
+    "aiEngineCalls": [],
+    "body": "# HELP microservice_requests_received_total Total incoming requests\n# TYPE microservice_requests_received_total counter\nmicroservice_requests_received_total 20\n# HELP microservice_outbound_requests_total Total outbound requests\n# TYPE microservice_outbound_requests_total counter\nmicroservice_outbound_requests_total 6\n# HELP microservice_outbound_failures_total Total failed outbound requests\n# TYPE microservice_outbound_failures_total counter\nmicroservice_outbound_failures_total 0\n# HELP microservice_generated_stored_total Total generated models stored\n# TYPE microservice_generated_stored_total counter\nmicroservice_generated_stored_total 4\n# HELP microservice_generated_duplicate_total Total duplicate generations rejected\n# TYPE microservice_generated_duplicate_total counter\nmicroservice_generated_duplicate_total 1\n# HELP microservice_generated_duplicate_content_total Total duplicate generations rejected by content\n# TYPE microservice_generated_duplicate_content_total counter\nmicroservice_generated_duplicate_content_total 1\n# HELP microservice_generated_failed_total Total failed generation attempts\n# TYPE microservice_generated_failed_total counter\nmicroservice_generated_failed_total 0\n# HELP microservice_ingested_documents_total Total documents ingested to ai-engine\n# TYPE microservice_ingested_documents_total counter\nmicroservice_ingested_documents_total 2\n# HELP microservice_batch_runs_total Total periodic generation runs\n# TYPE microservice_batch_runs_total counter\nmicroservice_batch_runs_total 0\n# HELP microservice_batch_requested_total Total requested items across periodic generation runs\n# TYPE microservice_batch_requested_total counter\nmicroservice_batch_requested_total 0\n# HELP microservice_batch_attempts_total Total attempts across periodic generation runs\n# TYPE microservice_batch_attempts_total counter\nmicroservice_batch_attempts_total 0\n# HELP microservice_batch_created_total Total items created across periodic generation runs\n# TYPE microservice_batch_created_total counter\nmicroservice_batch_created_total 0\n# HELP microservice_batch_duplicates_total Total duplicates across periodic generation runs\n# TYPE microservice_batch_duplicates_total counter\nmicroservice_batch_duplicates_total 0\n# HELP microservice_batch_failed_total Total failed attempts across periodic generation runs\n# TYPE microservice_batch_failed_total counter\nmicroservice_batch_failed_total 0\n# HELP microservice_generation_process_started_total Total async generation processes started\n# TYPE microservice_generation_process_started_total counter\nmicroservice_generation_process_started_total 1\n# HELP microservice_generation_process_finished_total Total async generation processes finished\n# TYPE microservice_generation_process_finished_total counter\nmicroservice_generation_process_finished_total 1\n# HELP microservice_generation_process_failed_total Total async generation processes with final failed status\n# TYPE microservice_generation_process_failed_total counter\nmicroservice_generation_process_failed_total 0\n# HELP microservice_generation_process_only_duplicates_total Total async generation processes completed with only duplicates\n# TYPE microservice_generation_process_only_duplicates_total counter\nmicroservice_generation_process_only_duplicates_total 0\n# HELP microservice_request_bytes_in_total Total incoming request bytes\n# TYPE microservice_request_bytes_in_total counter\nmicroservice_request_bytes_in_total 814\n# HELP microservice_response_bytes_out_total Total outgoing response bytes\n# TYPE microservice_response_bytes_out_total counter\nmicroservice_response_bytes_out_total 15478\n# HELP microservice_outbound_request_bytes_total Total outbound request bytes\n# TYPE microservice_outbound_request_bytes_total counter\nmicroservice_outbound_request_bytes_total 180\n# HELP microservice_outbound_response_bytes_total Total outbound response bytes\n# TYPE microservice_outbound_response_bytes_total counter\nmicroservice_outbound_response_bytes_total 739\n# HELP microservice_ai_auth_circuit_open AI auth circuit state (1=open, 0=closed)\n# TYPE microservice_ai_auth_circuit_open gauge\nmicroservice_ai_auth_circuit_open 0\n# HELP microservice_ai_auth_failure_streak Current consecutive AI auth failures (401/403)\n# TYPE microservice_ai_auth_failure_streak gauge\nmicroservice_ai_auth_failure_streak 0\n# HELP microservice_ai_auth_circuit_opened_total Total AI auth circuit openings\n# TYPE microservice_ai_auth_circuit_opened_total counter\nmicroservice_ai_auth_circuit_opened_total 0",
+    "contentType": "text/plain",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/metrics"
+    },
+    "status": 200
+  },
+  "models/grouped": {
+    "aiEngineCalls": [],
+    "body": {
+      "categories": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "total": 2
+        },
+        {
+          "categoryId": "10",
+          "categoryName": "Entertainment: Books",
+          "total": 0
+        },
+        {
+          "categoryId": "11",
+          "categoryName": "Entertainment: Film",
+          "total": 0
+        },
+        {
+          "categoryId": "12",
+          "categoryName": "Entertainment: Music",
+          "total": 0
+        },
+        {
+          "categoryId": "13",
+          "categoryName": "Entertainment: Musicals & Theatres",
+          "total": 0
+        },
+        {
+          "categoryId": "14",
+          "categoryName": "Entertainment: Television",
+          "total": 0
+        },
+        {
+          "categoryId": "15",
+          "categoryName": "Entertainment: Video Games",
+          "total": 0
+        },
+        {
+          "categoryId": "16",
+          "categoryName": "Entertainment: Board Games",
+          "total": 0
+        },
+        {
+          "categoryId": "17",
+          "categoryName": "Science & Nature",
+          "total": 1
+        },
+        {
+          "categoryId": "18",
+          "categoryName": "Science: Computers",
+          "total": 0
+        },
+        {
+          "categoryId": "19",
+          "categoryName": "Science: Mathematics",
+          "total": 0
+        },
+        {
+          "categoryId": "20",
+          "categoryName": "Mythology",
+          "total": 0
+        },
+        {
+          "categoryId": "21",
+          "categoryName": "Sports",
+          "total": 0
+        },
+        {
+          "categoryId": "22",
+          "categoryName": "Geography",
+          "total": 0
+        },
+        {
+          "categoryId": "23",
+          "categoryName": "History",
+          "total": 0
+        },
+        {
+          "categoryId": "24",
+          "categoryName": "Politics",
+          "total": 0
+        },
+        {
+          "categoryId": "25",
+          "categoryName": "Art",
+          "total": 0
+        },
+        {
+          "categoryId": "26",
+          "categoryName": "Celebrities",
+          "total": 0
+        },
+        {
+          "categoryId": "27",
+          "categoryName": "Animals",
+          "total": 0
+        },
+        {
+          "categoryId": "28",
+          "categoryName": "Vehicles",
+          "total": 0
+        },
+        {
+          "categoryId": "29",
+          "categoryName": "Entertainment: Comics",
+          "total": 0
+        },
+        {
+          "categoryId": "30",
+          "categoryName": "Science: Gadgets",
+          "total": 0
+        },
+        {
+          "categoryId": "31",
+          "categoryName": "Entertainment: Japanese Anime & Manga",
+          "total": 0
+        },
+        {
+          "categoryId": "32",
+          "categoryName": "Entertainment: Cartoon & Animations",
+          "total": 0
+        }
+      ],
+      "gameType": "quiz",
+      "groupedBy": [
+        "category"
+      ],
+      "matrix": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "total": 2
+        },
+        {
+          "categoryId": "17",
+          "categoryName": "Science & Nature",
+          "total": 1
+        }
+      ]
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "_count": {
+            "_all": true
+          },
+          "by": [
+            "categoryId",
+            "categoryName"
+          ],
+          "where": {
+            "gameType": "quiz"
+          }
+        },
+        "method": "groupBy"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/models/grouped"
+    },
+    "status": 200
+  },
+  "models/random": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "quiz",
+      "items": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "createdAt": "2026-04-15T18:00:00.000Z",
+          "gameType": "quiz",
+          "id": "golden-quiz-1",
+          "query": "General Knowledge seeded 1",
+          "request": {
+            "difficulty_percentage": "40",
+            "query": "General Knowledge seeded 1"
+          },
+          "response": {
+            "game": {
+              "questions": [
+                {
+                  "answers": [
+                    "Alpha",
+                    "Beta",
+                    "Gamma",
+                    "Delta"
+                  ],
+                  "correctIndex": 1,
+                  "id": "q-1",
+                  "question": "Golden question number 101?"
+                }
+              ]
+            }
+          },
+          "status": "created"
+        },
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "createdAt": "2026-04-15T18:02:00.000Z",
+          "gameType": "quiz",
+          "id": "golden-quiz-3",
+          "query": "General Knowledge seeded 3",
+          "request": {
+            "difficulty_percentage": "80",
+            "query": "General Knowledge seeded 3"
+          },
+          "response": {
+            "game": {
+              "questions": [
+                {
+                  "answers": [
+                    "Alpha",
+                    "Beta",
+                    "Gamma",
+                    "Delta"
+                  ],
+                  "correctIndex": 3,
+                  "id": "q-1",
+                  "question": "Golden question number 103?"
+                }
+              ]
+            }
+          },
+          "status": "created"
+        }
+      ],
+      "requested": 2,
+      "returned": 2
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "orderBy": {
+            "createdAt": "desc"
+          },
+          "select": {
+            "id": true
+          },
+          "take": 300,
+          "where": {
+            "categoryId": "9",
+            "difficultyPercentage": 40,
+            "gameType": "quiz",
+            "status": {
+              "not": "pending_review"
+            }
+          }
+        },
+        "method": "findMany"
+      },
+      {
+        "args": {
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "where": {
+            "id": {
+              "in": [
+                "golden-quiz-1",
+                "golden-quiz-3"
+              ]
+            }
+          }
+        },
+        "method": "findMany"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/models/random?count=2&categoryId=9&difficultyPercentage=40"
+    },
+    "status": 200
+  },
+  "models/random invalid": {
+    "aiEngineCalls": [],
+    "body": {
+      "errors": {
+        "fieldErrors": {
+          "count": [
+            "Too small: expected number to be >=1"
+          ]
+        },
+        "formErrors": []
+      },
+      "message": "Invalid query parameters"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/games/models/random?count=0"
+    },
+    "status": 400
+  },
+  "monitor/logs": {
+    "aiEngineCalls": [],
+    "body": {
+      "logs": [
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 1026,
+            "route": "/catalogs",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 888,
+            "route": "/games/models/random",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 130,
+            "route": "/games/models/random",
+            "statusCode": 400
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 1335,
+            "route": "/games/history",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 909,
+            "route": "/games/history",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 262,
+            "route": "/games/history/insights",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 1767,
+            "route": "/games/models/grouped",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 1536,
+            "route": "/monitor/stats",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        }
+      ],
+      "service": "microservice-quiz",
+      "total": 8
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/monitor/logs?limit=50"
+    },
+    "status": 200
+  },
+  "monitor/stats": {
+    "aiEngineCalls": [],
+    "body": {
+      "aiAuthCircuit": {
+        "cooldownMs": 0,
+        "failureStreak": 0,
+        "failureThreshold": 0,
+        "open": false,
+        "openedTotal": 0,
+        "openedUntil": null
+      },
+      "batch": {
+        "attemptsTotal": 0,
+        "createdTotal": 0,
+        "duplicatesTotal": 0,
+        "failedTotal": 0,
+        "lastRun": null,
+        "requestedTotal": 0,
+        "runsTotal": 0
+      },
+      "coverage": {
+        "catalogSource": "local-fallback",
+        "categoriesWithData": 2,
+        "categoryCoverageRatio": 0.08333333333333333,
+        "totalCategories": 24
+      },
+      "generation": {
+        "attemptsTotal": 0,
+        "duplicateRatio": 0,
+        "failureRatio": 0,
+        "generatedDuplicateContentTotal": 0,
+        "generatedDuplicateTotal": 0,
+        "generatedFailedTotal": 0,
+        "generatedStoredTotal": 0,
+        "ingestedDocumentsTotal": 0,
+        "successRatio": 0
+      },
+      "outboundByOperation": [],
+      "processes": {
+        "createdTotal": 0,
+        "duplicateContentTotal": 0,
+        "duplicatesTotal": 0,
+        "failedItemsTotal": 0,
+        "failedTotal": 0,
+        "finishedTotal": 0,
+        "onlyDuplicatesTotal": 0,
+        "requestedTotal": 0,
+        "startedTotal": 0
+      },
+      "requestsByRoute": [
+        {
+          "method": "GET",
+          "route": "/catalogs",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/random",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/random",
+          "statusCode": 400,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/history",
+          "statusCode": 200,
+          "total": 2
+        },
+        {
+          "method": "GET",
+          "route": "/games/history/insights",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/grouped",
+          "statusCode": 200,
+          "total": 1
+        }
+      ],
+      "service": "microservice-quiz",
+      "traffic": {
+        "outboundFailuresTotal": 0,
+        "outboundRequestBytesTotal": 0,
+        "outboundRequestsTotal": 0,
+        "outboundResponseBytesTotal": 0,
+        "requestBytesInTotal": 0,
+        "requestsReceivedTotal": 7,
+        "responseBytesOutTotal": 6317
+      },
+      "uptimeSeconds": 0
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/monitor/stats"
+    },
+    "status": 200
+  },
+  "monitor/stats after traffic": {
+    "aiEngineCalls": [],
+    "body": {
+      "aiAuthCircuit": {
+        "cooldownMs": 0,
+        "failureStreak": 0,
+        "failureThreshold": 0,
+        "open": false,
+        "openedTotal": 0,
+        "openedUntil": null
+      },
+      "batch": {
+        "attemptsTotal": 0,
+        "createdTotal": 0,
+        "duplicatesTotal": 0,
+        "failedTotal": 0,
+        "lastRun": null,
+        "requestedTotal": 0,
+        "runsTotal": 0
+      },
+      "coverage": {
+        "catalogSource": "local-fallback",
+        "categoriesWithData": 2,
+        "categoryCoverageRatio": 0.08333333333333333,
+        "totalCategories": 24
+      },
+      "generation": {
+        "attemptsTotal": 5,
+        "duplicateRatio": 0.2,
+        "failureRatio": 0,
+        "generatedDuplicateContentTotal": 1,
+        "generatedDuplicateTotal": 1,
+        "generatedFailedTotal": 0,
+        "generatedStoredTotal": 4,
+        "ingestedDocumentsTotal": 2,
+        "successRatio": 0.8
+      },
+      "outboundByOperation": [
+        {
+          "operation": "generate",
+          "statusCode": 200,
+          "total": 5
+        },
+        {
+          "operation": "ingest",
+          "statusCode": 200,
+          "total": 1
+        }
+      ],
+      "processes": {
+        "createdTotal": 3,
+        "duplicateContentTotal": 0,
+        "duplicatesTotal": 0,
+        "failedItemsTotal": 0,
+        "failedTotal": 0,
+        "finishedTotal": 1,
+        "onlyDuplicatesTotal": 0,
+        "requestedTotal": 3,
+        "startedTotal": 1
+      },
+      "requestsByRoute": [
+        {
+          "method": "GET",
+          "route": "/catalogs",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/random",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/random",
+          "statusCode": 400,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/history",
+          "statusCode": 200,
+          "total": 2
+        },
+        {
+          "method": "GET",
+          "route": "/games/history/insights",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/grouped",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/monitor/stats",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/monitor/logs",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "POST",
+          "route": "/games/generate",
+          "statusCode": 400,
+          "total": 1
+        },
+        {
+          "method": "POST",
+          "route": "/games/generate",
+          "statusCode": 201,
+          "total": 2
+        },
+        {
+          "method": "POST",
+          "route": "/games/generate/process/wait",
+          "statusCode": 201,
+          "total": 1
+        },
+        {
+          "method": "POST",
+          "route": "/games/history/manual",
+          "statusCode": 201,
+          "total": 1
+        },
+        {
+          "method": "POST",
+          "route": "/games/history/manual",
+          "statusCode": 409,
+          "total": 1
+        },
+        {
+          "method": "PATCH",
+          "route": "/games/history/:entryId",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "PATCH",
+          "route": "/games/history/:entryId",
+          "statusCode": 404,
+          "total": 1
+        },
+        {
+          "method": "DELETE",
+          "route": "/games/history/:entryId",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "POST",
+          "route": "/games/ingest",
+          "statusCode": 202,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/generate/worker",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/metrics",
+          "statusCode": 200,
+          "total": 1
+        }
+      ],
+      "service": "microservice-quiz",
+      "traffic": {
+        "outboundFailuresTotal": 0,
+        "outboundRequestBytesTotal": 180,
+        "outboundRequestsTotal": 6,
+        "outboundResponseBytesTotal": 739,
+        "requestBytesInTotal": 814,
+        "requestsReceivedTotal": 21,
+        "responseBytesOutTotal": 19988
+      },
+      "uptimeSeconds": 0
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/monitor/stats"
+    },
+    "status": 200
+  },
+  "private docs": {
+    "aiEngineCalls": [],
+    "body": {
+      "components": {
+        "schemas": {}
+      },
+      "info": {
+        "title": "microservice-quiz API",
+        "version": "0.1.0"
+      },
+      "openapi": "3.0.3",
+      "paths": {
+        "/catalogs": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/process": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/process/{taskId}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "taskId",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/process/wait": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/processes": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/worker": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/worker/start": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/worker/stop": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/history": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/history/{entryId}": {
+          "delete": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "entryId",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          },
+          "patch": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "entryId",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/history/insights": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/history/manual": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/ingest": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/models/grouped": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/models/random": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/health": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/metrics": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/monitor/logs": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/monitor/stats": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        }
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "headers": {
+        "x-private-docs-token": "golden-docs-token"
+      },
+      "method": "GET",
+      "url": "/private/docs/json"
+    },
+    "status": 200
+  },
+  "worker state": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "quiz",
+      "worker": {
+        "activatedAt": null,
+        "active": false,
+        "available": {
+          "categories": [
+            {
+              "id": "9",
+              "name": "General Knowledge"
+            },
+            {
+              "id": "10",
+              "name": "Entertainment: Books"
+            },
+            {
+              "id": "11",
+              "name": "Entertainment: Film"
+            },
+            {
+              "id": "12",
+              "name": "Entertainment: Music"
+            },
+            {
+              "id": "13",
+              "name": "Entertainment: Musicals & Theatres"
+            },
+            {
+              "id": "14",
+              "name": "Entertainment: Television"
+            },
+            {
+              "id": "15",
+              "name": "Entertainment: Video Games"
+            },
+            {
+              "id": "16",
+              "name": "Entertainment: Board Games"
+            },
+            {
+              "id": "17",
+              "name": "Science & Nature"
+            },
+            {
+              "id": "18",
+              "name": "Science: Computers"
+            },
+            {
+              "id": "19",
+              "name": "Science: Mathematics"
+            },
+            {
+              "id": "20",
+              "name": "Mythology"
+            },
+            {
+              "id": "21",
+              "name": "Sports"
+            },
+            {
+              "id": "22",
+              "name": "Geography"
+            },
+            {
+              "id": "23",
+              "name": "History"
+            },
+            {
+              "id": "24",
+              "name": "Politics"
+            },
+            {
+              "id": "25",
+              "name": "Art"
+            },
+            {
+              "id": "26",
+              "name": "Celebrities"
+            },
+            {
+              "id": "27",
+              "name": "Animals"
+            },
+            {
+              "id": "28",
+              "name": "Vehicles"
+            },
+            {
+              "id": "29",
+              "name": "Entertainment: Comics"
+            },
+            {
+              "id": "30",
+              "name": "Science: Gadgets"
+            },
+            {
+              "id": "31",
+              "name": "Entertainment: Japanese Anime & Manga"
+            },
+            {
+              "id": "32",
+              "name": "Entertainment: Cartoon & Animations"
+            }
+          ],
+          "difficultyLevels": [
+            {
+              "id": "easy",
+              "label": "easy",
+              "max": 33,
+              "min": 0
+            },
+            {
+              "id": "medium",
+              "label": "medium",
+              "max": 66,
+              "min": 34
+            },
+            {
+              "id": "hard",
+              "label": "hard",
+              "max": 100,
+              "min": 67
+            }
+          ]
+        },
+        "balance": {
+          "categories": [
+            {
+              "id": "9",
+              "missingToMax": 0,
+              "name": "General Knowledge",
+              "total": 2
+            },
+            {
+              "id": "10",
+              "missingToMax": 2,
+              "name": "Entertainment: Books",
+              "total": 0
+            },
+            {
+              "id": "11",
+              "missingToMax": 2,
+              "name": "Entertainment: Film",
+              "total": 0
+            },
+            {
+              "id": "12",
+              "missingToMax": 2,
+              "name": "Entertainment: Music",
+              "total": 0
+            },
+            {
+              "id": "13",
+              "missingToMax": 2,
+              "name": "Entertainment: Musicals & Theatres",
+              "total": 0
+            },
+            {
+              "id": "14",
+              "missingToMax": 2,
+              "name": "Entertainment: Television",
+              "total": 0
+            },
+            {
+              "id": "15",
+              "missingToMax": 2,
+              "name": "Entertainment: Video Games",
+              "total": 0
+            },
+            {
+              "id": "16",
+              "missingToMax": 2,
+              "name": "Entertainment: Board Games",
+              "total": 0
+            },
+            {
+              "id": "17",
+              "missingToMax": 1,
+              "name": "Science & Nature",
+              "total": 1
+            },
+            {
+              "id": "18",
+              "missingToMax": 2,
+              "name": "Science: Computers",
+              "total": 0
+            },
+            {
+              "id": "19",
+              "missingToMax": 2,
+              "name": "Science: Mathematics",
+              "total": 0
+            },
+            {
+              "id": "20",
+              "missingToMax": 2,
+              "name": "Mythology",
+              "total": 0
+            },
+            {
+              "id": "21",
+              "missingToMax": 2,
+              "name": "Sports",
+              "total": 0
+            },
+            {
+              "id": "22",
+              "missingToMax": 2,
+              "name": "Geography",
+              "total": 0
+            },
+            {
+              "id": "23",
+              "missingToMax": 2,
+              "name": "History",
+              "total": 0
+            },
+            {
+              "id": "24",
+              "missingToMax": 2,
+              "name": "Politics",
+              "total": 0
+            },
+            {
+              "id": "25",
+              "missingToMax": 2,
+              "name": "Art",
+              "total": 0
+            },
+            {
+              "id": "26",
+              "missingToMax": 2,
+              "name": "Celebrities",
+              "total": 0
+            },
+            {
+              "id": "27",
+              "missingToMax": 2,
+              "name": "Animals",
+              "total": 0
+            },
+            {
+              "id": "28",
+              "missingToMax": 2,
+              "name": "Vehicles",
+              "total": 0
+            },
+            {
+              "id": "29",
+              "missingToMax": 2,
+              "name": "Entertainment: Comics",
+              "total": 0
+            },
+            {
+              "id": "30",
+              "missingToMax": 2,
+              "name": "Science: Gadgets",
+              "total": 0
+            },
+            {
+              "id": "31",
+              "missingToMax": 2,
+              "name": "Entertainment: Japanese Anime & Manga",
+              "total": 0
+            },
+            {
+              "id": "32",
+              "missingToMax": 2,
+              "name": "Entertainment: Cartoon & Animations",
+              "total": 0
+            }
+          ],
+          "difficulties": [
+            {
+              "id": "easy",
+              "label": "easy",
+              "missingToMax": 0,
+              "total": 0
+            },
+            {
+              "id": "medium",
+              "label": "medium",
+              "missingToMax": 0,
+              "total": 0
+            },
+            {
+              "id": "hard",
+              "label": "hard",
+              "missingToMax": 0,
+              "total": 0
+            }
+          ],
+          "mostMissingCategoryId": "10",
+          "mostMissingDifficultyLevel": "easy"
+        },
+        "config": {
+          "countPerIteration": 10,
+          "selectedCategoryIds": [],
+          "selectedDifficultyLevels": []
+        },
+        "gameType": "quiz",
+        "generatedSinceActivation": 0,
+        "intervalSeconds": 30,
+        "iterationInFlight": false,
+        "iterationsSinceActivation": 0,
+        "iterationsTotal": 0,
+        "lastError": null,
+        "lastIterationAt": null,
+        "lastIterationCreated": null,
+        "lastIterationDurationMs": null,
+        "totalObjectsInDb": 3
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "where": {
+            "gameType": "quiz"
+          }
+        },
+        "method": "count"
+      },
+      {
+        "args": {
+          "_count": {
+            "_all": true
+          },
+          "by": [
+            "difficultyPercentage"
+          ],
+          "where": {
+            "gameType": "quiz"
+          }
+        },
+        "method": "groupBy"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/generate/worker"
+    },
+    "status": 200
+  }
+}

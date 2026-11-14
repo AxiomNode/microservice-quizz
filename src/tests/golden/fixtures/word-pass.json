@@ -1,0 +1,2704 @@
+{
+  "batch generation (service)": {
+    "aiEngineCalls": [
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/word-pass?difficulty_percentage=55&letters=A,B,C,D,E,F,G,H,I,J,L,M,N,O,P,R,S,T,V,Z&max_tokens=1024&query=Sports fundamentals introduction word-pass avoid ambiguous or nonsensical answers&use_cache=true"
+      },
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/word-pass?difficulty_percentage=55&letters=A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z&max_tokens=1024&query=Geography fundamentals introduction word-pass avoid ambiguous or nonsensical answers&use_cache=true"
+      },
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/word-pass?difficulty_percentage=55&letters=A,C,E,G,I,K,L,M,N,O,P,R,S,T,U,V&max_tokens=1024&query=History fundamentals introduction word-pass avoid ambiguous or nonsensical answers&use_cache=true"
+      },
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/word-pass?difficulty_percentage=55&letters=A,B,C,D,E,F,G,H,I,J,L,M,N,O,P,R,S,T,V,Z&max_tokens=1024&query=Politics fundamentals introduction word-pass avoid ambiguous or nonsensical answers&use_cache=true"
+      }
+    ],
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "91d954c5812e51caf42eaefd4fa2e4abc99f60064d02a61f3c505dd6b9ff232f"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "21",
+            "categoryName": "Sports",
+            "difficultyPercentage": 55,
+            "gameType": "word-pass",
+            "query": "The last letter of the Greek alphabet, 6",
+            "requestJson": "{\"query\":\"Sports fundamentals introduction word-pass avoid ambiguous or nonsensical answers\",\"max_tokens\":\"1024\",\"use_cache\":\"true\",\"difficulty_percentage\":\"55\",\"letters\":\"A,B,C,D,E,F,G,H,I,J,L,M,N,O,P,R,S,T,V,Z\",\"category_id\":\"21\",\"category_name\":\"Sports\"}",
+            "responseJson": "{\"game\":{\"words\":[{\"id\":\"w-1\",\"definition\":\"A frequent real word used as a filler\",\"word\":\"Zeta6\"},{\"id\":\"w-2\",\"definition\":\"The last letter of the Greek alphabet, 6\",\"word\":\"Omega6\"},{\"id\":\"w-3\",\"definition\":\"Third letter, 6\",\"word\":\"Gamma6\"}]}}",
+            "status": "created",
+            "uniquenessKey": "91d954c5812e51caf42eaefd4fa2e4abc99f60064d02a61f3c505dd6b9ff232f"
+          }
+        },
+        "method": "create"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "c14ff912c8a6bd02d213f3dede0cde1ee70530313768148fa5144dce6ddbd676"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "22",
+            "categoryName": "Geography",
+            "difficultyPercentage": 55,
+            "gameType": "word-pass",
+            "query": "The last letter of the Greek alphabet, 7",
+            "requestJson": "{\"query\":\"Geography fundamentals introduction word-pass avoid ambiguous or nonsensical answers\",\"max_tokens\":\"1024\",\"use_cache\":\"true\",\"difficulty_percentage\":\"55\",\"letters\":\"A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z\",\"category_id\":\"22\",\"category_name\":\"Geography\"}",
+            "responseJson": "{\"game\":{\"words\":[{\"id\":\"w-1\",\"definition\":\"A frequent real word used as a filler\",\"word\":\"Zeta7\"},{\"id\":\"w-2\",\"definition\":\"The last letter of the Greek alphabet, 7\",\"word\":\"Omega7\"},{\"id\":\"w-3\",\"definition\":\"Third letter, 7\",\"word\":\"Gamma7\"}]}}",
+            "status": "created",
+            "uniquenessKey": "c14ff912c8a6bd02d213f3dede0cde1ee70530313768148fa5144dce6ddbd676"
+          }
+        },
+        "method": "create"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "7addafed55a05dd0d67ee47379f7de9484c31f1a8a6ddfec64b1050fcbb712fb"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "23",
+            "categoryName": "History",
+            "difficultyPercentage": 55,
+            "gameType": "word-pass",
+            "query": "The last letter of the Greek alphabet, 8",
+            "requestJson": "{\"query\":\"History fundamentals introduction word-pass avoid ambiguous or nonsensical answers\",\"max_tokens\":\"1024\",\"use_cache\":\"true\",\"difficulty_percentage\":\"55\",\"letters\":\"A,C,E,G,I,K,L,M,N,O,P,R,S,T,U,V\",\"category_id\":\"23\",\"category_name\":\"History\"}",
+            "responseJson": "{\"game\":{\"words\":[{\"id\":\"w-1\",\"definition\":\"A frequent real word used as a filler\",\"word\":\"Zeta8\"},{\"id\":\"w-2\",\"definition\":\"The last letter of the Greek alphabet, 8\",\"word\":\"Omega8\"},{\"id\":\"w-3\",\"definition\":\"Third letter, 8\",\"word\":\"Gamma8\"}]}}",
+            "status": "created",
+            "uniquenessKey": "7addafed55a05dd0d67ee47379f7de9484c31f1a8a6ddfec64b1050fcbb712fb"
+          }
+        },
+        "method": "create"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "256ec0a47f982e965232bbce1762123343fe11add7baf329316b7ac562d124d1"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "24",
+            "categoryName": "Politics",
+            "difficultyPercentage": 55,
+            "gameType": "word-pass",
+            "query": "The last letter of the Greek alphabet, 9",
+            "requestJson": "{\"query\":\"Politics fundamentals introduction word-pass avoid ambiguous or nonsensical answers\",\"max_tokens\":\"1024\",\"use_cache\":\"true\",\"difficulty_percentage\":\"55\",\"letters\":\"A,B,C,D,E,F,G,H,I,J,L,M,N,O,P,R,S,T,V,Z\",\"category_id\":\"24\",\"category_name\":\"Politics\"}",
+            "responseJson": "{\"game\":{\"words\":[{\"id\":\"w-1\",\"definition\":\"A frequent real word used as a filler\",\"word\":\"Zeta9\"},{\"id\":\"w-2\",\"definition\":\"The last letter of the Greek alphabet, 9\",\"word\":\"Omega9\"},{\"id\":\"w-3\",\"definition\":\"Third letter, 9\",\"word\":\"Gamma9\"}]}}",
+            "status": "created",
+            "uniquenessKey": "256ec0a47f982e965232bbce1762123343fe11add7baf329316b7ac562d124d1"
+          }
+        },
+        "method": "create"
+      }
+    ],
+    "result": {
+      "attempts": 4,
+      "created": 4,
+      "duplicates": 0,
+      "failed": 0,
+      "requested": 4,
+      "runId": "<uuid>"
+    }
+  },
+  "catalogs": {
+    "aiEngineCalls": [],
+    "body": {
+      "categories": [
+        {
+          "id": "9",
+          "name": "General Knowledge"
+        },
+        {
+          "id": "10",
+          "name": "Entertainment: Books"
+        },
+        {
+          "id": "11",
+          "name": "Entertainment: Film"
+        },
+        {
+          "id": "12",
+          "name": "Entertainment: Music"
+        },
+        {
+          "id": "13",
+          "name": "Entertainment: Musicals & Theatres"
+        },
+        {
+          "id": "14",
+          "name": "Entertainment: Television"
+        },
+        {
+          "id": "15",
+          "name": "Entertainment: Video Games"
+        },
+        {
+          "id": "16",
+          "name": "Entertainment: Board Games"
+        },
+        {
+          "id": "17",
+          "name": "Science & Nature"
+        },
+        {
+          "id": "18",
+          "name": "Science: Computers"
+        },
+        {
+          "id": "19",
+          "name": "Science: Mathematics"
+        },
+        {
+          "id": "20",
+          "name": "Mythology"
+        },
+        {
+          "id": "21",
+          "name": "Sports"
+        },
+        {
+          "id": "22",
+          "name": "Geography"
+        },
+        {
+          "id": "23",
+          "name": "History"
+        },
+        {
+          "id": "24",
+          "name": "Politics"
+        },
+        {
+          "id": "25",
+          "name": "Art"
+        },
+        {
+          "id": "26",
+          "name": "Celebrities"
+        },
+        {
+          "id": "27",
+          "name": "Animals"
+        },
+        {
+          "id": "28",
+          "name": "Vehicles"
+        },
+        {
+          "id": "29",
+          "name": "Entertainment: Comics"
+        },
+        {
+          "id": "30",
+          "name": "Science: Gadgets"
+        },
+        {
+          "id": "31",
+          "name": "Entertainment: Japanese Anime & Manga"
+        },
+        {
+          "id": "32",
+          "name": "Entertainment: Cartoon & Animations"
+        }
+      ],
+      "source": "local-fallback",
+      "updatedAt": "2026-11-14T12:00:00.000Z"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/catalogs"
+    },
+    "status": 200
+  },
+  "generate": {
+    "aiEngineCalls": [
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/word-pass?difficulty_percentage=55&item_count=3&letters=A,C,E,G,I,K,L,M,N,O,P,R,S,T,U,V&max_tokens=1024&query=Science & Nature fundamentals emblematic cases word-pass avoid ambiguous or nonsensical answers&use_cache=true"
+      }
+    ],
+    "body": {
+      "gameType": "word-pass",
+      "generated": {
+        "game": {
+          "words": [
+            {
+              "definition": "A frequent real word used as a filler",
+              "id": "w-1",
+              "word": "Zeta1"
+            },
+            {
+              "definition": "The last letter of the Greek alphabet, 1",
+              "id": "w-2",
+              "word": "Omega1"
+            },
+            {
+              "definition": "Third letter, 1",
+              "id": "w-3",
+              "word": "Gamma1"
+            }
+          ]
+        }
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "5413c08ec5d0676df5dd0d3ea9a3d1a49634e5c44a2724f2c9c47ab8f92e93ad"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "categoryId": "17",
+            "categoryName": "Science & Nature",
+            "difficultyPercentage": 55,
+            "gameType": "word-pass",
+            "query": "The last letter of the Greek alphabet, 1",
+            "requestJson": "{\"query\":\"Science & Nature fundamentals emblematic cases word-pass avoid ambiguous or nonsensical answers\",\"max_tokens\":\"1024\",\"use_cache\":\"true\",\"item_count\":\"3\",\"difficulty_percentage\":\"55\",\"letters\":\"A,C,E,G,I,K,L,M,N,O,P,R,S,T,U,V\",\"category_id\":\"17\",\"category_name\":\"Science & Nature\"}",
+            "responseJson": "{\"game\":{\"words\":[{\"id\":\"w-1\",\"definition\":\"A frequent real word used as a filler\",\"word\":\"Zeta1\"},{\"id\":\"w-2\",\"definition\":\"The last letter of the Greek alphabet, 1\",\"word\":\"Omega1\"},{\"id\":\"w-3\",\"definition\":\"Third letter, 1\",\"word\":\"Gamma1\"}]}}",
+            "status": "created",
+            "uniquenessKey": "5413c08ec5d0676df5dd0d3ea9a3d1a49634e5c44a2724f2c9c47ab8f92e93ad"
+          }
+        },
+        "method": "create"
+      }
+    ],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "17",
+        "difficultyPercentage": 55,
+        "itemCount": 3,
+        "letters": "A,B,C"
+      },
+      "url": "/games/generate"
+    },
+    "status": 201
+  },
+  "generate duplicate": {
+    "aiEngineCalls": [
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/word-pass?difficulty_percentage=20&letters=A,C,E,G,I,K,L,M,N,O,P,R,S,T,U,V&max_tokens=1024&query=General Knowledge fundamentals emblematic cases word-pass avoid ambiguous or nonsensical answers&use_cache=true"
+      }
+    ],
+    "body": {
+      "gameType": "word-pass",
+      "generated": {
+        "game": {
+          "words": [
+            {
+              "definition": "A frequent real word used as a filler",
+              "id": "w-1",
+              "word": "Zeta2"
+            },
+            {
+              "definition": "The last letter of the Greek alphabet, 2",
+              "id": "w-2",
+              "word": "Omega2"
+            },
+            {
+              "definition": "Third letter, 2",
+              "id": "w-3",
+              "word": "Gamma2"
+            }
+          ]
+        }
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "8316f575159efe7d118233af2f94651e0a0cf880c761d28e6d648059c7877a52"
+          }
+        },
+        "method": "findFirst"
+      }
+    ],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "9",
+        "difficultyPercentage": 20
+      },
+      "url": "/games/generate"
+    },
+    "status": 201
+  },
+  "generate invalid": {
+    "aiEngineCalls": [],
+    "body": {
+      "errors": {
+        "fieldErrors": {
+          "categoryId": [
+            "Invalid input: expected string, received undefined"
+          ]
+        },
+        "formErrors": []
+      },
+      "message": "Invalid payload"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "POST",
+      "payload": {},
+      "url": "/games/generate"
+    },
+    "status": 400
+  },
+  "generate/process/wait": {
+    "aiEngineCalls": [
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/word-pass?difficulty_percentage=55&item_count=8&letters=A,B,C,D,E,F,G,H,I,J,L,M,N,O,P,R,S,T,V,Z&max_tokens=1024&query=General Knowledge fundamentals introduction word-pass avoid ambiguous or nonsensical answers&use_cache=true"
+      },
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/word-pass?difficulty_percentage=55&item_count=8&letters=A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z&max_tokens=1024&query=General Knowledge fundamentals introduction word-pass avoid ambiguous or nonsensical answers&use_cache=true"
+      },
+      {
+        "body": null,
+        "headers": {
+          "x-api-key": "golden-ai-key"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/generate/word-pass?difficulty_percentage=55&item_count=8&letters=A,C,E,G,I,K,L,M,N,O,P,R,S,T,U,V&max_tokens=1024&query=General Knowledge fundamentals introduction word-pass avoid ambiguous or nonsensical answers&use_cache=true"
+      }
+    ],
+    "body": {
+      "gameType": "word-pass",
+      "message": "Generation process completed",
+      "task": {
+        "ageSeconds": 0,
+        "created": 3,
+        "duplicateReasons": {
+          "content": 0
+        },
+        "duplicates": 0,
+        "failed": 0,
+        "finishedAt": "2026-11-14T12:00:00.000Z",
+        "generatedItems": [
+          {
+            "game": {
+              "words": [
+                {
+                  "definition": "A frequent real word used as a filler",
+                  "id": "w-1",
+                  "word": "Zeta3"
+                },
+                {
+                  "definition": "The last letter of the Greek alphabet, 3",
+                  "id": "w-2",
+                  "word": "Omega3"
+                },
+                {
+                  "definition": "Third letter, 3",
+                  "id": "w-3",
+                  "word": "Gamma3"
+                }
+              ]
+            }
+          },
+          {
+            "game": {
+              "words": [
+                {
+                  "definition": "A frequent real word used as a filler",
+                  "id": "w-1",
+                  "word": "Zeta4"
+                },
+                {
+                  "definition": "The last letter of the Greek alphabet, 4",
+                  "id": "w-2",
+                  "word": "Omega4"
+                },
+                {
+                  "definition": "Third letter, 4",
+                  "id": "w-3",
+                  "word": "Gamma4"
+                }
+              ]
+            }
+          },
+          {
+            "game": {
+              "words": [
+                {
+                  "definition": "A frequent real word used as a filler",
+                  "id": "w-1",
+                  "word": "Zeta5"
+                },
+                {
+                  "definition": "The last letter of the Greek alphabet, 5",
+                  "id": "w-2",
+                  "word": "Omega5"
+                },
+                {
+                  "definition": "Third letter, 5",
+                  "id": "w-3",
+                  "word": "Gamma5"
+                }
+              ]
+            }
+          }
+        ],
+        "idleSeconds": 0,
+        "lastProgressAt": "2026-11-14T12:00:00.000Z",
+        "processed": 3,
+        "progress": {
+          "current": 3,
+          "ratio": 1,
+          "total": 3
+        },
+        "requested": 3,
+        "requestedBy": "backoffice",
+        "stalled": false,
+        "startedAt": "2026-11-14T12:00:00.000Z",
+        "status": "completed",
+        "taskId": "<uuid>",
+        "updatedAt": "2026-11-14T12:00:00.000Z"
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "4250625970076da86be4d9e3b383bcb6789dbaee54846242569fb69c401ef5f6"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "5974bd7ccd3917d5903fa52656b2b3dc3ed00b6faa57a36f8d49eb24685ab686"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "efeb000881b6985ff636929b87c90593568614e63052c9e17e4dfe3c0afe863a"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "9",
+            "categoryName": "General Knowledge",
+            "difficultyPercentage": 55,
+            "gameType": "word-pass",
+            "query": "The last letter of the Greek alphabet, 3",
+            "requestJson": "{\"query\":\"General Knowledge fundamentals introduction word-pass avoid ambiguous or nonsensical answers\",\"max_tokens\":\"1024\",\"use_cache\":\"true\",\"item_count\":\"8\",\"difficulty_percentage\":\"55\",\"letters\":\"A,B,C,D,E,F,G,H,I,J,L,M,N,O,P,R,S,T,V,Z\",\"category_id\":\"9\",\"category_name\":\"General Knowledge\"}",
+            "responseJson": "{\"game\":{\"words\":[{\"id\":\"w-1\",\"definition\":\"A frequent real word used as a filler\",\"word\":\"Zeta3\"},{\"id\":\"w-2\",\"definition\":\"The last letter of the Greek alphabet, 3\",\"word\":\"Omega3\"},{\"id\":\"w-3\",\"definition\":\"Third letter, 3\",\"word\":\"Gamma3\"}]}}",
+            "status": "created",
+            "uniquenessKey": "4250625970076da86be4d9e3b383bcb6789dbaee54846242569fb69c401ef5f6"
+          }
+        },
+        "method": "create"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "9",
+            "categoryName": "General Knowledge",
+            "difficultyPercentage": 55,
+            "gameType": "word-pass",
+            "query": "The last letter of the Greek alphabet, 4",
+            "requestJson": "{\"query\":\"General Knowledge fundamentals introduction word-pass avoid ambiguous or nonsensical answers\",\"max_tokens\":\"1024\",\"use_cache\":\"true\",\"item_count\":\"8\",\"difficulty_percentage\":\"55\",\"letters\":\"A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z\",\"category_id\":\"9\",\"category_name\":\"General Knowledge\"}",
+            "responseJson": "{\"game\":{\"words\":[{\"id\":\"w-1\",\"definition\":\"A frequent real word used as a filler\",\"word\":\"Zeta4\"},{\"id\":\"w-2\",\"definition\":\"The last letter of the Greek alphabet, 4\",\"word\":\"Omega4\"},{\"id\":\"w-3\",\"definition\":\"Third letter, 4\",\"word\":\"Gamma4\"}]}}",
+            "status": "created",
+            "uniquenessKey": "5974bd7ccd3917d5903fa52656b2b3dc3ed00b6faa57a36f8d49eb24685ab686"
+          }
+        },
+        "method": "create"
+      },
+      {
+        "args": {
+          "data": {
+            "batchRunId": "<uuid>",
+            "categoryId": "9",
+            "categoryName": "General Knowledge",
+            "difficultyPercentage": 55,
+            "gameType": "word-pass",
+            "query": "The last letter of the Greek alphabet, 5",
+            "requestJson": "{\"query\":\"General Knowledge fundamentals introduction word-pass avoid ambiguous or nonsensical answers\",\"max_tokens\":\"1024\",\"use_cache\":\"true\",\"item_count\":\"8\",\"difficulty_percentage\":\"55\",\"letters\":\"A,C,E,G,I,K,L,M,N,O,P,R,S,T,U,V\",\"category_id\":\"9\",\"category_name\":\"General Knowledge\"}",
+            "responseJson": "{\"game\":{\"words\":[{\"id\":\"w-1\",\"definition\":\"A frequent real word used as a filler\",\"word\":\"Zeta5\"},{\"id\":\"w-2\",\"definition\":\"The last letter of the Greek alphabet, 5\",\"word\":\"Omega5\"},{\"id\":\"w-3\",\"definition\":\"Third letter, 5\",\"word\":\"Gamma5\"}]}}",
+            "status": "created",
+            "uniquenessKey": "efeb000881b6985ff636929b87c90593568614e63052c9e17e4dfe3c0afe863a"
+          }
+        },
+        "method": "create"
+      }
+    ],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "9",
+        "count": 3,
+        "letters": "A,B,C",
+        "requestedBy": "backoffice"
+      },
+      "url": "/games/generate/process/wait"
+    },
+    "status": 201
+  },
+  "health": {
+    "aiEngineCalls": [],
+    "body": {
+      "catalogReady": false,
+      "catalogSource": "local-fallback",
+      "gameType": "word-pass",
+      "service": "microservice-wordpass",
+      "status": "ok"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/health"
+    },
+    "status": 200
+  },
+  "history": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "word-pass",
+      "items": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "createdAt": "2026-04-15T18:00:00.000Z",
+          "gameType": "word-pass",
+          "id": "golden-word-pass-1",
+          "query": "General Knowledge seeded 1",
+          "request": {
+            "difficulty_percentage": "40",
+            "query": "General Knowledge seeded 1"
+          },
+          "response": {
+            "game": {
+              "words": [
+                {
+                  "definition": "A frequent real word used as a filler",
+                  "word": "Zeta101"
+                },
+                {
+                  "definition": "The last letter of the Greek alphabet, 101",
+                  "word": "Omega101"
+                },
+                {
+                  "answer": "Gamma101",
+                  "hint": "Third letter, 101",
+                  "word": "Gamma101"
+                }
+              ]
+            },
+            "game_type": "word-pass"
+          },
+          "status": "created"
+        },
+        {
+          "categoryId": "17",
+          "categoryName": "Science & Nature",
+          "createdAt": "2026-04-15T18:01:00.000Z",
+          "gameType": "word-pass",
+          "id": "golden-word-pass-2",
+          "query": "Science & Nature seeded 2",
+          "request": {
+            "difficulty_percentage": "60",
+            "query": "Science & Nature seeded 2"
+          },
+          "response": {
+            "game": {
+              "words": [
+                {
+                  "definition": "A frequent real word used as a filler",
+                  "word": "Zeta102"
+                },
+                {
+                  "definition": "The last letter of the Greek alphabet, 102",
+                  "word": "Omega102"
+                },
+                {
+                  "answer": "Gamma102",
+                  "hint": "Third letter, 102",
+                  "word": "Gamma102"
+                }
+              ]
+            },
+            "game_type": "word-pass"
+          },
+          "status": "created"
+        },
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "createdAt": "2026-04-15T18:02:00.000Z",
+          "gameType": "word-pass",
+          "id": "golden-word-pass-3",
+          "query": "General Knowledge seeded 3",
+          "request": {
+            "difficulty_percentage": "80",
+            "query": "General Knowledge seeded 3"
+          },
+          "response": {
+            "game": {
+              "words": [
+                {
+                  "definition": "A frequent real word used as a filler",
+                  "word": "Zeta103"
+                },
+                {
+                  "definition": "The last letter of the Greek alphabet, 103",
+                  "word": "Omega103"
+                },
+                {
+                  "answer": "Gamma103",
+                  "hint": "Third letter, 103",
+                  "word": "Gamma103"
+                }
+              ]
+            },
+            "game_type": "word-pass"
+          },
+          "status": "created"
+        }
+      ],
+      "page": 1,
+      "pageSize": 20,
+      "total": 3
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "where": {
+            "gameType": "word-pass"
+          }
+        },
+        "method": "count"
+      },
+      {
+        "args": {
+          "orderBy": {
+            "createdAt": "desc"
+          },
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "skip": 0,
+          "take": 20,
+          "where": {
+            "gameType": "word-pass"
+          }
+        },
+        "method": "findMany"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/history?limit=5"
+    },
+    "status": 200
+  },
+  "history delete": {
+    "aiEngineCalls": [],
+    "body": {
+      "deleted": true,
+      "gameType": "word-pass",
+      "id": "golden-word-pass-1"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "where": {
+            "gameType": "word-pass",
+            "id": "golden-word-pass-1"
+          }
+        },
+        "method": "deleteMany"
+      }
+    ],
+    "request": {
+      "method": "DELETE",
+      "url": "/games/history/golden-word-pass-1"
+    },
+    "status": 200
+  },
+  "history paged": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "word-pass",
+      "items": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "createdAt": "2026-04-15T18:00:00.000Z",
+          "gameType": "word-pass",
+          "id": "golden-word-pass-1",
+          "query": "General Knowledge seeded 1",
+          "request": {
+            "difficulty_percentage": "40",
+            "query": "General Knowledge seeded 1"
+          },
+          "response": {
+            "game": {
+              "words": [
+                {
+                  "definition": "A frequent real word used as a filler",
+                  "word": "Zeta101"
+                },
+                {
+                  "definition": "The last letter of the Greek alphabet, 101",
+                  "word": "Omega101"
+                },
+                {
+                  "answer": "Gamma101",
+                  "hint": "Third letter, 101",
+                  "word": "Gamma101"
+                }
+              ]
+            },
+            "game_type": "word-pass"
+          },
+          "status": "created"
+        },
+        {
+          "categoryId": "17",
+          "categoryName": "Science & Nature",
+          "createdAt": "2026-04-15T18:01:00.000Z",
+          "gameType": "word-pass",
+          "id": "golden-word-pass-2",
+          "query": "Science & Nature seeded 2",
+          "request": {
+            "difficulty_percentage": "60",
+            "query": "Science & Nature seeded 2"
+          },
+          "response": {
+            "game": {
+              "words": [
+                {
+                  "definition": "A frequent real word used as a filler",
+                  "word": "Zeta102"
+                },
+                {
+                  "definition": "The last letter of the Greek alphabet, 102",
+                  "word": "Omega102"
+                },
+                {
+                  "answer": "Gamma102",
+                  "hint": "Third letter, 102",
+                  "word": "Gamma102"
+                }
+              ]
+            },
+            "game_type": "word-pass"
+          },
+          "status": "created"
+        }
+      ],
+      "page": 1,
+      "pageSize": 2,
+      "total": 3
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "where": {
+            "categoryId": "9",
+            "gameType": "word-pass",
+            "status": "created"
+          }
+        },
+        "method": "count"
+      },
+      {
+        "args": {
+          "orderBy": {
+            "createdAt": "desc"
+          },
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "skip": 0,
+          "take": 2,
+          "where": {
+            "categoryId": "9",
+            "gameType": "word-pass",
+            "status": "created"
+          }
+        },
+        "method": "findMany"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/history?page=1&pageSize=2&categoryId=9&status=created"
+    },
+    "status": 200
+  },
+  "history patch": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "word-pass",
+      "item": {
+        "categoryId": "9",
+        "categoryName": "General Knowledge",
+        "createdAt": "2026-04-15T18:00:00.000Z",
+        "gameType": "word-pass",
+        "id": "golden-word-pass-2",
+        "query": "Eleventh letter of the Greek alphabet",
+        "request": {
+          "categoryId": "9",
+          "difficulty_percentage": 33,
+          "source": "backoffice-manual"
+        },
+        "response": {
+          "game": {
+            "words": [
+              {
+                "definition": "Eleventh letter of the Greek alphabet",
+                "id": "w-1",
+                "word": "Lambda"
+              }
+            ]
+          }
+        },
+        "status": "created"
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "where": {
+            "gameType": "word-pass",
+            "id": "golden-word-pass-2"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "NOT": {
+              "id": "golden-word-pass-2"
+            },
+            "uniquenessKey": "4e472847f331e62d992a0d9f18aee3a8623465da7556a48a80ccde22fed1f285"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "categoryId": "9",
+            "categoryName": "General Knowledge",
+            "difficultyPercentage": 33,
+            "query": "Eleventh letter of the Greek alphabet",
+            "requestJson": "{\"source\":\"backoffice-manual\",\"categoryId\":\"9\",\"difficulty_percentage\":33}",
+            "responseJson": "{\"game\":{\"words\":[{\"id\":\"w-1\",\"definition\":\"Eleventh letter of the Greek alphabet\",\"word\":\"Lambda\"}]}}",
+            "status": "created",
+            "uniquenessKey": "4e472847f331e62d992a0d9f18aee3a8623465da7556a48a80ccde22fed1f285"
+          },
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "where": {
+            "id": "golden-word-pass-2"
+          }
+        },
+        "method": "update"
+      }
+    ],
+    "request": {
+      "method": "PATCH",
+      "payload": {
+        "categoryId": "9",
+        "content": {
+          "game": {
+            "words": [
+              {
+                "definition": "Eleventh letter of the Greek alphabet",
+                "word": "Lambda"
+              }
+            ]
+          }
+        },
+        "difficultyPercentage": 33
+      },
+      "url": "/games/history/golden-word-pass-2"
+    },
+    "status": 200
+  },
+  "history patch missing": {
+    "aiEngineCalls": [],
+    "body": {
+      "message": "History entry not found"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "where": {
+            "gameType": "word-pass",
+            "id": "nope"
+          }
+        },
+        "method": "findFirst"
+      }
+    ],
+    "request": {
+      "method": "PATCH",
+      "payload": {
+        "difficultyPercentage": 1
+      },
+      "url": "/games/history/nope"
+    },
+    "status": 404
+  },
+  "history/insights": {
+    "aiEngineCalls": [],
+    "body": {
+      "categories": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "count": 2,
+          "latestCreatedAt": "2026-04-15T18:02:00.000Z"
+        },
+        {
+          "categoryId": "17",
+          "categoryName": "Science & Nature",
+          "count": 1,
+          "latestCreatedAt": "2026-04-15T18:01:00.000Z"
+        }
+      ],
+      "gameType": "word-pass",
+      "total": 3
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "_count": {
+            "_all": true
+          },
+          "_max": {
+            "createdAt": true
+          },
+          "by": [
+            "categoryId",
+            "categoryName"
+          ],
+          "where": {
+            "gameType": "word-pass",
+            "status": "created"
+          }
+        },
+        "method": "groupBy"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/history/insights?status=created"
+    },
+    "status": 200
+  },
+  "history/manual": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "word-pass",
+      "item": {
+        "categoryId": "17",
+        "categoryName": "Science & Nature",
+        "createdAt": "2026-11-14T12:00:00.000Z",
+        "gameType": "word-pass",
+        "id": "golden-created",
+        "query": "A Greek letter used for sums",
+        "request": {
+          "categoryId": "17",
+          "difficulty_percentage": 70,
+          "source": "backoffice-manual"
+        },
+        "response": {
+          "game": {
+            "words": [
+              {
+                "definition": "A Greek letter used for sums",
+                "id": "w-1",
+                "word": "Sigma"
+              },
+              {
+                "definition": "A frequent term in physics",
+                "id": "w-2",
+                "word": "Tau"
+              }
+            ]
+          }
+        },
+        "status": "validated"
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "bb804e96f8a9c5e54e64377105f398a835b4d4495f87c8829ee431a2a5091a01"
+          }
+        },
+        "method": "findFirst"
+      },
+      {
+        "args": {
+          "data": {
+            "categoryId": "17",
+            "categoryName": "Science & Nature",
+            "difficultyPercentage": 70,
+            "gameType": "word-pass",
+            "query": "A Greek letter used for sums",
+            "requestJson": "{\"source\":\"backoffice-manual\",\"categoryId\":\"17\",\"difficulty_percentage\":70}",
+            "responseJson": "{\"game\":{\"words\":[{\"id\":\"w-1\",\"definition\":\"A Greek letter used for sums\",\"word\":\"Sigma\"},{\"id\":\"w-2\",\"definition\":\"A frequent term in physics\",\"word\":\"Tau\"}]}}",
+            "status": "validated",
+            "uniquenessKey": "bb804e96f8a9c5e54e64377105f398a835b4d4495f87c8829ee431a2a5091a01"
+          }
+        },
+        "method": "create"
+      }
+    ],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "17",
+        "content": {
+          "game": {
+            "words": [
+              {
+                "definition": "A Greek letter used for sums",
+                "word": "Sigma"
+              },
+              {
+                "definition": "A frequent term in physics",
+                "word": "Tau"
+              }
+            ]
+          }
+        },
+        "difficultyPercentage": 70,
+        "status": "validated"
+      },
+      "url": "/games/history/manual"
+    },
+    "status": 201
+  },
+  "history/manual duplicate": {
+    "aiEngineCalls": [],
+    "body": {
+      "error": "Duplicate content",
+      "message": "Failed to store manual model"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "select": {
+            "id": true
+          },
+          "where": {
+            "uniquenessKey": "bb804e96f8a9c5e54e64377105f398a835b4d4495f87c8829ee431a2a5091a01"
+          }
+        },
+        "method": "findFirst"
+      }
+    ],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "17",
+        "content": {
+          "game": {
+            "words": [
+              {
+                "definition": "A Greek letter used for sums",
+                "word": "Sigma"
+              },
+              {
+                "definition": "A frequent term in physics",
+                "word": "Tau"
+              }
+            ]
+          }
+        },
+        "difficultyPercentage": 70
+      },
+      "url": "/games/history/manual"
+    },
+    "status": 409
+  },
+  "ingest": {
+    "aiEngineCalls": [
+      {
+        "body": {
+          "documents": [
+            {
+              "content": "alpha",
+              "doc_id": "d1",
+              "metadata": {
+                "categoryId": "9",
+                "difficultyPercentage": 40
+              }
+            },
+            {
+              "content": "beta",
+              "metadata": {
+                "categoryId": "9",
+                "difficultyPercentage": 40
+              }
+            }
+          ]
+        },
+        "headers": {
+          "content-type": "application/json",
+          "x-api-key": "golden-ai-key",
+          "x-ingest-source": "microservice-wordpass"
+        },
+        "method": "POST",
+        "url": "http://ai-engine.golden.test/ingest/word-pass?"
+      }
+    ],
+    "body": {
+      "gameType": "word-pass",
+      "ingested": 2
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "POST",
+      "payload": {
+        "categoryId": "9",
+        "difficultyPercentage": 40,
+        "documents": [
+          {
+            "content": "alpha",
+            "docId": "d1"
+          },
+          {
+            "content": "beta"
+          }
+        ]
+      },
+      "url": "/games/ingest"
+    },
+    "status": 202
+  },
+  "metrics": {
+    "aiEngineCalls": [],
+    "body": "# HELP microservice_requests_received_total Total incoming requests\n# TYPE microservice_requests_received_total counter\nmicroservice_requests_received_total 20\n# HELP microservice_outbound_requests_total Total outbound requests\n# TYPE microservice_outbound_requests_total counter\nmicroservice_outbound_requests_total 6\n# HELP microservice_outbound_failures_total Total failed outbound requests\n# TYPE microservice_outbound_failures_total counter\nmicroservice_outbound_failures_total 0\n# HELP microservice_generated_stored_total Total generated models stored\n# TYPE microservice_generated_stored_total counter\nmicroservice_generated_stored_total 4\n# HELP microservice_generated_duplicate_total Total duplicate generations rejected\n# TYPE microservice_generated_duplicate_total counter\nmicroservice_generated_duplicate_total 1\n# HELP microservice_generated_duplicate_content_total Total duplicate generations rejected by content\n# TYPE microservice_generated_duplicate_content_total counter\nmicroservice_generated_duplicate_content_total 1\n# HELP microservice_generated_failed_total Total failed generation attempts\n# TYPE microservice_generated_failed_total counter\nmicroservice_generated_failed_total 0\n# HELP microservice_ingested_documents_total Total documents ingested to ai-engine\n# TYPE microservice_ingested_documents_total counter\nmicroservice_ingested_documents_total 2\n# HELP microservice_batch_runs_total Total periodic generation runs\n# TYPE microservice_batch_runs_total counter\nmicroservice_batch_runs_total 0\n# HELP microservice_batch_requested_total Total requested items across periodic generation runs\n# TYPE microservice_batch_requested_total counter\nmicroservice_batch_requested_total 0\n# HELP microservice_batch_attempts_total Total attempts across periodic generation runs\n# TYPE microservice_batch_attempts_total counter\nmicroservice_batch_attempts_total 0\n# HELP microservice_batch_created_total Total items created across periodic generation runs\n# TYPE microservice_batch_created_total counter\nmicroservice_batch_created_total 0\n# HELP microservice_batch_duplicates_total Total duplicates across periodic generation runs\n# TYPE microservice_batch_duplicates_total counter\nmicroservice_batch_duplicates_total 0\n# HELP microservice_batch_failed_total Total failed attempts across periodic generation runs\n# TYPE microservice_batch_failed_total counter\nmicroservice_batch_failed_total 0\n# HELP microservice_generation_process_started_total Total async generation processes started\n# TYPE microservice_generation_process_started_total counter\nmicroservice_generation_process_started_total 1\n# HELP microservice_generation_process_finished_total Total async generation processes finished\n# TYPE microservice_generation_process_finished_total counter\nmicroservice_generation_process_finished_total 1\n# HELP microservice_generation_process_failed_total Total async generation processes with final failed status\n# TYPE microservice_generation_process_failed_total counter\nmicroservice_generation_process_failed_total 0\n# HELP microservice_generation_process_only_duplicates_total Total async generation processes completed with only duplicates\n# TYPE microservice_generation_process_only_duplicates_total counter\nmicroservice_generation_process_only_duplicates_total 0\n# HELP microservice_request_bytes_in_total Total incoming request bytes\n# TYPE microservice_request_bytes_in_total counter\nmicroservice_request_bytes_in_total 887\n# HELP microservice_response_bytes_out_total Total outgoing response bytes\n# TYPE microservice_response_bytes_out_total counter\nmicroservice_response_bytes_out_total 17087\n# HELP microservice_outbound_request_bytes_total Total outbound request bytes\n# TYPE microservice_outbound_request_bytes_total counter\nmicroservice_outbound_request_bytes_total 180\n# HELP microservice_outbound_response_bytes_total Total outbound response bytes\n# TYPE microservice_outbound_response_bytes_total counter\nmicroservice_outbound_response_bytes_total 1259\n# HELP microservice_ai_auth_circuit_open AI auth circuit state (1=open, 0=closed)\n# TYPE microservice_ai_auth_circuit_open gauge\nmicroservice_ai_auth_circuit_open 0\n# HELP microservice_ai_auth_failure_streak Current consecutive AI auth failures (401/403)\n# TYPE microservice_ai_auth_failure_streak gauge\nmicroservice_ai_auth_failure_streak 0\n# HELP microservice_ai_auth_circuit_opened_total Total AI auth circuit openings\n# TYPE microservice_ai_auth_circuit_opened_total counter\nmicroservice_ai_auth_circuit_opened_total 0",
+    "contentType": "text/plain",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/metrics"
+    },
+    "status": 200
+  },
+  "models/grouped": {
+    "aiEngineCalls": [],
+    "body": {
+      "categories": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "total": 2
+        },
+        {
+          "categoryId": "10",
+          "categoryName": "Entertainment: Books",
+          "total": 0
+        },
+        {
+          "categoryId": "11",
+          "categoryName": "Entertainment: Film",
+          "total": 0
+        },
+        {
+          "categoryId": "12",
+          "categoryName": "Entertainment: Music",
+          "total": 0
+        },
+        {
+          "categoryId": "13",
+          "categoryName": "Entertainment: Musicals & Theatres",
+          "total": 0
+        },
+        {
+          "categoryId": "14",
+          "categoryName": "Entertainment: Television",
+          "total": 0
+        },
+        {
+          "categoryId": "15",
+          "categoryName": "Entertainment: Video Games",
+          "total": 0
+        },
+        {
+          "categoryId": "16",
+          "categoryName": "Entertainment: Board Games",
+          "total": 0
+        },
+        {
+          "categoryId": "17",
+          "categoryName": "Science & Nature",
+          "total": 1
+        },
+        {
+          "categoryId": "18",
+          "categoryName": "Science: Computers",
+          "total": 0
+        },
+        {
+          "categoryId": "19",
+          "categoryName": "Science: Mathematics",
+          "total": 0
+        },
+        {
+          "categoryId": "20",
+          "categoryName": "Mythology",
+          "total": 0
+        },
+        {
+          "categoryId": "21",
+          "categoryName": "Sports",
+          "total": 0
+        },
+        {
+          "categoryId": "22",
+          "categoryName": "Geography",
+          "total": 0
+        },
+        {
+          "categoryId": "23",
+          "categoryName": "History",
+          "total": 0
+        },
+        {
+          "categoryId": "24",
+          "categoryName": "Politics",
+          "total": 0
+        },
+        {
+          "categoryId": "25",
+          "categoryName": "Art",
+          "total": 0
+        },
+        {
+          "categoryId": "26",
+          "categoryName": "Celebrities",
+          "total": 0
+        },
+        {
+          "categoryId": "27",
+          "categoryName": "Animals",
+          "total": 0
+        },
+        {
+          "categoryId": "28",
+          "categoryName": "Vehicles",
+          "total": 0
+        },
+        {
+          "categoryId": "29",
+          "categoryName": "Entertainment: Comics",
+          "total": 0
+        },
+        {
+          "categoryId": "30",
+          "categoryName": "Science: Gadgets",
+          "total": 0
+        },
+        {
+          "categoryId": "31",
+          "categoryName": "Entertainment: Japanese Anime & Manga",
+          "total": 0
+        },
+        {
+          "categoryId": "32",
+          "categoryName": "Entertainment: Cartoon & Animations",
+          "total": 0
+        }
+      ],
+      "gameType": "word-pass",
+      "groupedBy": [
+        "category",
+        "language"
+      ],
+      "matrix": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "total": 2
+        },
+        {
+          "categoryId": "17",
+          "categoryName": "Science & Nature",
+          "total": 1
+        }
+      ]
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "_count": {
+            "_all": true
+          },
+          "by": [
+            "categoryId",
+            "categoryName"
+          ],
+          "where": {
+            "gameType": "word-pass"
+          }
+        },
+        "method": "groupBy"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/models/grouped"
+    },
+    "status": 200
+  },
+  "models/random": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "word-pass",
+      "items": [
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "createdAt": "2026-04-15T18:00:00.000Z",
+          "gameType": "word-pass",
+          "id": "golden-word-pass-1",
+          "query": "General Knowledge seeded 1",
+          "request": {
+            "difficulty_percentage": "40",
+            "query": "General Knowledge seeded 1"
+          },
+          "response": {
+            "game": {
+              "words": [
+                {
+                  "definition": "A frequent real word used as a filler",
+                  "id": "w-1",
+                  "word": "Zeta101"
+                },
+                {
+                  "definition": "The last letter of the Greek alphabet, 101",
+                  "id": "w-2",
+                  "word": "Omega101"
+                },
+                {
+                  "definition": "Third letter, 101",
+                  "id": "w-3",
+                  "word": "Gamma101"
+                }
+              ]
+            }
+          },
+          "status": "created"
+        },
+        {
+          "categoryId": "9",
+          "categoryName": "General Knowledge",
+          "createdAt": "2026-04-15T18:02:00.000Z",
+          "gameType": "word-pass",
+          "id": "golden-word-pass-3",
+          "query": "General Knowledge seeded 3",
+          "request": {
+            "difficulty_percentage": "80",
+            "query": "General Knowledge seeded 3"
+          },
+          "response": {
+            "game": {
+              "words": [
+                {
+                  "definition": "A frequent real word used as a filler",
+                  "id": "w-1",
+                  "word": "Zeta103"
+                },
+                {
+                  "definition": "The last letter of the Greek alphabet, 103",
+                  "id": "w-2",
+                  "word": "Omega103"
+                },
+                {
+                  "definition": "Third letter, 103",
+                  "id": "w-3",
+                  "word": "Gamma103"
+                }
+              ]
+            }
+          },
+          "status": "created"
+        }
+      ],
+      "requested": 2,
+      "returned": 2
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "orderBy": {
+            "createdAt": "desc"
+          },
+          "select": {
+            "id": true
+          },
+          "take": 300,
+          "where": {
+            "categoryId": "9",
+            "difficultyPercentage": 40,
+            "gameType": "word-pass",
+            "status": {
+              "not": "pending_review"
+            }
+          }
+        },
+        "method": "findMany"
+      },
+      {
+        "args": {
+          "select": {
+            "categoryId": true,
+            "categoryName": true,
+            "createdAt": true,
+            "difficultyPercentage": true,
+            "gameType": true,
+            "id": true,
+            "query": true,
+            "requestJson": true,
+            "responseJson": true,
+            "status": true
+          },
+          "where": {
+            "id": {
+              "in": [
+                "golden-word-pass-1",
+                "golden-word-pass-3"
+              ]
+            }
+          }
+        },
+        "method": "findMany"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/models/random?count=2&categoryId=9&difficultyPercentage=40"
+    },
+    "status": 200
+  },
+  "models/random invalid": {
+    "aiEngineCalls": [],
+    "body": {
+      "errors": {
+        "fieldErrors": {
+          "count": [
+            "Too small: expected number to be >=1"
+          ]
+        },
+        "formErrors": []
+      },
+      "message": "Invalid query parameters"
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/games/models/random?count=0"
+    },
+    "status": 400
+  },
+  "monitor/logs": {
+    "aiEngineCalls": [],
+    "body": {
+      "logs": [
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 1026,
+            "route": "/catalogs",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 1149,
+            "route": "/games/models/random",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 130,
+            "route": "/games/models/random",
+            "statusCode": 400
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 1712,
+            "route": "/games/history",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 1162,
+            "route": "/games/history",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 267,
+            "route": "/games/history/insights",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 1783,
+            "route": "/games/models/grouped",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        },
+        {
+          "context": {
+            "durationMs": 0,
+            "method": "GET",
+            "requestBytes": 0,
+            "responseBytes": 1618,
+            "route": "/monitor/stats",
+            "statusCode": 200
+          },
+          "level": "info",
+          "message": "incoming_request",
+          "ts": "2026-11-14T12:00:00.000Z"
+        }
+      ],
+      "service": "microservice-wordpass",
+      "total": 8
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/monitor/logs?limit=50"
+    },
+    "status": 200
+  },
+  "monitor/stats": {
+    "aiEngineCalls": [],
+    "body": {
+      "aiAuthCircuit": {
+        "cooldownMs": 0,
+        "failureStreak": 0,
+        "failureThreshold": 0,
+        "open": false,
+        "openedTotal": 0,
+        "openedUntil": null
+      },
+      "batch": {
+        "attemptsTotal": 0,
+        "createdTotal": 0,
+        "duplicatesTotal": 0,
+        "failedTotal": 0,
+        "lastRun": null,
+        "requestedTotal": 0,
+        "runsTotal": 0
+      },
+      "coverage": {
+        "catalogSource": "local-fallback",
+        "categoriesWithData": 2,
+        "categoryCoverageRatio": 0.08333333333333333,
+        "categoryCoverageRatioFromMatrix": 0.08333333333333333,
+        "matrixSlotsWithData": 2,
+        "totalCategories": 24
+      },
+      "generation": {
+        "attemptsTotal": 0,
+        "duplicateRatio": 0,
+        "failureRatio": 0,
+        "generatedDuplicateContentTotal": 0,
+        "generatedDuplicateTotal": 0,
+        "generatedFailedTotal": 0,
+        "generatedStoredTotal": 0,
+        "ingestedDocumentsTotal": 0,
+        "successRatio": 0
+      },
+      "outboundByOperation": [],
+      "processes": {
+        "createdTotal": 0,
+        "duplicateContentTotal": 0,
+        "duplicatesTotal": 0,
+        "failedItemsTotal": 0,
+        "failedTotal": 0,
+        "finishedTotal": 0,
+        "onlyDuplicatesTotal": 0,
+        "requestedTotal": 0,
+        "startedTotal": 0
+      },
+      "requestsByRoute": [
+        {
+          "method": "GET",
+          "route": "/catalogs",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/random",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/random",
+          "statusCode": 400,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/history",
+          "statusCode": 200,
+          "total": 2
+        },
+        {
+          "method": "GET",
+          "route": "/games/history/insights",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/grouped",
+          "statusCode": 200,
+          "total": 1
+        }
+      ],
+      "service": "microservice-wordpass",
+      "traffic": {
+        "outboundFailuresTotal": 0,
+        "outboundRequestBytesTotal": 0,
+        "outboundRequestsTotal": 0,
+        "outboundResponseBytesTotal": 0,
+        "requestBytesInTotal": 0,
+        "requestsReceivedTotal": 7,
+        "responseBytesOutTotal": 7229
+      },
+      "uptimeSeconds": 0
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/monitor/stats"
+    },
+    "status": 200
+  },
+  "monitor/stats after traffic": {
+    "aiEngineCalls": [],
+    "body": {
+      "aiAuthCircuit": {
+        "cooldownMs": 0,
+        "failureStreak": 0,
+        "failureThreshold": 0,
+        "open": false,
+        "openedTotal": 0,
+        "openedUntil": null
+      },
+      "batch": {
+        "attemptsTotal": 0,
+        "createdTotal": 0,
+        "duplicatesTotal": 0,
+        "failedTotal": 0,
+        "lastRun": null,
+        "requestedTotal": 0,
+        "runsTotal": 0
+      },
+      "coverage": {
+        "catalogSource": "local-fallback",
+        "categoriesWithData": 2,
+        "categoryCoverageRatio": 0.08333333333333333,
+        "categoryCoverageRatioFromMatrix": 0.08333333333333333,
+        "matrixSlotsWithData": 2,
+        "totalCategories": 24
+      },
+      "generation": {
+        "attemptsTotal": 5,
+        "duplicateRatio": 0.2,
+        "failureRatio": 0,
+        "generatedDuplicateContentTotal": 1,
+        "generatedDuplicateTotal": 1,
+        "generatedFailedTotal": 0,
+        "generatedStoredTotal": 4,
+        "ingestedDocumentsTotal": 2,
+        "successRatio": 0.8
+      },
+      "outboundByOperation": [
+        {
+          "operation": "generate",
+          "statusCode": 200,
+          "total": 5
+        },
+        {
+          "operation": "ingest",
+          "statusCode": 200,
+          "total": 1
+        }
+      ],
+      "processes": {
+        "createdTotal": 3,
+        "duplicateContentTotal": 0,
+        "duplicatesTotal": 0,
+        "failedItemsTotal": 0,
+        "failedTotal": 0,
+        "finishedTotal": 1,
+        "onlyDuplicatesTotal": 0,
+        "requestedTotal": 3,
+        "startedTotal": 1
+      },
+      "requestsByRoute": [
+        {
+          "method": "GET",
+          "route": "/catalogs",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/random",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/random",
+          "statusCode": 400,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/history",
+          "statusCode": 200,
+          "total": 2
+        },
+        {
+          "method": "GET",
+          "route": "/games/history/insights",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/models/grouped",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/monitor/stats",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/monitor/logs",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "POST",
+          "route": "/games/generate",
+          "statusCode": 400,
+          "total": 1
+        },
+        {
+          "method": "POST",
+          "route": "/games/generate",
+          "statusCode": 201,
+          "total": 2
+        },
+        {
+          "method": "POST",
+          "route": "/games/generate/process/wait",
+          "statusCode": 201,
+          "total": 1
+        },
+        {
+          "method": "POST",
+          "route": "/games/history/manual",
+          "statusCode": 201,
+          "total": 1
+        },
+        {
+          "method": "POST",
+          "route": "/games/history/manual",
+          "statusCode": 409,
+          "total": 1
+        },
+        {
+          "method": "PATCH",
+          "route": "/games/history/:entryId",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "PATCH",
+          "route": "/games/history/:entryId",
+          "statusCode": 404,
+          "total": 1
+        },
+        {
+          "method": "DELETE",
+          "route": "/games/history/:entryId",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "POST",
+          "route": "/games/ingest",
+          "statusCode": 202,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/games/generate/worker",
+          "statusCode": 200,
+          "total": 1
+        },
+        {
+          "method": "GET",
+          "route": "/metrics",
+          "statusCode": 200,
+          "total": 1
+        }
+      ],
+      "service": "microservice-wordpass",
+      "traffic": {
+        "outboundFailuresTotal": 0,
+        "outboundRequestBytesTotal": 180,
+        "outboundRequestsTotal": 6,
+        "outboundResponseBytesTotal": 1259,
+        "requestBytesInTotal": 887,
+        "requestsReceivedTotal": 21,
+        "responseBytesOutTotal": 21598
+      },
+      "uptimeSeconds": 0
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "method": "GET",
+      "url": "/monitor/stats"
+    },
+    "status": 200
+  },
+  "private docs": {
+    "aiEngineCalls": [],
+    "body": {
+      "components": {
+        "schemas": {}
+      },
+      "info": {
+        "title": "microservice-wordpass API",
+        "version": "0.1.0"
+      },
+      "openapi": "3.0.3",
+      "paths": {
+        "/catalogs": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/process": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/process/{taskId}": {
+          "get": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "taskId",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/process/wait": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/processes": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/worker": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/worker/start": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/generate/worker/stop": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/history": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/history/{entryId}": {
+          "delete": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "entryId",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          },
+          "patch": {
+            "parameters": [
+              {
+                "in": "path",
+                "name": "entryId",
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/history/insights": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/history/manual": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/ingest": {
+          "post": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/models/grouped": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/games/models/random": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/health": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/metrics": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/monitor/logs": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        },
+        "/monitor/stats": {
+          "get": {
+            "responses": {
+              "200": {
+                "description": "Default Response"
+              }
+            }
+          }
+        }
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [],
+    "request": {
+      "headers": {
+        "x-private-docs-token": "golden-docs-token"
+      },
+      "method": "GET",
+      "url": "/private/docs/json"
+    },
+    "status": 200
+  },
+  "worker state": {
+    "aiEngineCalls": [],
+    "body": {
+      "gameType": "word-pass",
+      "worker": {
+        "activatedAt": null,
+        "active": false,
+        "available": {
+          "categories": [
+            {
+              "id": "9",
+              "name": "General Knowledge"
+            },
+            {
+              "id": "10",
+              "name": "Entertainment: Books"
+            },
+            {
+              "id": "11",
+              "name": "Entertainment: Film"
+            },
+            {
+              "id": "12",
+              "name": "Entertainment: Music"
+            },
+            {
+              "id": "13",
+              "name": "Entertainment: Musicals & Theatres"
+            },
+            {
+              "id": "14",
+              "name": "Entertainment: Television"
+            },
+            {
+              "id": "15",
+              "name": "Entertainment: Video Games"
+            },
+            {
+              "id": "16",
+              "name": "Entertainment: Board Games"
+            },
+            {
+              "id": "17",
+              "name": "Science & Nature"
+            },
+            {
+              "id": "18",
+              "name": "Science: Computers"
+            },
+            {
+              "id": "19",
+              "name": "Science: Mathematics"
+            },
+            {
+              "id": "20",
+              "name": "Mythology"
+            },
+            {
+              "id": "21",
+              "name": "Sports"
+            },
+            {
+              "id": "22",
+              "name": "Geography"
+            },
+            {
+              "id": "23",
+              "name": "History"
+            },
+            {
+              "id": "24",
+              "name": "Politics"
+            },
+            {
+              "id": "25",
+              "name": "Art"
+            },
+            {
+              "id": "26",
+              "name": "Celebrities"
+            },
+            {
+              "id": "27",
+              "name": "Animals"
+            },
+            {
+              "id": "28",
+              "name": "Vehicles"
+            },
+            {
+              "id": "29",
+              "name": "Entertainment: Comics"
+            },
+            {
+              "id": "30",
+              "name": "Science: Gadgets"
+            },
+            {
+              "id": "31",
+              "name": "Entertainment: Japanese Anime & Manga"
+            },
+            {
+              "id": "32",
+              "name": "Entertainment: Cartoon & Animations"
+            }
+          ],
+          "difficultyLevels": [
+            {
+              "id": "easy",
+              "label": "easy",
+              "max": 33,
+              "min": 0
+            },
+            {
+              "id": "medium",
+              "label": "medium",
+              "max": 66,
+              "min": 34
+            },
+            {
+              "id": "hard",
+              "label": "hard",
+              "max": 100,
+              "min": 67
+            }
+          ]
+        },
+        "balance": {
+          "categories": [
+            {
+              "id": "9",
+              "missingToMax": 0,
+              "name": "General Knowledge",
+              "total": 2
+            },
+            {
+              "id": "10",
+              "missingToMax": 2,
+              "name": "Entertainment: Books",
+              "total": 0
+            },
+            {
+              "id": "11",
+              "missingToMax": 2,
+              "name": "Entertainment: Film",
+              "total": 0
+            },
+            {
+              "id": "12",
+              "missingToMax": 2,
+              "name": "Entertainment: Music",
+              "total": 0
+            },
+            {
+              "id": "13",
+              "missingToMax": 2,
+              "name": "Entertainment: Musicals & Theatres",
+              "total": 0
+            },
+            {
+              "id": "14",
+              "missingToMax": 2,
+              "name": "Entertainment: Television",
+              "total": 0
+            },
+            {
+              "id": "15",
+              "missingToMax": 2,
+              "name": "Entertainment: Video Games",
+              "total": 0
+            },
+            {
+              "id": "16",
+              "missingToMax": 2,
+              "name": "Entertainment: Board Games",
+              "total": 0
+            },
+            {
+              "id": "17",
+              "missingToMax": 1,
+              "name": "Science & Nature",
+              "total": 1
+            },
+            {
+              "id": "18",
+              "missingToMax": 2,
+              "name": "Science: Computers",
+              "total": 0
+            },
+            {
+              "id": "19",
+              "missingToMax": 2,
+              "name": "Science: Mathematics",
+              "total": 0
+            },
+            {
+              "id": "20",
+              "missingToMax": 2,
+              "name": "Mythology",
+              "total": 0
+            },
+            {
+              "id": "21",
+              "missingToMax": 2,
+              "name": "Sports",
+              "total": 0
+            },
+            {
+              "id": "22",
+              "missingToMax": 2,
+              "name": "Geography",
+              "total": 0
+            },
+            {
+              "id": "23",
+              "missingToMax": 2,
+              "name": "History",
+              "total": 0
+            },
+            {
+              "id": "24",
+              "missingToMax": 2,
+              "name": "Politics",
+              "total": 0
+            },
+            {
+              "id": "25",
+              "missingToMax": 2,
+              "name": "Art",
+              "total": 0
+            },
+            {
+              "id": "26",
+              "missingToMax": 2,
+              "name": "Celebrities",
+              "total": 0
+            },
+            {
+              "id": "27",
+              "missingToMax": 2,
+              "name": "Animals",
+              "total": 0
+            },
+            {
+              "id": "28",
+              "missingToMax": 2,
+              "name": "Vehicles",
+              "total": 0
+            },
+            {
+              "id": "29",
+              "missingToMax": 2,
+              "name": "Entertainment: Comics",
+              "total": 0
+            },
+            {
+              "id": "30",
+              "missingToMax": 2,
+              "name": "Science: Gadgets",
+              "total": 0
+            },
+            {
+              "id": "31",
+              "missingToMax": 2,
+              "name": "Entertainment: Japanese Anime & Manga",
+              "total": 0
+            },
+            {
+              "id": "32",
+              "missingToMax": 2,
+              "name": "Entertainment: Cartoon & Animations",
+              "total": 0
+            }
+          ],
+          "difficulties": [
+            {
+              "id": "easy",
+              "label": "easy",
+              "missingToMax": 0,
+              "total": 0
+            },
+            {
+              "id": "medium",
+              "label": "medium",
+              "missingToMax": 0,
+              "total": 0
+            },
+            {
+              "id": "hard",
+              "label": "hard",
+              "missingToMax": 0,
+              "total": 0
+            }
+          ],
+          "mostMissingCategoryId": "10",
+          "mostMissingDifficultyLevel": "easy"
+        },
+        "config": {
+          "countPerIteration": 10,
+          "selectedCategoryIds": [],
+          "selectedDifficultyLevels": []
+        },
+        "gameType": "word-pass",
+        "generatedSinceActivation": 0,
+        "intervalSeconds": 30,
+        "iterationInFlight": false,
+        "iterationsSinceActivation": 0,
+        "iterationsTotal": 0,
+        "lastError": null,
+        "lastIterationAt": null,
+        "lastIterationCreated": null,
+        "lastIterationDurationMs": null,
+        "totalObjectsInDb": 3
+      }
+    },
+    "contentType": "application/json",
+    "prismaCalls": [
+      {
+        "args": {
+          "where": {
+            "gameType": "word-pass"
+          }
+        },
+        "method": "count"
+      },
+      {
+        "args": {
+          "_count": {
+            "_all": true
+          },
+          "by": [
+            "difficultyPercentage"
+          ],
+          "where": {
+            "gameType": "word-pass"
+          }
+        },
+        "method": "groupBy"
+      }
+    ],
+    "request": {
+      "method": "GET",
+      "url": "/games/generate/worker"
+    },
+    "status": 200
+  }
+}
