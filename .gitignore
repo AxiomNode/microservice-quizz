@@ -42,3 +42,9 @@ Thumbs.db
 runtime/**/*.env
 *firebase*service-account*.json
 *service-account*.json
+
+# Local SQLite leftovers and tool scratch output (the service uses Postgres)
+src/prisma/data/
+*.db
+*.db-journal
+src/.coverage-agent.txt

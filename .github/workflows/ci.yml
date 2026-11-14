@@ -50,6 +50,17 @@ jobs:
           path: shared-sdk-client
           token: ${{ secrets.CROSS_REPO_READ_TOKEN }}
 
+      - name: Enforce tracked artifact policy
+        working-directory: microservice-quizz
+        run: |
+          set -euo pipefail
+          forbidden=$(git ls-files | grep -E '(^|/)src/(node_modules|dist)/|[.]db$|(^|/)src/[.]coverage-agent[.]txt$' || true)
+          if [[ -n "${forbidden}" ]]; then
+            echo "Forbidden tracked artifacts detected in repository index:"
+            echo "${forbidden}"
+            exit 1
+          fi
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
