@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * Golden snapshot of the black-box behaviour of the game service: HTTP responses, the prisma calls each request
+ * Golden snapshot of the black-box behaviour of each game: HTTP responses, the prisma calls each request
  * makes (including the `gameType` filter, stored query and uniquenessKey) and the ai-engine requests it sends.
  *
  * Fixtures live in ./fixtures/<gameType>.json. They were captured once from the pre-merge services
- * (quizz 03d2f89 and word-pass 0271474) and must never be regenerated from refactored code: a diff here means
- * behaviour changed. To (re)capture on purpose: GOLDEN_UPDATE=1 GOLDEN_GAME=<quiz|word-pass> npx vitest run golden
+ * (quizz 03d2f89 and word-pass 0271474, see fixtures/README.md) and must never be regenerated from refactored
+ * code: a diff here means behaviour changed. The merged service is replayed once per strategy.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url";
 
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { buildHarnessApp, createFakePrisma, installFetchStub, normalize } from "./harness.js";
+import { createFakePrisma, installFetchStub, normalize } from "./harness.js";
 import { GOLDEN_SEEDS, type GoldenGame } from "./seeds.js";
 
 const holder = vi.hoisted(() => ({ current: undefined as any }));
@@ -22,18 +22,8 @@ vi.mock("../../app/db/client.js", () => ({
   prisma: new Proxy({}, { get: (_target, key) => holder.current?.[key] }),
 }));
 
-import { loadConfig } from "../../app/config.js";
-import { gameRoutes } from "../../app/routes/games.js";
-import { healthRoutes } from "../../app/routes/health.js";
-import { monitoringRoutes } from "../../app/routes/monitoring.js";
-import { GenerationService } from "../../app/services/generationService.js";
-import { ModelGenerationJob } from "../../app/services/modelGenerationJob.js";
-import { RuntimeGenerationWorker } from "../../app/services/runtimeGenerationWorker.js";
-import { ServiceMetrics } from "../../app/services/serviceMetrics.js";
-
-const GAME = (process.env.GOLDEN_GAME ?? "quiz") as GoldenGame;
-const FIXTURE = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures", `${GAME}.json`);
-const seed = GOLDEN_SEEDS[GAME];
+import { buildServer } from "../../app/buildServer.js";
+import { GAME_STRATEGIES } from "../../app/games/registry.js";
 
 const ENV_KEYS = [
   "SERVICE_NAME",
@@ -45,11 +35,13 @@ const ENV_KEYS = [
   "GAME_TYPE",
 ];
 
-describe(`golden behaviour (${GAME})`, () => {
+describe.each(["quiz", "word-pass"] as GoldenGame[])("golden behaviour (%s)", (GAME) => {
+  const FIXTURE = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures", `${GAME}.json`);
+  const seed = GOLDEN_SEEDS[GAME];
   const savedEnv: Record<string, string | undefined> = {};
   let fake: ReturnType<typeof createFakePrisma>;
   let fetchStub: ReturnType<typeof installFetchStub>;
-  let built: Awaited<ReturnType<typeof buildHarnessApp>>;
+  let built: Awaited<ReturnType<typeof buildServer>>;
   const captured: Record<string, unknown> = {};
 
   beforeAll(async () => {
@@ -73,17 +65,7 @@ describe(`golden behaviour (${GAME})`, () => {
     fake = createFakePrisma(GAME);
     holder.current = fake.prisma;
     fetchStub = installFetchStub(GAME);
-    built = await buildHarnessApp({
-      loadConfig,
-      GenerationService: GenerationService as any,
-      ModelGenerationJob: ModelGenerationJob as any,
-      RuntimeGenerationWorker: RuntimeGenerationWorker as any,
-      ServiceMetrics: ServiceMetrics as any,
-      gameRoutes,
-      healthRoutes,
-      monitoringRoutes,
-      prisma: fake.prisma,
-    });
+    built = await buildServer(GAME_STRATEGIES[GAME]);
   });
 
   afterAll(async () => {

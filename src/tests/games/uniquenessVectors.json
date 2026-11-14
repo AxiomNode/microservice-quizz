@@ -1,0 +1,127 @@
+{
+  "_provenance": "Produced by the pre-merge services: quiz = microservice-quizz 03d2f89, word-pass = microservice-word-pass 0271474, each calling its own private buildUniquenessKey(gameType, payload). Do not regenerate from refactored code.",
+  "quiz": [
+    {
+      "name": "canonical quiz, one question with accents and punctuation",
+      "key": "8cd6a9dfb13f77e1b44baa8ddbce5566a386384e991a2825ae35fcdc25b8e905"
+    },
+    {
+      "name": "canonical quiz, two questions (order matters)",
+      "key": "c49a09dbb1d02e0f0447bd73a2f1fee4d3e28c3c1bdbd7ec96ddcd6ac5f7b4fa"
+    },
+    {
+      "name": "canonical quiz, the same two questions in the other order",
+      "key": "f3e6cfa7f49ecbfd606ffcfaf3fe57ba4ce0249b981946a7ac06620aea7fb846"
+    },
+    {
+      "name": "raw quiz questions at the top level (no game wrapper)",
+      "key": "5a53ff3124bce6a238ae562adb8691c23cb273ad66b0e26f2ef5748ac0b08fb9"
+    },
+    {
+      "name": "quiz with empty questions falls back to the stable JSON",
+      "key": "07d8643717cf46c237c4d6cfa21d537b07128db14c698aff51ba0c395c5af8a8"
+    },
+    {
+      "name": "canonical word-pass, unsorted words with accents and duplicates",
+      "key": "2ab77b47616be7da71167596d10a1d1db7bc483cbd4e39e03aad3634ea263cca"
+    },
+    {
+      "name": "canonical word-pass, the same words in the other order",
+      "key": "76d80fcb93a6d32401df7f935e080791ef2c9f8324558bb8ceddc3e31db580c3"
+    },
+    {
+      "name": "raw word-pass entries that only carry `answer` and `hint`",
+      "key": "d03a0ffe397db1fe47b36d0d47f82c1c7c16d0675e7b73f9475f905b788994a7"
+    },
+    {
+      "name": "word-pass words at the top level mixing `word` and `answer`",
+      "key": "e37459c7dc6a5ebe47e83301964366a38b9235a9b3cbc63099409e7db921cc48"
+    },
+    {
+      "name": "word-pass whose words normalise to nothing",
+      "key": "601fc9fa78531c276d20625f535aa9bb3ff099f400f096ff67614e2e8d3f4099"
+    },
+    {
+      "name": "word-pass with an empty words array falls back to the stable JSON",
+      "key": "0073485fac47127d7ac391cadb28e8d331cb36ff627979c8c3601379bda200a6"
+    },
+    {
+      "name": "payload that is neither quiz nor word-pass",
+      "key": "2cf25fd8bf26ee255799e97ad67a6b43f3ec960654158a2c0f70763be15fda0b"
+    },
+    {
+      "name": "null payload",
+      "key": "4b185742b15d4e5663652ff45b1b621ed62b21b19d3df27e14b6677d938468fb"
+    },
+    {
+      "name": "string payload",
+      "key": "36ca97f57459635480ca087f640181dbb5b25db182ded6a7fddc227a45a0c844"
+    },
+    {
+      "name": "array payload",
+      "key": "370de99fed0b737303f4e71ba24bb51f21dbc8b7946c0a993e6b9f68e666e08f"
+    }
+  ],
+  "word-pass": [
+    {
+      "name": "canonical quiz, one question with accents and punctuation",
+      "key": "37f989f35f87205b62b6c47c50ea1fc970647f0e6db945583a5d23e67e169343"
+    },
+    {
+      "name": "canonical quiz, two questions (order matters)",
+      "key": "bac7d0cdd193d88282974cc0e39ba59a5a08832869e9cf51b91f2815556232bc"
+    },
+    {
+      "name": "canonical quiz, the same two questions in the other order",
+      "key": "da4b42bc2c9dbc88748b325e6b49ab7ec8a962687226ceed45ecbf40ae17d341"
+    },
+    {
+      "name": "raw quiz questions at the top level (no game wrapper)",
+      "key": "8f4cde3853ad48a43334828782ce835c579aab60b6822a978ea1c458268b91d3"
+    },
+    {
+      "name": "quiz with empty questions falls back to the stable JSON",
+      "key": "644d60967707d380850de3ac0448d5a3e24c45f20b80da23b47c971476d2ac13"
+    },
+    {
+      "name": "canonical word-pass, unsorted words with accents and duplicates",
+      "key": "85e078ffe6b1bf8cde94823f4904cf02ce658a471442723f62114219ff67dea1"
+    },
+    {
+      "name": "canonical word-pass, the same words in the other order",
+      "key": "85e078ffe6b1bf8cde94823f4904cf02ce658a471442723f62114219ff67dea1"
+    },
+    {
+      "name": "raw word-pass entries that only carry `answer` and `hint`",
+      "key": "ae2e742075b880c000e51c860e560a105a64be11218c135286fe18ddfd181d62"
+    },
+    {
+      "name": "word-pass words at the top level mixing `word` and `answer`",
+      "key": "fb3b963a7d52d7fe90129999e093d7291ea05fbddb9e3ffe55eb27b76bc5e90d"
+    },
+    {
+      "name": "word-pass whose words normalise to nothing",
+      "key": "9ff3047b2fa7035e3b6caad4c92da82db052dc87c00e8bcf941f3e5502ee97a0"
+    },
+    {
+      "name": "word-pass with an empty words array falls back to the stable JSON",
+      "key": "9684f41b39feb76c1f19236098e44e23600e7cacd858b6969d08bceffbe53a24"
+    },
+    {
+      "name": "payload that is neither quiz nor word-pass",
+      "key": "c23be76d08986c6810fa274dd3a0e39f6ba183d8f6dd259ab287badb404167e4"
+    },
+    {
+      "name": "null payload",
+      "key": "8ae0f7da23154f0e7e7edb0dadc0ee115f5a2c3158f8694fcc06bfc09cda124d"
+    },
+    {
+      "name": "string payload",
+      "key": "304228b41f21d26187a3d55c466d835d96b9115c0b35d878943b967985e7ca9b"
+    },
+    {
+      "name": "array payload",
+      "key": "3a14800611fe4c019deff7e1023bc3ad38600a2a9a7885f318b4b36f69900fff"
+    }
+  ]
+}

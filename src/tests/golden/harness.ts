@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * @module harness - Builds the real service wiring (same modules and order as app/server.ts) on top of a
- * recording in-memory Prisma double and a stubbed ai-engine fetch, so black-box behaviour can be captured as
- * golden fixtures. It only touches the public entry points of the service, so the very same file runs against
- * both the pre-merge quiz and word-pass code bases.
+ * @module harness - Test doubles for the golden snapshots: a recording in-memory Prisma double and a stubbed
+ * ai-engine fetch. The service itself is the real one (app/buildServer.ts), so black-box behaviour is compared
+ * against fixtures captured from the pre-merge quiz and word-pass services.
  */
-import { buildGameServer } from "@axiomnode/shared-sdk-client";
 import { vi } from "vitest";
 
 import { GOLDEN_SEEDS, type GoldenGame } from "./seeds.js";
@@ -128,52 +126,6 @@ export function installFetchStub(game: GoldenGame) {
   });
   vi.stubGlobal("fetch", stub);
   return { calls, stub };
-}
-
-/** Same wiring and order as app/server.ts buildServer(); `modules` are the repo's own app modules. */
-export async function buildHarnessApp(modules: {
-  loadConfig: () => any;
-  GenerationService: new (config: any, observer: any) => any;
-  ModelGenerationJob: new (config: any, service: any) => any;
-  RuntimeGenerationWorker: new (service: any) => any;
-  ServiceMetrics: new (config: any) => any;
-  gameRoutes: any;
-  healthRoutes: any;
-  monitoringRoutes: any;
-  prisma: HarnessPrisma;
-}) {
-  const config = modules.loadConfig();
-  const metrics = new modules.ServiceMetrics(config);
-  const generationService = new modules.GenerationService(config, {
-    onModelStored: () => metrics.recordGenerationStored(),
-    onModelDuplicate: (reason: string) => metrics.recordGenerationDuplicate(reason),
-    onModelFailed: () => metrics.recordGenerationFailed(),
-    onAiAuthCircuitStateChanged: (state: unknown) => metrics.recordAiAuthCircuitState(state),
-    onProcessStarted: ({ taskId, requested }: any) => metrics.recordGenerationProcessStarted(requested, taskId),
-    onProcessItemProgress: (payload: any) =>
-      metrics.recordLog(
-        payload.status === "failed" || payload.status === "timeout" ? "error" : "info",
-        "generation_process_item_progress",
-        payload,
-      ),
-    onProcessCompleted: (snapshot: unknown) => metrics.recordGenerationProcessCompleted(snapshot),
-    onBatchCompleted: (result: unknown) => metrics.recordBatch(result),
-    onOutboundRequest: (metric: unknown) => metrics.recordOutboundRequest(metric),
-  });
-  const generationJob = new modules.ModelGenerationJob(config, generationService);
-  const runtimeGenerationWorker = new modules.RuntimeGenerationWorker(generationService);
-  const server = await buildGameServer({
-    config,
-    generationService,
-    generationJob,
-    runtimeGenerationWorker,
-    metrics,
-    disconnect: () => modules.prisma.$disconnect(),
-    registerHealthRoutes: (app: any) => modules.healthRoutes(app, generationService),
-    registerGameRoutes: modules.gameRoutes,
-    registerMonitoringRoutes: modules.monitoringRoutes,
-  } as any);
-  return { ...server, config, generationService, metrics };
 }
 
 /** Make output stable: sort object keys and replace uuids. */
