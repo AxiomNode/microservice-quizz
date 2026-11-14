@@ -7,7 +7,6 @@ import {
 } from "@axiomnode/shared-sdk-client";
 
 import { prisma } from "../db/client.js";
-import { quizStrategy } from "../games/quiz.js";
 import type { GameStrategy, GameType } from "../games/strategy.js";
 import { GenerationService } from "./generationService.js";
 
@@ -43,7 +42,7 @@ async function listDifficultyPercentages(gameType: string): Promise<DifficultyRo
  * It runs one cycle every interval and tracks counters that the backoffice can inspect.
  */
 export class RuntimeGenerationWorker extends GameRuntimeGenerationWorker<GameType, GenerationService> {
-  constructor(generationService: GenerationService, strategy: GameStrategy = quizStrategy) {
+  constructor(generationService: GenerationService, strategy: GameStrategy) {
     super(strategy.gameType, generationService, {
       countByGameType: (gameType) =>
         prisma.gameGeneration.count({

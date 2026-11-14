@@ -21,7 +21,7 @@ const LETTER_SETS = [
 const MAX_STORED_QUERY_LENGTH = 240;
 
 /** Hints that carry no information about the word (ai-engine placeholders); never used as the stored query. */
-function isGenericWordpassHint(hint: string): boolean {
+export function isGenericWordpassHint(hint: string): boolean {
   const normalized = hint
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")

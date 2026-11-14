@@ -1,47 +1,30 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { AppConfig } from "../app/config.js";
+import { GAME_FIXTURES, type GameFixture } from "./support/games.js";
 import { ServiceMetrics } from "../app/services/serviceMetrics.js";
 
-function createConfig(overrides: Partial<AppConfig> = {}): AppConfig {
-  return {
-    SERVICE_NAME: "microservice-quiz",
-    SERVICE_PORT: 7100,
-    NODE_ENV: "test",
-    AI_ENGINE_BASE_URL: "http://localhost:7001",
-    AI_ENGINE_GENERATION_ENDPOINT: "/generate/quiz",
-    AI_ENGINE_INGEST_ENDPOINT: "/ingest/quiz",
-    AI_ENGINE_CATALOGS_ENDPOINT: "/catalogs",
+function createConfigFor(fx: GameFixture, overrides: Partial<AppConfig> = {}): AppConfig {
+  return fx.createConfig({
     AI_ENGINE_INGEST_SOURCE: undefined,
     AI_ENGINE_API_KEY: undefined,
     AI_ENGINE_INGEST_API_KEY: undefined,
-    AI_ENGINE_REQUEST_TIMEOUT_MS: 420000,
-    GAME_GENERATION_ITEM_TIMEOUT_MS: 90000,
-    GAME_GENERATION_ITEM_RETRY_MAX_ATTEMPTS: 1,
     AI_ENGINE_RETRY_MAX_ATTEMPTS: 8,
     AI_ENGINE_RETRY_INITIAL_DELAY_MS: 5000,
     AI_ENGINE_RETRY_MAX_DELAY_MS: 30000,
-    AI_AUTH_CIRCUIT_FAILURE_THRESHOLD: 3,
-    AI_AUTH_CIRCUIT_COOLDOWN_MS: 300000,
     PRIVATE_DOCS_ENABLED: false,
-    PRIVATE_DOCS_PREFIX: "/private/docs",
     PRIVATE_DOCS_TOKEN: undefined,
     METRICS_LOG_BUFFER_SIZE: 2,
-    BATCH_GENERATION_ENABLED: true,
-    BATCH_GENERATION_INTERVAL_MINUTES: 20,
     BATCH_GENERATION_TARGET_COUNT: 40,
     BATCH_GENERATION_MAX_ATTEMPTS: 160,
     BATCH_GENERATION_CONCURRENCY: 2,
-    BATCH_GENERATION_MIN_DIFFICULTY: 25,
-    BATCH_GENERATION_MAX_DIFFICULTY: 85,
-    BATCH_GENERATION_MIN_QUESTIONS: 5,
-    BATCH_GENERATION_MAX_QUESTIONS: 12,
-    DATABASE_URL: "postgresql://quiz:quiz@localhost:7432/quizdb?schema=public",
     ...overrides,
-  };
+  });
 }
 
-describe("ServiceMetrics", () => {
+describe.each(GAME_FIXTURES)("ServiceMetrics ($gameType)", (fx) => {
+  const createConfig = (overrides: Partial<AppConfig> = {}) => createConfigFor(fx, overrides);
+
   it("tracks snapshots for traffic, generation, batch and process metrics", () => {
     const nowSpy = vi.spyOn(Date, "now");
     nowSpy.mockReturnValueOnce(1_000).mockReturnValueOnce(11_500);
@@ -99,7 +82,7 @@ describe("ServiceMetrics", () => {
     const snapshot = metrics.snapshot();
 
     expect(snapshot).toMatchObject({
-      service: "microservice-quiz",
+      service: fx.serviceName,
       uptimeSeconds: 10,
       traffic: {
         requestsReceivedTotal: 1,

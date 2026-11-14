@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildPrimaryWordpassText, wordpassStrategy } from "../../app/games/wordpass.js";
+import { buildPrimaryWordpassText, isGenericWordpassHint, wordpassStrategy } from "../../app/games/wordpass.js";
 
 describe("word-pass strategy", () => {
   it("exposes the word-pass identity and defaults (port unified to 7100)", () => {
@@ -96,11 +96,36 @@ describe("word-pass strategy", () => {
     });
   });
 
+  it("detects generic frequency hints and lets specific ones through", () => {
+    expect(isGenericWordpassHint("A Frequent Real Word")).toBe(true);
+    expect(isGenericWordpassHint("FrequencyWords list")).toBe(true);
+    expect(isGenericWordpassHint("Word frequency table")).toBe(true);
+    expect(isGenericWordpassHint("frequent term")).toBe(true);
+    expect(isGenericWordpassHint("A tool for cutting wood")).toBe(false);
+  });
+
+  it("uses the hint of an answer entry as the stored text and falls back to the supplied text, then to a constant", () => {
+    expect(
+      buildPrimaryWordpassText({ game: { words: [{ hint: "Definicion de casa: termino comun.", answer: "casa" }] } }, "fallback"),
+    ).toBe("Definicion de casa: termino comun.");
+    expect(buildPrimaryWordpassText({}, "  fallback text  ")).toBe("fallback text");
+    expect(buildPrimaryWordpassText({}, "   ")).toBe("word-pass");
+  });
+
   it("builds stored and manual queries from the content", () => {
     const content = { game: { words: [{ word: "Sigma", definition: "A Greek letter" }] } };
     expect(wordpassStrategy.storedQuery(content, "requested prompt")).toBe("A Greek letter");
     expect(wordpassStrategy.manualQuery("History", 40, content)).toBe("A Greek letter");
     expect(wordpassStrategy.manualQuery("History", 40, { words: [] })).toBe("History difficulty 40");
+  });
+
+  it("sanitizes generated payloads: letter is optional, definition and word are required", () => {
+    const expected = { game: { words: [{ id: "w-1", definition: "Pista", word: "Algo" }] } };
+    expect(() => wordpassStrategy.canonicalize(null)).toThrow("Generated payload is not a valid object");
+    expect(wordpassStrategy.canonicalize({ words: [{ letter: "A", hint: "Pista", answer: "Algo" }] })).toEqual(expected);
+    expect(wordpassStrategy.canonicalize({ words: [{ hint: "Pista", answer: "Algo" }] })).toEqual(expected);
+    expect(() => wordpassStrategy.canonicalize({ words: [{ letter: "A", answer: "Algo" }] })).toThrow("missing the 'definition'");
+    expect(() => wordpassStrategy.canonicalize({ words: [{ letter: "A", hint: "Pista" }] })).toThrow("missing the 'word'");
   });
 
   it("canonicalizes word-pass models and rejects empty ones", () => {

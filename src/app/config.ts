@@ -1,7 +1,6 @@
 import { createGameConfigSchema, loadGameConfig } from "@axiomnode/shared-sdk-client";
 import { z } from "zod";
 
-import { quizStrategy } from "./games/quiz.js";
 import type { GameStrategy } from "./games/strategy.js";
 
 /** @module config — Zod-validated environment configuration of the game microservice. */
@@ -21,6 +20,6 @@ function createConfigSchema(strategy: GameStrategy) {
 export type AppConfig = z.infer<ReturnType<typeof createConfigSchema>>;
 
 /** Parse and validate environment variables into an AppConfig, throwing on invalid values. */
-export function loadConfig(strategy: GameStrategy = quizStrategy): AppConfig {
+export function loadConfig(strategy: GameStrategy): AppConfig {
   return loadGameConfig(createConfigSchema(strategy));
 }

@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
 
-import { quizStrategy } from "../games/quiz.js";
 import type { GameStrategy } from "../games/strategy.js";
 
 /** @module health — Lightweight health-check endpoint of the game microservice. */
@@ -19,8 +18,8 @@ export interface CatalogReadinessSource {
  */
 export async function healthRoutes(
   app: FastifyInstance,
-  readiness?: CatalogReadinessSource,
-  strategy: GameStrategy = quizStrategy
+  readiness: CatalogReadinessSource | undefined,
+  strategy: GameStrategy
 ): Promise<void> {
   app.get("/health", async () => {
     return {
