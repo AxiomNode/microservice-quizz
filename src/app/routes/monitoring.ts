@@ -6,6 +6,8 @@ import {
 } from "@axiomnode/shared-sdk-client";
 import { ServiceMetrics } from "../services/serviceMetrics.js";
 import { GenerationService } from "../services/generationService.js";
+import { quizStrategy } from "../games/quiz.js";
+import type { GameStrategy } from "../games/strategy.js";
 
 /** @module monitoring — Routes for service stats, logs, and Prometheus-compatible metrics. */
 
@@ -13,14 +15,18 @@ import { GenerationService } from "../services/generationService.js";
 export async function monitoringRoutes(
   app: FastifyInstance,
   metrics: ServiceMetrics,
-  generationService: GenerationService
+  generationService: GenerationService,
+  strategy: GameStrategy = quizStrategy
 ): Promise<void> {
   app.get("/monitor/stats", async (_request, reply) => {
     const stats = metrics.snapshot();
     const catalogs = generationService.getCatalogSnapshot();
     const grouped = await generationService.groupedModelsSummary();
 
-    return reply.send(buildMonitoringStatsPayload(stats, catalogs, grouped));
+    return reply.send(buildMonitoringStatsPayload(stats, catalogs, grouped, {
+        includeMatrixCoverage: strategy.includeMatrixCoverage
+      })
+    );
   });
 
   app.get("/monitor/logs", async (request, reply) => {
@@ -35,7 +41,7 @@ export async function monitoringRoutes(
 
     const logs = metrics.recentLogs(parsed.data.limit);
 
-    return reply.send(buildMonitoringLogsPayload("microservice-quiz", logs));
+    return reply.send(buildMonitoringLogsPayload(strategy.serviceName, logs));
   });
 
   app.get("/metrics", async (_request, reply) => {

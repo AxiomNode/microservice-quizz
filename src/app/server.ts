@@ -4,6 +4,8 @@ import { buildGameServer } from "@axiomnode/shared-sdk-client";
 
 import { loadConfig } from "./config.js";
 import { prisma } from "./db/client.js";
+import { quizStrategy } from "./games/quiz.js";
+import type { GameStrategy } from "./games/strategy.js";
 import { gameRoutes } from "./routes/games.js";
 import { healthRoutes } from "./routes/health.js";
 import { GenerationService } from "./services/generationService.js";
@@ -15,8 +17,8 @@ import { startListeningFirst } from "./services/startup.js";
 
 /** @module server — Fastify application bootstrap, hooks, and startup orchestration. */
 
-async function buildServer() {
-  const config = loadConfig();
+async function buildServer(strategy: GameStrategy) {
+  const config = loadConfig(strategy);
   const metrics = new ServiceMetrics(config);
 
   const generationService = new GenerationService(config, {
@@ -33,9 +35,9 @@ async function buildServer() {
     onProcessCompleted: (snapshot) => metrics.recordGenerationProcessCompleted(snapshot),
     onBatchCompleted: (result) => metrics.recordBatch(result),
     onOutboundRequest: (metric) => metrics.recordOutboundRequest(metric)
-  });
+  }, strategy);
   const generationJob = new ModelGenerationJob(config, generationService);
-  const runtimeGenerationWorker = new RuntimeGenerationWorker(generationService);
+  const runtimeGenerationWorker = new RuntimeGenerationWorker(generationService, strategy);
   return buildGameServer({
     config,
     generationService,
@@ -43,18 +45,21 @@ async function buildServer() {
     runtimeGenerationWorker,
     metrics,
     disconnect: () => prisma.$disconnect(),
-    registerHealthRoutes: (app) => healthRoutes(app, generationService),
-    registerGameRoutes: gameRoutes,
-    registerMonitoringRoutes: monitoringRoutes,
+    registerHealthRoutes: (app) => healthRoutes(app, generationService, strategy),
+    registerGameRoutes: (app, service, onIngestedDocuments, worker) =>
+      gameRoutes(app, service, onIngestedDocuments, worker, strategy),
+    registerMonitoringRoutes: (app, serviceMetrics, service) =>
+      monitoringRoutes(app, serviceMetrics, service, strategy),
   });
 }
 
 async function main() {
+  const strategy = quizStrategy;
   // Listen first; catalogs are refreshed in the background (with the same ai-engine retries) and /health
   // reports `catalogReady` honestly instead of blocking startup while ai-engine is unreachable.
   await startListeningFirst({
-    ...(await buildServer()),
-    gameType: "quiz",
+    ...(await buildServer(strategy)),
+    gameType: strategy.gameType,
   });
 }
 

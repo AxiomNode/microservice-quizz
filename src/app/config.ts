@@ -1,20 +1,26 @@
 import { createGameConfigSchema, loadGameConfig } from "@axiomnode/shared-sdk-client";
 import { z } from "zod";
 
-/** @module config — Zod-validated environment configuration for the quiz microservice. */
+import { quizStrategy } from "./games/quiz.js";
+import type { GameStrategy } from "./games/strategy.js";
 
-const ConfigSchema = createGameConfigSchema({
-  serviceName: "microservice-quiz",
-  servicePort: 7100,
-  generationEndpoint: "/generate/quiz",
-  ingestEndpoint: "/ingest/quiz",
-  maxQuestionsDefault: 12
-});
+/** @module config — Zod-validated environment configuration of the game microservice. */
+
+/** Environment schema whose defaults (service name, port, endpoints, batch size) come from the game strategy. */
+function createConfigSchema(strategy: GameStrategy) {
+  return createGameConfigSchema({
+    serviceName: strategy.serviceName,
+    servicePort: strategy.defaults.port,
+    generationEndpoint: strategy.defaults.generationEndpoint,
+    ingestEndpoint: strategy.defaults.ingestEndpoint,
+    maxQuestionsDefault: strategy.defaults.maxItemsDefault
+  });
+}
 
 /** Fully validated application configuration derived from environment variables. */
-export type AppConfig = z.infer<typeof ConfigSchema>;
+export type AppConfig = z.infer<ReturnType<typeof createConfigSchema>>;
 
 /** Parse and validate environment variables into an AppConfig, throwing on invalid values. */
-export function loadConfig(): AppConfig {
-  return loadGameConfig(ConfigSchema);
+export function loadConfig(strategy: GameStrategy = quizStrategy): AppConfig {
+  return loadGameConfig(createConfigSchema(strategy));
 }

@@ -604,12 +604,12 @@ describe("GenerationService", () => {
       },
     });
     expect(() => serviceAny.normalizeManualContent({})).toThrow("Generated quiz has no questions");
-    expect(serviceAny.buildUniquenessKey("quiz", {
+    expect(serviceAny.buildUniquenessKey({
       questions: [{ question: "¿Capital de Perú?" }],
-    }, "ES")).toBe(
-      serviceAny.buildUniquenessKey("quiz", {
+    })).toBe(
+      serviceAny.buildUniquenessKey({
         questions: [{ question: "capital de peru" }],
-      }, "es")
+      })
     );
     expect(serviceAny.extractDifficultyFromRequest({ difficulty_percentage: "120" })).toBe(100);
     expect(serviceAny.extractDifficultyFromRequest({ difficulty_percentage: -5 })).toBe(0);
@@ -850,8 +850,6 @@ describe("GenerationService", () => {
       category_id: "9",
       category_name: "General Knowledge",
     });
-    expect(serviceAny.extractPrimaryContentSignature("wordpass", { words: [{ word: "Árbol" }, { word: "Casa" }] })).toBe("arbol|casa");
-    expect(serviceAny.extractStringArrayFromObjects({ words: [{ answer: "Uno" }, { nope: true }] }, "words", "answer")).toEqual(["Uno"]);
     expect(serviceAny.parseJson("not-json")).toBe("not-json");
     expect(serviceAny.resolveRequestedItemCount({ itemCount: 3, numQuestions: 7 })).toBe(3);
     expect(serviceAny.resolveRequestedItemCount({ numQuestions: 7 })).toBe(7);
@@ -1054,8 +1052,7 @@ describe("GenerationService", () => {
 describe("GenerationService content signature helpers", () => {
   it("returns no primary signature for empty or non-object payloads", () => {
     const service = new GenerationService(createConfig()) as any;
-    expect(service.extractPrimaryContentSignature("quiz", null)).toBeNull();
-    expect(service.extractPrimaryContentSignature("quiz", {})).toBeNull();
-    expect(service.extractPrimaryContentSignature("word-pass", {})).toBeNull();
+    expect(service.extractPrimaryContentSignature(null)).toBeNull();
+    expect(service.extractPrimaryContentSignature({})).toBeNull();
   });
 });
