@@ -1,7 +1,7 @@
 # AGENTS
 
 ## Repo purpose
-Quiz generation and persistence microservice backed by ai-engine and PostgreSQL.
+Generated-game (quiz and word-pass) generation and persistence microservice backed by ai-engine and PostgreSQL. `GAME_TYPE` selects the game; per-game rules live in `src/app/games/`.
 
 ## Key paths
 - src/: Fastify routes, services, Prisma, tests
@@ -21,3 +21,5 @@ Quiz generation and persistence microservice backed by ai-engine and PostgreSQL.
 - Preserve API behavior for generate/ingest/model endpoints.
 - Keep Prisma and route validation aligned.
 - Update docs when ports/routes/workflow assumptions change.
+- Game-specific behaviour belongs in a `GameStrategy` (`src/app/games/`), never in `if (gameType === ...)` branches. Do not change `uniquenessKey` inputs: `tests/games/uniquenessVectors.json` pins them.
+- Tests run once per game (`tests/support/games.ts`); golden fixtures in `tests/golden/fixtures` must never be regenerated from refactored code.

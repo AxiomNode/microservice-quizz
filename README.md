@@ -4,7 +4,7 @@ Last updated: 2026-05-08.
 
 [![codecov](https://codecov.io/gh/AxiomNode/microservice-quizz/branch/main/graph/badge.svg)](https://codecov.io/gh/AxiomNode/microservice-quizz)
 
-TypeScript microservice for quiz generation and persistence.
+TypeScript microservice for generated-game content (quiz and word-pass) and its persistence. One code base and one image; `GAME_TYPE` (`quiz` | `word-pass`) selects the game per process. See `docs/architecture/README.md`.
 
 ## Responsibility
 
@@ -70,6 +70,8 @@ npm install
 npm run db:push
 npm run dev
 ```
+
+Set `GAME_TYPE=word-pass` in `src/.env` to run the word-pass game instead (default `quiz`, transitional). `docker compose up --build` from this folder starts both games from the same image: quiz on `localhost:7100` and word-pass on `localhost:7101`, each with its own PostgreSQL for now.
 
 Inject real secrets from the private `secrets` repository when needed:
 
