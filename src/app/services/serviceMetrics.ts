@@ -4,7 +4,7 @@ import type { AppConfig } from "../config.js";
 import type { OutboundRequestMetric } from "./aiEngineClient.js";
 import type { BatchGenerationResult, GenerationProcessSnapshot } from "./generationService.js";
 
-/** @module serviceMetrics — Quiz wrapper around the shared generated-game metrics collector. */
+/** @module serviceMetrics — Game wrapper around the shared generated-game metrics collector. */
 
 export class ServiceMetrics extends GameServiceMetrics<
   AppConfig,

@@ -1,6 +1,9 @@
 import { FastifyInstance } from "fastify";
 
-/** @module health — Lightweight health-check endpoint for the quiz microservice. */
+import { quizStrategy } from "../games/quiz.js";
+import type { GameStrategy } from "../games/strategy.js";
+
+/** @module health — Lightweight health-check endpoint of the game microservice. */
 
 /** Optional readiness source: the generation service knows whether catalogs came from ai-engine. */
 export interface CatalogReadinessSource {
@@ -14,12 +17,16 @@ export interface CatalogReadinessSource {
  * Always answers HTTP 200 (liveness). `catalogReady` is false while the service still runs on the local
  * fallback catalogs, for example while ai-engine is unreachable at startup.
  */
-export async function healthRoutes(app: FastifyInstance, readiness?: CatalogReadinessSource): Promise<void> {
+export async function healthRoutes(
+  app: FastifyInstance,
+  readiness?: CatalogReadinessSource,
+  strategy: GameStrategy = quizStrategy
+): Promise<void> {
   app.get("/health", async () => {
     return {
       status: "ok",
-      service: "microservice-quiz",
-      gameType: "quiz",
+      service: strategy.serviceName,
+      gameType: strategy.gameType,
       ...(readiness
         ? {
             catalogReady: readiness.isCatalogReady(),

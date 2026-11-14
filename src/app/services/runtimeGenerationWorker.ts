@@ -7,10 +7,12 @@ import {
 } from "@axiomnode/shared-sdk-client";
 
 import { prisma } from "../db/client.js";
+import { quizStrategy } from "../games/quiz.js";
+import type { GameStrategy, GameType } from "../games/strategy.js";
 import { GenerationService } from "./generationService.js";
 
 export type { RuntimeDifficultyLevel, RuntimeGenerationWorkerStartInput };
-export type RuntimeGenerationWorkerSnapshot = SharedRuntimeGenerationWorkerSnapshot<"quiz">;
+export type RuntimeGenerationWorkerSnapshot = SharedRuntimeGenerationWorkerSnapshot<GameType>;
 
 type DifficultyRow = { difficultyPercentage: number | null };
 
@@ -40,9 +42,9 @@ async function listDifficultyPercentages(gameType: string): Promise<DifficultyRo
  * Runtime worker that starts/stops periodic AI generation cycles without restarting the service.
  * It runs one cycle every interval and tracks counters that the backoffice can inspect.
  */
-export class RuntimeGenerationWorker extends GameRuntimeGenerationWorker<"quiz", GenerationService> {
-  constructor(generationService: GenerationService) {
-    super("quiz", generationService, {
+export class RuntimeGenerationWorker extends GameRuntimeGenerationWorker<GameType, GenerationService> {
+  constructor(generationService: GenerationService, strategy: GameStrategy = quizStrategy) {
+    super(strategy.gameType, generationService, {
       countByGameType: (gameType) =>
         prisma.gameGeneration.count({
           where: { gameType },

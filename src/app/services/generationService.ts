@@ -6,11 +6,8 @@ import {
   buildCategoryDimensionMatrix,
   buildGameRandomModelsWhere,
   buildStoredRequestPayload,
-  canonicalizeQuizModel,
   createGameGenerationProcessTask,
   ensureAiAuthCircuitClosedState,
-  extractQuizQuestionTexts,
-  extractStringArrayFromObjects as extractStringArrayFromObjectsShared,
   extractAiEngineStatusCode as extractAiEngineStatusCodeShared,
   extractDifficultyFromRequest as extractDifficultyFromRequestShared,
   getGameCategoryOrThrow,
@@ -22,7 +19,6 @@ import {
   normalizeGameHistoryLimit,
   normalizeGameHistoryPage,
   pickRandomGameModels,
-  normalizeContentToken as normalizeContentTokenShared,
   parseJson as parseJsonShared,
   parseStoredJsonSafely as parseStoredJsonSafelyShared,
   pickRange as pickRangeShared,
@@ -43,6 +39,8 @@ import { createHash, randomUUID } from "node:crypto";
 
 import { AppConfig } from "../config.js";
 import { prisma } from "../db/client.js";
+import { quizStrategy } from "../games/quiz.js";
+import type { GameStrategy } from "../games/strategy.js";
 import {
   AiEngineClient,
   AiEngineClientObserver,
@@ -55,7 +53,7 @@ import {
   GameCategory
 } from "./triviaCategories.js";
 
-/** @module generationService — Core quiz generation logic: AI calls, dedup, batch runs, and history. */
+/** @module generationService — Game-agnostic generation logic (AI calls, dedup, batch runs, history), driven by a GameStrategy. */
 
 /** Snapshot of the currently loaded game catalogs (categories only — English-only stack). */
 export interface CatalogSnapshot {
@@ -94,7 +92,7 @@ export interface GenerationServiceObserver {
   onOutboundRequest?: AiEngineClientObserver["onOutboundRequest"];
 }
 
-/** Input payload for a single quiz generation request. */
+/** Input payload for a single generation request. */
 export interface GenerateInput {
   categoryId: string;
   difficultyPercentage?: number;
@@ -103,7 +101,7 @@ export interface GenerateInput {
   requestedBy?: "api" | "backoffice";
 }
 
-/** Input payload for manually creating a quiz model from the backoffice. */
+/** Input payload for manually creating a game model from the backoffice. */
 export interface ManualModelInput {
   categoryId: string;
   difficultyPercentage: number;
@@ -127,10 +125,12 @@ export interface GenerationProcessInput extends GenerateInput {
 export type GenerationProcessSnapshot = SharedGenerationProcessSnapshot;
 
 interface ResolvedGenerateInput extends GenerateInput {
+  /** Extra ai-engine query parameters chosen by the game strategy (for example word-pass `letters`). */
+  requestExtras?: Record<string, string>;
   query: string;
 }
 
-/** Filters for retrieving random quiz models from the database. */
+/** Filters for retrieving random game models from the database. */
 export interface RandomModelsFilters {
   count: number;
   categoryId?: string;
@@ -140,7 +140,7 @@ export interface RandomModelsFilters {
   createdBefore?: Date;
 }
 
-/** Filters for retrieving quiz generation history. */
+/** Filters for retrieving generation history. */
 export interface HistoryFilters {
   categoryId?: string;
   difficultyPercentage?: number;
@@ -246,16 +246,7 @@ const CONTEXT_FRAMES = [
   "interdisciplinary view"
 ];
 
-const QUESTION_STYLES = [
-  "direct questions",
-  "contextual questions",
-  "reasoning questions",
-  "general culture questions",
-  "chronological questions",
-  "comparative questions"
-];
-
-/** Orchestrates quiz generation, deduplication, batch runs, and catalog management. */
+/** Orchestrates generation for one game: deduplication, batch runs, and catalog management. */
 export class GenerationService {
   private readonly client: AiEngineClient;
   private readonly generationProcesses = new Map<string, GenerationProcessTask>();
@@ -274,7 +265,9 @@ export class GenerationService {
 
   constructor(
     private readonly config: AppConfig,
-    private readonly observer?: GenerationServiceObserver
+    private readonly observer?: GenerationServiceObserver,
+    /** Transitional default (quiz) until GAME_TYPE becomes mandatory. */
+    private readonly strategy: GameStrategy = quizStrategy
   ) {
     this.aiAuthFailureThreshold = config.AI_AUTH_CIRCUIT_FAILURE_THRESHOLD;
     this.aiAuthCircuitCooldownMs = config.AI_AUTH_CIRCUIT_COOLDOWN_MS;
@@ -363,8 +356,8 @@ export class GenerationService {
     const difficulty = Math.max(0, Math.min(100, Math.trunc(input.difficultyPercentage)));
 
     const normalizedContent = this.normalizeManualContent(input.content);
-    const query = `${category.name} manual curation difficulty ${difficulty}`;
-    const uniquenessKey = this.buildUniquenessKey("quiz", normalizedContent);
+    const query = this.strategy.manualQuery(category.name, difficulty, normalizedContent);
+    const uniquenessKey = this.buildUniquenessKey(normalizedContent);
 
     const existing = await prisma.gameGeneration.findFirst({
       where: { uniquenessKey },
@@ -377,7 +370,7 @@ export class GenerationService {
 
     const created = await prisma.gameGeneration.create({
       data: {
-        gameType: "quiz",
+        gameType: this.strategy.gameType,
         query,
         status: input.status ?? "manual",
         categoryId: category.id,
@@ -400,7 +393,7 @@ export class GenerationService {
     const deleted = await prisma.gameGeneration.deleteMany({
       where: {
         id,
-        gameType: "quiz",
+        gameType: this.strategy.gameType,
       },
     });
     return deleted.count > 0;
@@ -408,7 +401,7 @@ export class GenerationService {
 
   async updateHistoryItem(id: string, input: ManualModelUpdateInput): Promise<StoredGameModel | null> {
     const existing = await prisma.gameGeneration.findFirst({
-      where: { id, gameType: "quiz" },
+      where: { id, gameType: this.strategy.gameType },
       select: GenerationService.storedModelSelect,
     });
 
@@ -430,8 +423,8 @@ export class GenerationService {
     const normalizedContent = input.content
       ? this.normalizeManualContent(input.content)
       : this.normalizeManualContent(currentResponse);
-    const query = `${category.name} manual curation difficulty ${nextDifficulty}`;
-    const uniquenessKey = this.buildUniquenessKey("quiz", normalizedContent);
+    const query = this.strategy.manualQuery(category.name, nextDifficulty, normalizedContent);
+    const uniquenessKey = this.buildUniquenessKey(normalizedContent);
 
     const duplicate = await prisma.gameGeneration.findFirst({
       where: {
@@ -585,7 +578,7 @@ export class GenerationService {
 
   async randomModels(filters: RandomModelsFilters): Promise<StoredGameModel[]> {
     const where: Prisma.GameGenerationWhereInput = buildGameRandomModelsWhere(
-      "quiz",
+      this.strategy.gameType,
       filters,
       (categoryId) => this.getCategoryOrThrow(categoryId).id
     );
@@ -625,7 +618,7 @@ export class GenerationService {
 
     const rows = await prisma.gameGeneration.groupBy({
       by: ["categoryId", "categoryName"],
-      where: { gameType: "quiz" },
+      where: { gameType: this.strategy.gameType },
       _count: { _all: true }
     });
 
@@ -642,7 +635,7 @@ export class GenerationService {
   async history(limit = 20, filters?: HistoryFilters): Promise<StoredGameModel[]> {
     const normalizedLimit = normalizeGameHistoryLimit(limit);
     const rows = await prisma.gameGeneration.findMany({
-      where: buildGameHistoryWhere("quiz", filters, (categoryId) => this.getCategoryOrThrow(categoryId).id),
+      where: buildGameHistoryWhere(this.strategy.gameType, filters, (categoryId) => this.getCategoryOrThrow(categoryId).id),
       select: GenerationService.storedModelSelect,
       orderBy: { createdAt: "desc" },
       take: normalizedLimit
@@ -654,7 +647,7 @@ export class GenerationService {
   async historyPage(limit = 20, options?: HistoryFilters & { page?: number; pageSize?: number }): Promise<HistoryPageResult> {
     const { normalizedPage, normalizedPageSize, skip } = normalizeGameHistoryPage(limit, options);
     const where = buildGameHistoryWhere(
-      "quiz",
+      this.strategy.gameType,
       options,
       (categoryId) => this.getCategoryOrThrow(categoryId).id,
       { includeStatus: true }
@@ -685,7 +678,7 @@ export class GenerationService {
    */
   async historyInsights(filters?: HistoryFilters): Promise<HistoryInsightsResult> {
     const where = buildGameHistoryWhere(
-      "quiz",
+      this.strategy.gameType,
       filters,
       (categoryId) => this.getCategoryOrThrow(categoryId).id,
       { includeStatus: true }
@@ -844,12 +837,6 @@ export class GenerationService {
       CONTEXT_FRAMES[
         Math.floor(attempt / (categoryCount * PROMPT_VARIANTS.length)) % CONTEXT_FRAMES.length
       ];
-    const style = QUESTION_STYLES[
-      Math.floor(
-        attempt /
-          (categoryCount * PROMPT_VARIANTS.length * CONTEXT_FRAMES.length)
-      ) % QUESTION_STYLES.length
-    ];
 
     const difficulty = this.pickRange(
       this.config.BATCH_GENERATION_MIN_DIFFICULTY,
@@ -860,11 +847,18 @@ export class GenerationService {
       this.config.BATCH_GENERATION_MAX_QUESTIONS
     );
 
+    const prompt = this.strategy.nextPromptVariant({
+      attempt,
+      base: `${category.name} ${variant} ${frame}`,
+      cycleLength: categoryCount * PROMPT_VARIANTS.length * CONTEXT_FRAMES.length
+    });
+
     return {
       categoryId: category.id,
       difficultyPercentage: difficulty,
       numQuestions,
-      query: `${category.name} ${variant} ${frame} ${style} trivia multiple choice avoid true false`
+      ...(prompt.requestExtras ? { requestExtras: prompt.requestExtras } : {}),
+      query: prompt.query
     };
   }
 
@@ -897,7 +891,7 @@ export class GenerationService {
 
     const requestPayload: Record<string, string> = {
       query: input.query,
-      max_tokens: "512",
+      max_tokens: String(this.strategy.maxTokens),
       use_cache: "true"
     };
 
@@ -906,6 +900,11 @@ export class GenerationService {
     }
     if (typeof input.difficultyPercentage === "number") {
       requestPayload.difficulty_percentage = String(input.difficultyPercentage);
+    }
+    for (const [key, value] of Object.entries(input.requestExtras ?? {})) {
+      if (value) {
+        requestPayload[key] = value;
+      }
     }
 
     this.ensureAiAuthCircuitClosed();
@@ -921,7 +920,7 @@ export class GenerationService {
     }
 
     const sanitizedResponsePayload = this.sanitizeGeneratedPayload(responsePayload);
-    const uniquenessKey = this.buildUniquenessKey("quiz", sanitizedResponsePayload);
+    const uniquenessKey = this.buildUniquenessKey(sanitizedResponsePayload);
 
     const existingContent = await prisma.gameGeneration.findFirst({
       where: { uniquenessKey },
@@ -942,8 +941,8 @@ export class GenerationService {
     try {
       await prisma.gameGeneration.create({
         data: {
-          gameType: "quiz",
-          query: input.query,
+          gameType: this.strategy.gameType,
+          query: this.strategy.storedQuery(sanitizedResponsePayload, input.query),
           status: "created",
           categoryId: metadata?.category?.id ?? category.id,
           categoryName: metadata?.category?.name ?? category.name,
@@ -990,7 +989,7 @@ export class GenerationService {
   private mapStoredHistoryModel(item: StoredGameRow): StoredGameModel {
     return mapStoredHistoryModelShared<StoredGameModel>(
       item,
-      "quiz",
+      this.strategy.gameType,
       (value) => this.parseStoredJsonSafely(value),
       (payload, itemId, gameLabel) => this.validateStoredHistoryPayload(payload, itemId, gameLabel),
     );
@@ -999,7 +998,7 @@ export class GenerationService {
   private mapStoredModelsSafely(items: StoredGameRow[]): StoredGameModel[] {
     return mapStoredModelsSafelyShared(
       items,
-      "Skipping invalid stored quiz model",
+      `Skipping invalid stored ${this.strategy.gameType} model`,
       (item) => this.mapStoredModel(item),
     );
   }
@@ -1022,7 +1021,7 @@ export class GenerationService {
   }
 
   private sanitizeGeneratedPayload(payload: unknown): unknown {
-    return canonicalizeQuizModel(payload);
+    return this.strategy.canonicalize(payload);
   }
 
   private parseJson(value: string): unknown {
@@ -1030,52 +1029,25 @@ export class GenerationService {
   }
 
   private normalizeManualContent(content: Record<string, unknown>): Record<string, unknown> {
-    return canonicalizeQuizModel(content) as unknown as Record<string, unknown>;
+    return this.strategy.canonicalize(content) as Record<string, unknown>;
   }
 
-  private buildUniquenessKey(gameType: string, payload: unknown): string {
-    const primarySignature = this.extractPrimaryContentSignature(gameType, payload);
+  private buildUniquenessKey(payload: unknown): string {
+    const primarySignature = this.extractPrimaryContentSignature(payload);
     const stablePayload = primarySignature
       ? `primary:${primarySignature}`
       : this.stableStringify(payload);
     return createHash("sha256")
-      .update(`${gameType}|${stablePayload}`)
+      .update(`${this.strategy.gameType}|${stablePayload}`)
       .digest("hex");
   }
 
-  private extractPrimaryContentSignature(gameType: string, payload: unknown): string | null {
+  private extractPrimaryContentSignature(payload: unknown): string | null {
     if (!payload || typeof payload !== "object") {
       return null;
     }
 
-    if (gameType === "quiz") {
-      const rawQuestions = extractQuizQuestionTexts(payload);
-      if (rawQuestions.length === 0) {
-        return null;
-      }
-      return rawQuestions
-        .map((item) => this.normalizeContentToken(item))
-        .filter((item) => item.length > 0)
-        .join("|");
-    }
-
-    const words = this.extractStringArrayFromObjects(payload, "words", "word");
-    if (words.length === 0) {
-      return null;
-    }
-    return words
-      .map((item) => this.normalizeContentToken(item))
-      .filter((item) => item.length > 0)
-      .sort()
-      .join("|");
-  }
-
-  private extractStringArrayFromObjects(payload: unknown, arrayKey: string, fieldKey: string): string[] {
-    return extractStringArrayFromObjectsShared(payload, arrayKey, fieldKey, { allowNestedGame: true });
-  }
-
-  private normalizeContentToken(value: string): string {
-    return normalizeContentTokenShared(value);
+    return this.strategy.contentSignature(payload);
   }
 
   private extractDifficultyFromRequest(requestPayload: unknown): number | undefined {
