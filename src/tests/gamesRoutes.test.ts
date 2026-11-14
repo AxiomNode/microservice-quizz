@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import Fastify from "fastify";
 
 import { gameRoutes } from "../app/routes/games.js";
+import { GAME_FIXTURES } from "./support/games.js";
 
 function createGenerationServiceStub() {
   return {
@@ -24,12 +25,12 @@ function createGenerationServiceStub() {
   };
 }
 
-describe("games routes", () => {
+describe.each(GAME_FIXTURES)("games routes ($gameType)", (fx) => {
   it("rejects invalid generate payloads before hitting the generation service", async () => {
     const app = Fastify();
     const generationService = createGenerationServiceStub();
 
-    await gameRoutes(app, generationService as never);
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
 
     const response = await app.inject({
       method: "POST",
@@ -50,7 +51,7 @@ describe("games routes", () => {
     const app = Fastify();
     const generationService = createGenerationServiceStub();
 
-    await gameRoutes(app, generationService as never);
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
 
     const response = await app.inject({
       method: "GET",
@@ -67,45 +68,37 @@ describe("games routes", () => {
   it("accepts itemCount on generate payloads and forwards it to the generation service", async () => {
     const app = Fastify();
     const generationService = createGenerationServiceStub();
-    generationService.generateAndStore.mockResolvedValue({ id: "quiz-1" });
+    generationService.generateAndStore.mockResolvedValue({ id: "item-1" });
 
-    await gameRoutes(app, generationService as never);
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
 
     const response = await app.inject({
       method: "POST",
       url: "/games/generate",
-      payload: {
-        categoryId: "9",
-        difficultyPercentage: 60,
-        itemCount: 4,
-      },
+      payload: fx.routes.generate,
     });
 
     expect(response.statusCode).toBe(201);
     expect(generationService.generateAndStore).toHaveBeenCalledWith(
-      expect.objectContaining({
-        categoryId: "9",
-        difficultyPercentage: 60,
-        itemCount: 4,
-      }),
+      expect.objectContaining(fx.routes.generate),
     );
 
     await app.close();
   });
 
-  it("updates quiz history entries through patch route", async () => {
+  it(`updates ${fx.gameType} history entries through patch route`, async () => {
     const app = Fastify();
     const generationService = createGenerationServiceStub();
     generationService.updateHistoryItem.mockResolvedValue({ id: "entry-2", status: "pending_review" });
 
-    await gameRoutes(app, generationService as never);
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
 
     const response = await app.inject({
       method: "PATCH",
       url: "/games/history/entry-2",
       payload: {
         status: "pending_review",
-        content: { question: "Nueva" },
+        content: fx.routes.updateContent,
       },
     });
 
@@ -114,7 +107,7 @@ describe("games routes", () => {
       "entry-2",
       expect.objectContaining({
         status: "pending_review",
-        content: { question: "Nueva" },
+        content: fx.routes.updateContent,
       }),
     );
 
@@ -125,20 +118,20 @@ describe("games routes", () => {
     const app = Fastify();
     const generationService = createGenerationServiceStub();
 
-    await gameRoutes(app, generationService as never);
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
 
     const response = await app.inject({
       method: "GET",
-      url: "/games/history?limit=400&page=3&pageSize=25&status=pending_review",
+      url: `/games/history?${fx.routes.history.query}`,
     });
 
     expect(response.statusCode).toBe(200);
     expect(generationService.historyPage).toHaveBeenCalledWith(400, {
-      page: 3,
-      pageSize: 25,
+      page: fx.routes.history.page,
+      pageSize: fx.routes.history.pageSize,
       categoryId: undefined,
       difficultyPercentage: undefined,
-      status: "pending_review",
+      status: fx.routes.history.status,
     });
 
     await app.close();
@@ -151,7 +144,7 @@ describe("games routes", () => {
       .mockRejectedValueOnce(new Error("ai auth circuit open after repeated 401"))
       .mockRejectedValueOnce(new Error("upstream timeout"));
 
-    await gameRoutes(app, generationService as never);
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
 
     const circuitOpen = await app.inject({
       method: "POST",
@@ -183,7 +176,7 @@ describe("games routes", () => {
       .mockReturnValueOnce({ taskId: "550e8400-e29b-41d4-a716-446655440000", generatedItems: [{ id: "q1" }] })
       .mockReturnValueOnce(undefined);
 
-    await gameRoutes(app, generationService as never);
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
 
     const invalidStart = await app.inject({
       method: "POST",
@@ -277,7 +270,7 @@ describe("games routes", () => {
       .mockResolvedValueOnce({ ingested: 2 })
       .mockRejectedValueOnce(new Error("rag unavailable"));
 
-    await gameRoutes(app, generationService as never, onIngestedDocuments);
+    await gameRoutes(app, generationService as never, onIngestedDocuments, undefined, fx.strategy);
 
     const invalidPayload = await app.inject({
       method: "POST",
@@ -288,7 +281,7 @@ describe("games routes", () => {
       method: "POST",
       url: "/games/ingest",
       payload: {
-        documents: [{ content: "Question content", metadata: { origin: "seed" } }],
+        documents: [{ content: fx.routes.ingestText, metadata: { origin: "seed" } }],
         source: "backoffice",
         categoryId: "9",
         difficultyPercentage: 60,
@@ -298,7 +291,7 @@ describe("games routes", () => {
       method: "POST",
       url: "/games/ingest",
       payload: {
-        documents: [{ content: "Question content" }],
+        documents: [{ content: fx.routes.ingestText }],
         source: "backoffice",
       },
     });
@@ -309,7 +302,7 @@ describe("games routes", () => {
       1,
       [
         {
-          content: "Question content",
+          content: fx.routes.ingestText,
           metadata: { origin: "seed", categoryId: "9", difficultyPercentage: 60 },
         },
       ],
@@ -324,7 +317,7 @@ describe("games routes", () => {
   it("covers random models, manual history, delete, grouped models and catalogs routes", async () => {
     const app = Fastify();
     const generationService = createGenerationServiceStub();
-    generationService.randomModels.mockResolvedValue([{ id: "quiz-1" }]);
+    generationService.randomModels.mockResolvedValue([{ id: "item-1" }]);
     generationService.storeManualModel
       .mockResolvedValueOnce({ id: "manual-1" })
       .mockRejectedValueOnce(new Error("duplicate key"))
@@ -335,7 +328,7 @@ describe("games routes", () => {
     generationService.groupedModelsSummary.mockResolvedValue({ categories: [{ name: "General", total: 1 }], matrix: [{ categoryId: "9", total: 1 }] });
     generationService.getCatalogSnapshot.mockReturnValue({ source: "seed", categories: [{ id: "9" }] });
 
-    await gameRoutes(app, generationService as never);
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
 
     const random = await app.inject({
       method: "GET",
@@ -349,17 +342,17 @@ describe("games routes", () => {
     const manual = await app.inject({
       method: "POST",
       url: "/games/history/manual",
-      payload: { categoryId: "9", difficultyPercentage: 40, content: { question: "Q" } },
+      payload: { categoryId: "9", difficultyPercentage: 40, content: fx.routes.manualRouteContent },
     });
     const duplicateManual = await app.inject({
       method: "POST",
       url: "/games/history/manual",
-      payload: { categoryId: "9", difficultyPercentage: 40, content: { question: "Q" } },
+      payload: { categoryId: "9", difficultyPercentage: 40, content: fx.routes.manualRouteContent },
     });
     const invalidManualError = await app.inject({
       method: "POST",
       url: "/games/history/manual",
-      payload: { categoryId: "9", difficultyPercentage: 40, content: { question: "Q" } },
+      payload: { categoryId: "9", difficultyPercentage: 40, content: fx.routes.manualRouteContent },
     });
     const invalidDelete = await app.inject({
       method: "DELETE",
@@ -399,7 +392,7 @@ describe("games routes", () => {
       .mockRejectedValueOnce(new Error("duplicate entry"))
       .mockRejectedValueOnce(new Error("invalid update"));
 
-    await gameRoutes(app, generationService as never);
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
 
     const invalidParams = await app.inject({
       method: "PATCH",
@@ -447,7 +440,7 @@ describe("games routes", () => {
     generationService.storeManualModel.mockRejectedValueOnce("boom");
     generationService.updateHistoryItem.mockRejectedValueOnce("boom");
 
-    await gameRoutes(app, generationService as never);
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
 
     const generateUnknown = await app.inject({
       method: "POST",
@@ -488,7 +481,7 @@ describe("games routes", () => {
     const manualUnknown = await app.inject({
       method: "POST",
       url: "/games/history/manual",
-      payload: { categoryId: "9", difficultyPercentage: 40, content: { question: "Q" } },
+      payload: { categoryId: "9", difficultyPercentage: 40, content: fx.routes.manualRouteContent },
     });
     const patchUnknown = await app.inject({
       method: "PATCH",
@@ -512,6 +505,39 @@ describe("games routes", () => {
     expect(manualUnknown.json()).toMatchObject({ error: "Unknown error" });
     expect(patchUnknown.statusCode).toBe(400);
     expect(patchUnknown.json()).toMatchObject({ error: "Unknown error" });
+
+    await app.close();
+  });
+
+  it("reports the game type and grouping dimensions of its strategy", async () => {
+    const app = Fastify();
+    const generationService = createGenerationServiceStub();
+    generationService.groupedModelsSummary.mockResolvedValue({ categories: [], matrix: [] });
+    const stub = Object.assign(generationService, { historyInsights: vi.fn().mockResolvedValue({ total: 0, categories: [] }) });
+
+    await gameRoutes(app, stub as never, undefined, undefined, fx.strategy);
+
+    const grouped = await app.inject({ method: "GET", url: "/games/models/grouped" });
+    const insights = await app.inject({ method: "GET", url: "/games/history/insights" });
+
+    expect(grouped.json()).toMatchObject({ gameType: fx.gameType, groupedBy: fx.strategy.groupedBy });
+    expect(insights.json()).toMatchObject({ gameType: fx.gameType, total: 0, categories: [] });
+
+    await app.close();
+  });
+
+  it("only forwards the extra generate fields its strategy schema declares", async () => {
+    const app = Fastify();
+    const generationService = createGenerationServiceStub();
+    generationService.generateAndStore.mockResolvedValue({ id: "item-1" });
+
+    await gameRoutes(app, generationService as never, undefined, undefined, fx.strategy);
+
+    await app.inject({ method: "POST", url: "/games/generate", payload: { categoryId: "9", letters: "A,B" } });
+
+    const forwarded = generationService.generateAndStore.mock.calls[0]?.[0] as Record<string, unknown>;
+    expect(forwarded).toMatchObject({ categoryId: "9" });
+    expect("letters" in forwarded).toBe("letters" in fx.strategy.generateSchema.shape);
 
     await app.close();
   });

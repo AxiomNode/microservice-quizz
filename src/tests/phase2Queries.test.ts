@@ -18,51 +18,50 @@ vi.mock("../app/db/client.js", () => ({
   },
 }));
 
+import { GAME_FIXTURES } from "./support/games.js";
 import { gameRoutes } from "../app/routes/games.js";
 import { healthRoutes } from "../app/routes/health.js";
-import { GenerationService } from "../app/services/generationService.js";
+import {
+  GenerationService as BaseGenerationService,
+  type GenerationServiceObserver,
+} from "../app/services/generationService.js";
 import { RuntimeGenerationWorker } from "../app/services/runtimeGenerationWorker.js";
 import { startListeningFirst } from "../app/services/startup.js";
 
-function createConfig(): any {
-  return {
-    SERVICE_NAME: "microservice-quiz",
-    SERVICE_PORT: 7100,
-    NODE_ENV: "test",
-    AI_ENGINE_BASE_URL: "http://localhost:7001",
-    AI_ENGINE_GENERATION_ENDPOINT: "/generate/quiz",
-    AI_ENGINE_INGEST_ENDPOINT: "/ingest/quiz",
-    AI_ENGINE_CATALOGS_ENDPOINT: "/catalogs",
-    AI_ENGINE_API_KEY: "test-key",
-    AI_ENGINE_REQUEST_TIMEOUT_MS: 1000,
-    GAME_GENERATION_ITEM_TIMEOUT_MS: 1000,
-    GAME_GENERATION_ITEM_RETRY_MAX_ATTEMPTS: 1,
-    AI_ENGINE_RETRY_MAX_ATTEMPTS: 1,
-    AI_ENGINE_RETRY_INITIAL_DELAY_MS: 0,
-    AI_ENGINE_RETRY_MAX_DELAY_MS: 0,
-    AI_AUTH_CIRCUIT_FAILURE_THRESHOLD: 3,
-    AI_AUTH_CIRCUIT_COOLDOWN_MS: 1000,
-    DATABASE_URL: "postgresql://unused",
-  };
-}
+describe.each(GAME_FIXTURES)("phase 2 queries ($gameType)", (fx) => {
+  class GenerationService extends BaseGenerationService {
+    constructor(config: any, observer?: GenerationServiceObserver) {
+      super(config, observer, fx.strategy);
+    }
+  }
 
-function validRow(id: string) {
-  return {
-    id,
-    gameType: "quiz",
-    query: `q-${id}`,
-    status: "created",
-    categoryId: "9",
-    categoryName: "General Knowledge",
-    difficultyPercentage: 50,
-    requestJson: JSON.stringify({}),
-    responseJson: JSON.stringify({
-      game_type: "quiz",
-      game: { questions: [{ question: "Capital de Francia", options: ["Paris", "Roma", "Berlin", "Lisboa"], correct_index: 0 }] },
-    }),
-    createdAt: new Date("2026-04-15T18:01:00.000Z"),
-  };
-}
+  function createConfig(): any {
+    return {
+      ...fx.createConfig(),
+      AI_ENGINE_REQUEST_TIMEOUT_MS: 1000,
+      GAME_GENERATION_ITEM_TIMEOUT_MS: 1000,
+      AI_ENGINE_RETRY_MAX_ATTEMPTS: 1,
+      AI_ENGINE_RETRY_INITIAL_DELAY_MS: 0,
+      AI_ENGINE_RETRY_MAX_DELAY_MS: 0,
+      AI_AUTH_CIRCUIT_COOLDOWN_MS: 1000,
+      DATABASE_URL: "postgresql://unused",
+    };
+  }
+
+  function validRow(id: string) {
+    return {
+      id,
+      gameType: fx.gameType,
+      query: `q-${id}`,
+      status: "created",
+      categoryId: "9",
+      categoryName: "General Knowledge",
+      difficultyPercentage: 50,
+      requestJson: JSON.stringify({}),
+      responseJson: JSON.stringify(fx.payload(fx.item())),
+      createdAt: new Date("2026-04-15T18:01:00.000Z"),
+    };
+  }
 
 beforeEach(() => {
   prismaMocks.findMany.mockReset();
@@ -89,7 +88,7 @@ describe("randomModels two-step sampling", () => {
     expect(poolCall.select).toEqual({ id: true });
     expect(poolCall.orderBy).toEqual({ createdAt: "desc" });
     expect(poolCall.take).toBe(300);
-    expect(poolCall.where).toMatchObject({ gameType: "quiz", status: { not: "pending_review" } });
+    expect(poolCall.where).toMatchObject({ gameType: fx.gameType, status: { not: "pending_review" } });
     // the second query loads full rows for exactly `count` ids
     expect(rowsCall.where.id.in).toHaveLength(2);
     expect(rowsCall.select).toMatchObject({ requestJson: true, responseJson: true });
@@ -130,7 +129,7 @@ describe("historyInsights", () => {
 
     expect(prismaMocks.groupBy).toHaveBeenCalledWith({
       by: ["categoryId", "categoryName"],
-      where: { gameType: "quiz", categoryId: "9", status: "validated", difficultyPercentage: 40 },
+      where: { gameType: fx.gameType, categoryId: "9", status: "validated", difficultyPercentage: 40 },
       _count: { _all: true },
       _max: { createdAt: true },
     });
@@ -191,7 +190,7 @@ describe("GET /games/history/insights", () => {
       total: 2,
       categories: [{ categoryId: "9", categoryName: "GK", count: 2, latestCreatedAt: null }],
     });
-    await gameRoutes(app, service as never);
+    await gameRoutes(app, service as never, undefined, undefined, fx.strategy);
 
     const response = await app.inject({
       method: "GET",
@@ -201,7 +200,7 @@ describe("GET /games/history/insights", () => {
     expect(response.statusCode).toBe(200);
     expect(service.historyInsights).toHaveBeenCalledWith({ categoryId: "9", difficultyPercentage: 40, status: "validated" });
     expect(response.json()).toEqual({
-      gameType: "quiz",
+      gameType: fx.gameType,
       total: 2,
       categories: [{ categoryId: "9", categoryName: "GK", count: 2, latestCreatedAt: null }],
     });
@@ -212,7 +211,7 @@ describe("GET /games/history/insights", () => {
     const app = Fastify();
     const service = stubService();
     service.historyPage.mockResolvedValue({ items: [], total: 0, page: 1, pageSize: 20 });
-    await gameRoutes(app, service as never);
+    await gameRoutes(app, service as never, undefined, undefined, fx.strategy);
 
     const invalid = await app.inject({ method: "GET", url: "/games/history/insights?difficultyPercentage=500" });
     expect(invalid.statusCode).toBe(400);
@@ -240,13 +239,13 @@ describe("runtime worker difficulty distribution", () => {
       groupedModelsSummary: vi.fn().mockResolvedValue({ categories: [] }),
       runGenerationProcessBlocking: vi.fn(),
     };
-    const worker = new RuntimeGenerationWorker(generationService as never);
+    const worker = new RuntimeGenerationWorker(generationService as never, fx.strategy);
 
     const snapshot = await worker.getSnapshot();
 
     expect(prismaMocks.groupBy).toHaveBeenCalledWith({
       by: ["difficultyPercentage"],
-      where: { gameType: "quiz" },
+      where: { gameType: fx.gameType },
       _count: { _all: true },
     });
     // the unbounded findMany over the whole table is gone
@@ -262,9 +261,9 @@ describe("runtime worker difficulty distribution", () => {
 describe("health readiness", () => {
   it("keeps the legacy payload when no readiness source is given", async () => {
     const app = Fastify();
-    await healthRoutes(app);
+    await healthRoutes(app, undefined, fx.strategy);
     const response = await app.inject({ method: "GET", url: "/health" });
-    expect(response.json()).toEqual({ status: "ok", service: "microservice-quiz", gameType: "quiz" });
+    expect(response.json()).toEqual({ status: "ok", service: fx.serviceName, gameType: fx.gameType });
     await app.close();
   });
 
@@ -274,7 +273,7 @@ describe("health readiness", () => {
     await healthRoutes(app, {
       isCatalogReady: () => ready,
       getCatalogSnapshot: () => ({ source: ready ? "ai-engine" : "local-fallback" }),
-    });
+    }, fx.strategy);
 
     const before = await app.inject({ method: "GET", url: "/health" });
     expect(before.statusCode).toBe(200);
@@ -317,7 +316,7 @@ describe("listen-first startup", () => {
     const server = {
       app,
       config: { SERVICE_NAME: "svc", SERVICE_PORT: 1 },
-      gameType: "quiz",
+      gameType: fx.gameType,
       generationService: {
         refreshCatalogs: vi.fn(() => {
           order.push("refresh-start");
@@ -394,4 +393,6 @@ describe("listen-first startup", () => {
     await expect(startListeningFirst(server as never)).rejects.toThrow("EADDRINUSE");
     expect(server.generationService.refreshCatalogs).not.toHaveBeenCalled();
   });
+});
+
 });

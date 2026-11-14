@@ -27,48 +27,22 @@ vi.mock("../app/db/client.js", () => ({
   },
 }));
 
-import { GenerationService } from "../app/services/generationService.js";
 import type { AppConfig } from "../app/config.js";
+import {
+  GenerationService as BaseGenerationService,
+  type GenerationServiceObserver,
+} from "../app/services/generationService.js";
+import { GAME_FIXTURES } from "./support/games.js";
 
-function createConfig(overrides: Partial<AppConfig> = {}): AppConfig {
-  return {
-    SERVICE_NAME: "microservice-quiz",
-    SERVICE_PORT: 7100,
-    NODE_ENV: "test",
-    AI_ENGINE_BASE_URL: "http://localhost:7001",
-    AI_ENGINE_GENERATION_ENDPOINT: "/generate/quiz",
-    AI_ENGINE_INGEST_ENDPOINT: "/ingest/quiz",
-    AI_ENGINE_CATALOGS_ENDPOINT: "/catalogs",
-    AI_ENGINE_INGEST_SOURCE: "microservice-quiz",
-    AI_ENGINE_API_KEY: "test-key",
-    AI_ENGINE_INGEST_API_KEY: "test-ingest-key",
-    AI_ENGINE_REQUEST_TIMEOUT_MS: 420000,
-    GAME_GENERATION_ITEM_TIMEOUT_MS: 90000,
-    GAME_GENERATION_ITEM_RETRY_MAX_ATTEMPTS: 1,
-    AI_ENGINE_RETRY_MAX_ATTEMPTS: 3,
-    AI_ENGINE_RETRY_INITIAL_DELAY_MS: 1500,
-    AI_ENGINE_RETRY_MAX_DELAY_MS: 12000,
-    AI_AUTH_CIRCUIT_FAILURE_THRESHOLD: 3,
-    AI_AUTH_CIRCUIT_COOLDOWN_MS: 300000,
-    PRIVATE_DOCS_ENABLED: true,
-    PRIVATE_DOCS_PREFIX: "/private/docs",
-    PRIVATE_DOCS_TOKEN: "private-docs-token",
-    METRICS_LOG_BUFFER_SIZE: 500,
-    BATCH_GENERATION_ENABLED: true,
-    BATCH_GENERATION_INTERVAL_MINUTES: 20,
-    BATCH_GENERATION_TARGET_COUNT: 1000,
-    BATCH_GENERATION_MAX_ATTEMPTS: 4000,
-    BATCH_GENERATION_CONCURRENCY: 8,
-    BATCH_GENERATION_MIN_DIFFICULTY: 25,
-    BATCH_GENERATION_MAX_DIFFICULTY: 85,
-    BATCH_GENERATION_MIN_QUESTIONS: 5,
-    BATCH_GENERATION_MAX_QUESTIONS: 12,
-    DATABASE_URL: "postgresql://quiz:quiz@localhost:7432/quizdb?schema=public",
-    ...overrides,
-  };
-}
+describe.each(GAME_FIXTURES)("GenerationService ($gameType)", (fx) => {
+  const createConfig = fx.createConfig;
+  /** Every service built in this suite runs the strategy of the game under test. */
+  class GenerationService extends BaseGenerationService {
+    constructor(config: AppConfig, observer?: GenerationServiceObserver) {
+      super(config, observer, fx.strategy);
+    }
+  }
 
-describe("GenerationService", () => {
   beforeEach(() => {
     prismaMocks.findMany.mockReset();
     prismaMocks.findFirst.mockReset();
@@ -80,42 +54,31 @@ describe("GenerationService", () => {
     vi.restoreAllMocks();
   });
 
-  it("skips invalid persisted quiz entries in randomModels instead of failing the whole request", async () => {
+  it(`skips invalid persisted ${fx.gameType} entries in randomModels instead of failing the whole request`, async () => {
     const service = new GenerationService(createConfig());
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
 
     prismaMocks.findMany.mockResolvedValue([
       {
-        id: "invalid-quiz",
-        gameType: "quiz",
-        query: "invalid quiz",
+        id: "invalid-entry",
+        gameType: fx.gameType,
+        query: "invalid entry",
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
         requestJson: JSON.stringify({}),
-        responseJson: JSON.stringify({ game_type: "quiz", game: { questions: [] } }),
+        responseJson: JSON.stringify(fx.emptyPayload()),
         createdAt: new Date("2026-04-15T18:00:00.000Z"),
       },
       {
-        id: "valid-quiz",
-        gameType: "quiz",
-        query: "valid quiz",
+        id: "valid-entry",
+        gameType: fx.gameType,
+        query: "valid entry",
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
         requestJson: JSON.stringify({}),
-        responseJson: JSON.stringify({
-          game_type: "quiz",
-          game: {
-            questions: [
-              {
-                question: "Capital de Francia",
-                options: ["Paris", "Roma", "Berlin", "Lisboa"],
-                correct_index: 0,
-              },
-            ],
-          },
-        }),
+        responseJson: JSON.stringify(fx.payload(fx.item())),
         createdAt: new Date("2026-04-15T18:01:00.000Z"),
       },
     ]);
@@ -123,50 +86,39 @@ describe("GenerationService", () => {
     const result = await service.randomModels({ count: 2 });
 
     expect(result).toHaveLength(1);
-    expect(result[0]?.id).toBe("valid-quiz");
+    expect(result[0]?.id).toBe("valid-entry");
     expect(warnSpy).toHaveBeenCalledWith(
-      "Skipping invalid stored quiz model",
-      "invalid-quiz",
-      "Generated quiz has no questions — rejecting incomplete content"
+      `Skipping invalid stored ${fx.gameType} model`,
+      "invalid-entry",
+      fx.emptyError
     );
   });
 
-  it("keeps invalid persisted quiz entries visible in history with a validation error", async () => {
+  it(`keeps invalid persisted ${fx.gameType} entries visible in history with a validation error`, async () => {
     const service = new GenerationService(createConfig());
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
 
     prismaMocks.findMany.mockResolvedValue([
       {
-        id: "invalid-quiz",
-        gameType: "quiz",
-        query: "invalid quiz",
+        id: "invalid-entry",
+        gameType: fx.gameType,
+        query: "invalid entry",
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
         requestJson: JSON.stringify({}),
-        responseJson: JSON.stringify({ game_type: "quiz", game: { questions: [] } }),
+        responseJson: JSON.stringify(fx.emptyPayload()),
         createdAt: new Date("2026-04-15T18:00:00.000Z"),
       },
       {
-        id: "valid-quiz",
-        gameType: "quiz",
-        query: "valid quiz",
+        id: "valid-entry",
+        gameType: fx.gameType,
+        query: "valid entry",
         status: "created",
         categoryId: "9",
         categoryName: "General Knowledge",
         requestJson: JSON.stringify({ item_count: "3" }),
-        responseJson: JSON.stringify({
-          game_type: "quiz",
-          game: {
-            questions: [
-              {
-                question: "Capital de Francia",
-                options: ["Paris", "Roma", "Berlin", "Lisboa"],
-                correct_index: 0,
-              },
-            ],
-          },
-        }),
+        responseJson: JSON.stringify(fx.payload(fx.item())),
         createdAt: new Date("2026-04-15T18:01:00.000Z"),
       },
     ]);
@@ -174,20 +126,20 @@ describe("GenerationService", () => {
     const result = await service.history(10, {});
 
     expect(result).toHaveLength(2);
-    expect(result[0]?.id).toBe("invalid-quiz");
+    expect(result[0]?.id).toBe("invalid-entry");
     expect(result[0]?.responseValidationError).toBe(
-      "Generated quiz has no questions — rejecting incomplete content"
+      fx.emptyError
     );
-    expect(result[1]?.id).toBe("valid-quiz");
+    expect(result[1]?.id).toBe("valid-entry");
     expect(result[1]?.request).toEqual({ item_count: "3" });
     expect(warnSpy).toHaveBeenCalledWith(
-      "Stored quiz history item is invalid but still exposed for backoffice",
-      "invalid-quiz",
-      "Generated quiz has no questions — rejecting incomplete content"
+      `Stored ${fx.gameType} history item is invalid but still exposed for backoffice`,
+      "invalid-entry",
+      fx.emptyError
     );
   });
 
-  it("excludes pending_review quiz entries from randomModels by default", async () => {
+  it(`excludes pending_review ${fx.gameType} entries from randomModels by default`, async () => {
     const service = new GenerationService(createConfig());
 
     prismaMocks.findMany.mockResolvedValue([]);
@@ -197,68 +149,46 @@ describe("GenerationService", () => {
     expect(prismaMocks.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          gameType: "quiz",
+          gameType: fx.gameType,
           status: { not: "pending_review" },
         }),
       }),
     );
   });
 
-  it("updates a quiz history item and keeps editorial status", async () => {
+  it(`updates a ${fx.gameType} history item and keeps editorial status`, async () => {
     const service = new GenerationService(createConfig());
 
     prismaMocks.findFirst
       .mockResolvedValueOnce({
         id: "entry-2",
-        gameType: "quiz",
+        gameType: fx.gameType,
         query: "old",
         status: "manual",
         categoryId: "9",
         categoryName: "General Knowledge",
         requestJson: JSON.stringify({ categoryId: "9", difficulty_percentage: 40 }),
-        responseJson: JSON.stringify({
-          game_type: "quiz",
-          game: {
-            questions: [
-              {
-                question: "Vieja",
-                options: ["A", "B", "C", "D"],
-                correct_index: 0,
-              },
-            ],
-          },
-        }),
+        responseJson: JSON.stringify(fx.payload(fx.item("Vieja"))),
         createdAt: new Date("2026-04-15T18:01:00.000Z"),
       })
       .mockResolvedValueOnce(null);
 
     prismaMocks.update.mockResolvedValue({
       id: "entry-2",
-      gameType: "quiz",
-      query: "General Knowledge manual curation difficulty 70",
+      gameType: fx.gameType,
+      query: fx.manualQuery(70),
       status: "pending_review",
       categoryId: "9",
       categoryName: "General Knowledge",
       requestJson: JSON.stringify({ source: "backoffice-manual", categoryId: "9", difficulty_percentage: 70 }),
-      responseJson: JSON.stringify({
-        game_type: "quiz",
-        game: {
-          questions: [
-            {
-              question: "Nueva",
-              options: ["A", "B", "C", "D"],
-              correct_index: 0,
-            },
-          ],
-        },
-      }),
+      responseJson: JSON.stringify(fx.payload(fx.item("Nueva"))),
       createdAt: new Date("2026-04-15T18:01:00.000Z"),
     });
 
     const result = await service.updateHistoryItem("entry-2", {
       difficultyPercentage: 70,
       status: "pending_review",
-      content: { question: "Nueva", answers: ["A", "B", "C", "D"], correctIndex: 0 },
+      content: fx.manualContent(),
     });
 
     expect(result?.status).toBe("pending_review");
@@ -283,7 +213,7 @@ describe("GenerationService", () => {
     expect(prismaMocks.count).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          gameType: "quiz",
+          gameType: fx.gameType,
           difficultyPercentage: 60,
         }),
       }),
@@ -291,7 +221,7 @@ describe("GenerationService", () => {
     expect(prismaMocks.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          gameType: "quiz",
+          gameType: fx.gameType,
           difficultyPercentage: 60,
         }),
         skip: 25,
@@ -315,7 +245,7 @@ describe("GenerationService", () => {
       startedAt: "2026-04-19T10:00:00.000Z",
       updatedAt: "2026-04-19T10:01:00.000Z",
       finishedAt: "2026-04-19T10:01:00.000Z",
-      generatedItems: [{ id: "quiz-gen-1" }],
+      generatedItems: [{ id: "gen-1" }],
       errors: [],
     });
 
@@ -325,7 +255,7 @@ describe("GenerationService", () => {
 
     expect(listed[0]).not.toHaveProperty("generatedItems");
     expect(compact).not.toHaveProperty("generatedItems");
-    expect(detailed).toHaveProperty("generatedItems", [{ id: "quiz-gen-1" }]);
+    expect(detailed).toHaveProperty("generatedItems", [{ id: "gen-1" }]);
   });
 
   it("refreshes catalogs from ai-engine and falls back on smoke-check failures", async () => {
@@ -376,24 +306,13 @@ describe("GenerationService", () => {
       .mockResolvedValueOnce({ id: "dup-1" });
     prismaMocks.create.mockResolvedValue({
       id: "manual-1",
-      gameType: "quiz",
-      query: "General Knowledge manual curation difficulty 45",
+      gameType: fx.gameType,
+      query: fx.manualQuery(45),
       status: "validated",
       categoryId: "9",
       categoryName: "General Knowledge",
       requestJson: JSON.stringify({ source: "backoffice-manual" }),
-      responseJson: JSON.stringify({
-        game_type: "quiz",
-        game: {
-          questions: [
-            {
-              question: "Nueva",
-              options: ["A", "B", "C", "D"],
-              correct_index: 0,
-            },
-          ],
-        },
-      }),
+      responseJson: JSON.stringify(fx.payload(fx.item("Nueva"))),
       createdAt: new Date("2026-04-20T10:00:00.000Z"),
     });
     prismaMocks.deleteMany
@@ -403,7 +322,7 @@ describe("GenerationService", () => {
     const stored = await service.storeManualModel({
       categoryId: "9",
       difficultyPercentage: 45.8,
-      content: { question: "Nueva", answers: ["A", "B", "C", "D"], correctIndex: 0, hint: null },
+      content: fx.manualContent(),
       status: "validated",
     });
 
@@ -411,7 +330,7 @@ describe("GenerationService", () => {
       service.storeManualModel({
         categoryId: "9",
         difficultyPercentage: 45,
-        content: { question: "Nueva", answers: ["A", "B", "C", "D"], correctIndex: 0 },
+        content: fx.manualContent(),
       })
     ).rejects.toThrow("Duplicate content");
 
@@ -444,7 +363,7 @@ describe("GenerationService", () => {
 
     expect(explicit).toEqual({ ingested: 3 });
     expect((service as any).client.ingest).toHaveBeenNthCalledWith(1, [{ content: "A" }], "custom-source");
-    expect((service as any).client.ingest).toHaveBeenNthCalledWith(2, [{ content: "B" }], "microservice-quiz");
+    expect((service as any).client.ingest).toHaveBeenNthCalledWith(2, [{ content: "B" }], fx.serviceName);
     expect(firstGrouped.categories).toEqual(
       expect.arrayContaining([
         { categoryId: "9", categoryName: "General Knowledge", total: 2 },
@@ -598,24 +517,16 @@ describe("GenerationService", () => {
     const service = new GenerationService(createConfig());
     const serviceAny = service as any;
 
-    expect(serviceAny.normalizeManualContent({ question: "Nueva", answers: ["A", "B"], correctIndex: 0, hint: null })).toEqual({
-      game: {
-        questions: [{ id: "q-1", question: "Nueva", answers: ["A", "B"], correctIndex: 0 }],
-      },
-    });
-    expect(() => serviceAny.normalizeManualContent({})).toThrow("Generated quiz has no questions");
-    expect(serviceAny.buildUniquenessKey({
-      questions: [{ question: "¿Capital de Perú?" }],
-    })).toBe(
-      serviceAny.buildUniquenessKey({
-        questions: [{ question: "capital de peru" }],
-      })
+    expect(serviceAny.normalizeManualContent(fx.normalize.input)).toEqual(fx.normalize.output);
+    expect(() => serviceAny.normalizeManualContent({})).toThrow(fx.emptyError);
+    expect(serviceAny.buildUniquenessKey(fx.equivalentContent[0])).toBe(
+      serviceAny.buildUniquenessKey(fx.equivalentContent[1])
     );
     expect(serviceAny.extractDifficultyFromRequest({ difficulty_percentage: "120" })).toBe(100);
     expect(serviceAny.extractDifficultyFromRequest({ difficulty_percentage: -5 })).toBe(0);
     expect(serviceAny.extractDifficultyFromRequest("bad")).toBeUndefined();
     expect(serviceAny.parseStoredJsonSafely("not-json")).toMatchObject({ value: "not-json" });
-    expect(serviceAny.validateStoredHistoryPayload({ game: { questions: [] } }, "item-1", "quiz")).toContain("Generated quiz has no questions");
+    expect(serviceAny.validateStoredHistoryPayload({ game: fx.emptyPayload().game }, "item-1", fx.gameType)).toContain(fx.emptyError);
     expect(serviceAny.stableStringify({ b: 1, a: [2, 1] })).toBe('{"a":[2,1],"b":1}');
     expect(() => serviceAny.getCategoryOrThrow("unknown")).toThrow("Unsupported categoryId: unknown");
     expect(serviceAny.extractAiEngineStatusCode(new Error("ai-engine error 403 forbidden"))).toBe(403);
@@ -753,9 +664,9 @@ describe("GenerationService", () => {
     serviceAny.aiAuthFailureStreak = 1;
     serviceAny.aiAuthCircuitOpenedUntilMs = Date.now() - 1;
     serviceAny.client.generate = vi.fn()
-      .mockResolvedValueOnce({ game: { questions: [{ question: "Q", options: ["A", "B"], correct_index: 0 }] } })
-      .mockResolvedValueOnce({ game: { questions: [{ question: "Q", options: ["A", "B"], correct_index: 0 }] } })
-      .mockResolvedValueOnce({ game: { questions: [{ question: "Q2", options: ["A", "B"], correct_index: 0 }] } });
+      .mockResolvedValueOnce(fx.generated("Q"))
+      .mockResolvedValueOnce(fx.generated("Q"))
+      .mockResolvedValueOnce(fx.generated("Q2"));
     prismaMocks.findFirst
       .mockResolvedValueOnce(null)
       .mockResolvedValueOnce({ id: "dup-existing" })
@@ -817,26 +728,26 @@ describe("GenerationService", () => {
     prismaMocks.findFirst
       .mockResolvedValueOnce({
         id: "entry-1",
-        gameType: "quiz",
+        gameType: fx.gameType,
         query: "old",
         status: "manual",
         categoryId: null,
         categoryName: null,
         difficultyPercentage: null,
         requestJson: JSON.stringify({}),
-        responseJson: JSON.stringify({ game: { questions: [{ question: "Q", options: ["A", "B"], correct_index: 0 }] } }),
+        responseJson: JSON.stringify(fx.generated("Q")),
         createdAt: new Date("2026-04-15T18:01:00.000Z"),
       })
       .mockResolvedValueOnce({
         id: "entry-2",
-        gameType: "quiz",
+        gameType: fx.gameType,
         query: "old",
         status: "manual",
         categoryId: "9",
         categoryName: "General Knowledge",
         difficultyPercentage: 40,
         requestJson: JSON.stringify({}),
-        responseJson: JSON.stringify({ game: { questions: [{ question: "Q", options: ["A", "B"], correct_index: 0 }] } }),
+        responseJson: JSON.stringify(fx.generated("Q")),
         createdAt: new Date("2026-04-15T18:01:00.000Z"),
       })
       .mockResolvedValueOnce({ id: "dup-id" });
@@ -875,20 +786,20 @@ describe("GenerationService", () => {
       .mockResolvedValueOnce(null);
     prismaMocks.create.mockResolvedValueOnce({
       id: "manual-default",
-      gameType: "quiz",
-      query: "General Knowledge manual curation difficulty 40",
+      gameType: fx.gameType,
+      query: fx.manualQuery(40),
       status: "manual",
       categoryId: "9",
       categoryName: "General Knowledge",
       requestJson: JSON.stringify({ source: "backoffice-manual" }),
-      responseJson: JSON.stringify({ game: { questions: [{ question: "Q", options: ["A", "B"], correct_index: 0 }] } }),
+      responseJson: JSON.stringify(fx.generated("Q")),
       createdAt: new Date("2026-04-20T10:00:00.000Z"),
     });
 
     const stored = await service.storeManualModel({
       categoryId: "9",
       difficultyPercentage: 40,
-      content: { question: "Q", options: ["A", "B"], correct_index: 0 },
+      content: fx.manualContentFromItem("Q"),
     });
 
     await expect(service.updateHistoryItem("missing", { status: "validated" })).resolves.toBeNull();
@@ -973,7 +884,7 @@ describe("GenerationService", () => {
 
     expect(batch).toMatchObject({ requested: 2, attempts: 2, created: 0 });
     expect(ingest).toEqual({ ingested: 1 });
-    expect(serviceWithoutIngestSourceAny.client.ingest).toHaveBeenCalledWith([{ content: "A" }], "microservice-quiz");
+    expect(serviceWithoutIngestSourceAny.client.ingest).toHaveBeenCalledWith([{ content: "A" }], fx.serviceName);
     expect(random).toEqual([]);
     expect(history).toEqual([]);
     expect(historyPage).toMatchObject({ total: 0, page: 1, pageSize: 5 });
@@ -1048,10 +959,220 @@ describe("GenerationService", () => {
       errors: ["Invalid generation input"],
     });
   });
+
+  it("covers default branches for manual storage, missing updates and auxiliary filters", async () => {
+    const service = new GenerationService(createConfig({ AI_ENGINE_INGEST_SOURCE: undefined }));
+    const serviceAny = service as any;
+
+    prismaMocks.findFirst
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(null);
+    prismaMocks.create.mockResolvedValueOnce({
+      id: "manual-default",
+      gameType: fx.gameType,
+      query: fx.manualQuery(35),
+      status: "manual",
+      categoryId: "9",
+      categoryName: "General Knowledge",
+      requestJson: JSON.stringify({ source: "backoffice-manual" }),
+      responseJson: JSON.stringify(fx.generated("Algo")),
+      createdAt: new Date("2026-04-20T10:00:00.000Z"),
+    });
+    prismaMocks.findMany.mockResolvedValue([]);
+    prismaMocks.count.mockResolvedValue(0);
+    serviceAny.client.ingest = vi.fn().mockResolvedValue({ ingested: 1 });
+
+    const stored = await service.storeManualModel({
+      categoryId: "9",
+      difficultyPercentage: 35,
+      content: fx.manualContentFromItem("Algo"),
+    });
+    const missingUpdate = await service.updateHistoryItem("missing", { status: "validated" });
+    await service.randomModels({
+      count: 3,
+      categoryId: "9",
+      status: "validated",
+      difficultyPercentage: 45,
+      createdAfter: new Date("2026-04-01T00:00:00.000Z"),
+      createdBefore: new Date("2026-04-30T00:00:00.000Z"),
+    });
+    await service.history(10, { categoryId: "9", difficultyPercentage: 55 });
+    await service.historyPage();
+    await service.ingestToRag([{ content: "A" }]);
+
+    expect(stored.status).toBe("manual");
+    expect(missingUpdate).toBeNull();
+    expect(prismaMocks.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ status: "manual" })
+      })
+    );
+    expect(prismaMocks.findMany).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        where: expect.objectContaining({
+          categoryId: "9",
+          status: "validated",
+          difficultyPercentage: 45,
+          createdAt: expect.objectContaining({
+            gte: new Date("2026-04-01T00:00:00.000Z"),
+            lte: new Date("2026-04-30T00:00:00.000Z"),
+          }),
+        }),
+      })
+    );
+    expect(prismaMocks.findMany).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        where: expect.objectContaining({
+          categoryId: "9",
+          difficultyPercentage: 55,
+        }),
+      })
+    );
+    expect(prismaMocks.count).toHaveBeenCalledWith(expect.objectContaining({ where: { gameType: fx.gameType } }));
+    expect(prismaMocks.findMany).toHaveBeenNthCalledWith(
+      3,
+      expect.objectContaining({ skip: 0, take: 20 })
+    );
+    expect(serviceAny.client.ingest).toHaveBeenCalledWith([{ content: "A" }], fx.serviceName);
+  });
+
+  it("covers generation process defaults, filters and missing-task branches", async () => {
+    const service = new GenerationService(createConfig());
+    const serviceAny = service as any;
+    serviceAny.runGenerationProcess = vi.fn();
+
+    const started = service.startGenerationProcess({ categoryId: "9", count: 2 });
+
+    serviceAny.generationProcesses.set("failed-task", {
+      taskId: "failed-task",
+      requestedBy: "api",
+      status: "failed",
+      requested: 1,
+      processed: 1,
+      created: 0,
+      duplicates: 0,
+      duplicateByContent: 0,
+      failed: 1,
+      startedAt: "2026-04-20T00:00:00.000Z",
+      updatedAt: "2026-04-20T00:00:00.000Z",
+      generatedItems: [],
+      errors: [],
+    });
+    serviceAny.generationProcesses.set("backoffice-task", {
+      taskId: "backoffice-task",
+      requestedBy: "backoffice",
+      status: "completed",
+      requested: 1,
+      processed: 1,
+      created: 1,
+      duplicates: 0,
+      duplicateByContent: 0,
+      failed: 0,
+      startedAt: "2026-04-21T00:00:00.000Z",
+      updatedAt: "2026-04-21T00:00:00.000Z",
+      generatedItems: [],
+      errors: [],
+    });
+
+    const defaultList = service.listGenerationProcesses();
+    const filteredStatus = service.listGenerationProcesses({ status: "failed" });
+    const filteredRequester = service.listGenerationProcesses({ requestedBy: "backoffice" });
+    const missing = service.getGenerationProcess("missing-task");
+    await serviceAny.runGenerationProcess("missing-task", { categoryId: "9", count: 1 });
+
+    expect(started.requestedBy).toBe("api");
+    expect(defaultList.length).toBeGreaterThan(0);
+    expect(filteredStatus).toEqual([expect.objectContaining({ taskId: "failed-task" })]);
+    expect(filteredRequester).toEqual([expect.objectContaining({ taskId: "backoffice-task" })]);
+    expect(missing).toBeNull();
+  });
+
+  it("covers failure-only and unknown-error branches in runGenerationProcess", async () => {
+    const observer = { onProcessCompleted: vi.fn() };
+    const service = new GenerationService(createConfig(), observer);
+    const serviceAny = service as any;
+
+    serviceAny.generationProcesses.set("task-only-failures", {
+      taskId: "task-only-failures",
+      requestedBy: "api",
+      status: "running",
+      requested: 1,
+      processed: 0,
+      created: 0,
+      duplicates: 0,
+      duplicateByContent: 0,
+      failed: 0,
+      startedAt: "2026-04-22T00:00:00.000Z",
+      updatedAt: "2026-04-22T00:00:00.000Z",
+      generatedItems: [],
+      errors: [],
+    });
+    serviceAny.buildResolvedInput = vi.fn().mockReturnValue({ categoryId: "9", query: "resolved", numQuestions: 5 });
+    serviceAny.generateAndStoreWithResult = vi.fn().mockRejectedValueOnce("boom");
+
+    await serviceAny.runGenerationProcess("task-only-failures", { categoryId: "9", count: 1 });
+
+    expect(service.getGenerationProcess("task-only-failures")).toMatchObject({
+      status: "failed",
+      failed: 1,
+      errors: ["Generation failed"],
+    });
+
+    serviceAny.generationProcesses.set("task-invalid-input", {
+      taskId: "task-invalid-input",
+      requestedBy: "api",
+      status: "running",
+      requested: 1,
+      processed: 0,
+      created: 0,
+      duplicates: 0,
+      duplicateByContent: 0,
+      failed: 0,
+      startedAt: "2026-04-22T00:00:00.000Z",
+      updatedAt: "2026-04-22T00:00:00.000Z",
+      generatedItems: [],
+      errors: [],
+    });
+    serviceAny.getCategoryOrThrow = vi.fn(() => {
+      throw "bad-input";
+    });
+
+    await serviceAny.runGenerationProcess("task-invalid-input", { categoryId: "9", count: 1 });
+
+    expect(service.getGenerationProcess("task-invalid-input")).toMatchObject({
+      status: "failed",
+      failed: 1,
+      errors: ["Invalid generation input"],
+    });
+  });
+
+  it("covers helper edge branches for sanitization and parsing", () => {
+    const service = new GenerationService(createConfig());
+    const serviceAny = service as any;
+
+    expect(() => serviceAny.sanitizeGeneratedPayload(null)).toThrow("Generated payload is not a valid object");
+    expect(() => serviceAny.normalizeManualContent({ a: 1 })).toThrow(fx.emptyError);
+    expect(serviceAny.extractPrimaryContentSignature(null)).toBeNull();
+    expect(serviceAny.extractAiEngineStatusCode(new Error("plain network error"))).toBeNull();
+    expect(serviceAny.buildUniquenessKey(fx.emptyPayload())).toEqual(expect.any(String));
+  });
+
+  it("emits the circuit state when a success closes a failure streak", () => {
+    const observer = { onAiAuthCircuitStateChanged: vi.fn() };
+    const circuitService = new GenerationService(createConfig(), observer) as any;
+
+    circuitService.aiAuthFailureStreak = 1;
+    circuitService.registerAiAuthSuccess();
+
+    expect(observer.onAiAuthCircuitStateChanged).toHaveBeenCalledWith(expect.objectContaining({ failureStreak: 0 }));
+  });
 });
-describe("GenerationService content signature helpers", () => {
+describe.each(GAME_FIXTURES)("GenerationService content signature helpers ($gameType)", (fx) => {
   it("returns no primary signature for empty or non-object payloads", () => {
-    const service = new GenerationService(createConfig()) as any;
+    const service = new BaseGenerationService(fx.createConfig(), undefined, fx.strategy) as any;
     expect(service.extractPrimaryContentSignature(null)).toBeNull();
     expect(service.extractPrimaryContentSignature({})).toBeNull();
   });

@@ -2,12 +2,14 @@ import { describe, expect, it, vi } from "vitest";
 import Fastify from "fastify";
 
 import { monitoringRoutes } from "../app/routes/monitoring.js";
+import { GAME_FIXTURES } from "./support/games.js";
 
-describe("monitoring routes", () => {
+describe.each(GAME_FIXTURES)("monitoring routes ($gameType)", (fx) => {
+  const matrixCoverage = fx.strategy.includeMatrixCoverage;
   it("returns stats enriched with catalog coverage and grouped data", async () => {
     const app = Fastify();
     const metrics = {
-      snapshot: vi.fn().mockReturnValue({ service: "microservice-quiz", traffic: { requestsReceivedTotal: 3 } }),
+      snapshot: vi.fn().mockReturnValue({ service: fx.serviceName, traffic: { requestsReceivedTotal: 3 } }),
       recentLogs: vi.fn(),
       toPrometheus: vi.fn(),
     };
@@ -22,19 +24,21 @@ describe("monitoring routes", () => {
       }),
     };
 
-    await monitoringRoutes(app, metrics as never, generationService as never);
+    await monitoringRoutes(app, metrics as never, generationService as never, fx.strategy);
 
     const response = await app.inject({ method: "GET", url: "/monitor/stats" });
 
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({
-      service: "microservice-quiz",
+      service: fx.serviceName,
       coverage: {
         catalogSource: "seed",
         totalCategories: 2,
         categoriesWithData: 1,
+        ...(matrixCoverage ? { matrixSlotsWithData: 2, categoryCoverageRatioFromMatrix: 1 } : {}),
       },
     });
+    expect(Object.keys((response.json() as { coverage: object }).coverage).includes("matrixSlotsWithData")).toBe(matrixCoverage);
 
     await app.close();
   });
@@ -51,7 +55,7 @@ describe("monitoring routes", () => {
       groupedModelsSummary: vi.fn(),
     };
 
-    await monitoringRoutes(app, metrics as never, generationService as never);
+    await monitoringRoutes(app, metrics as never, generationService as never, fx.strategy);
 
     const logsResponse = await app.inject({ method: "GET", url: "/monitor/logs" });
     const invalidResponse = await app.inject({ method: "GET", url: "/monitor/logs?limit=0" });
@@ -59,7 +63,7 @@ describe("monitoring routes", () => {
 
     expect(logsResponse.statusCode).toBe(200);
     expect(metrics.recentLogs).toHaveBeenCalledWith(200);
-    expect(logsResponse.json()).toMatchObject({ service: "microservice-quiz", total: 1 });
+    expect(logsResponse.json()).toMatchObject({ service: fx.serviceName, total: 1 });
     expect(invalidResponse.statusCode).toBe(400);
     expect(invalidResponse.json()).toMatchObject({ message: "Invalid query parameters" });
     expect(metricsResponse.statusCode).toBe(200);
@@ -71,7 +75,7 @@ describe("monitoring routes", () => {
   it("returns zero coverage ratios when catalogs are empty", async () => {
     const app = Fastify();
     const metrics = {
-      snapshot: vi.fn().mockReturnValue({ service: "microservice-quiz" }),
+      snapshot: vi.fn().mockReturnValue({ service: fx.serviceName }),
       recentLogs: vi.fn(),
       toPrometheus: vi.fn(),
     };
@@ -80,7 +84,7 @@ describe("monitoring routes", () => {
       groupedModelsSummary: vi.fn().mockResolvedValue({ categories: [], matrix: [] }),
     };
 
-    await monitoringRoutes(app, metrics as never, generationService as never);
+    await monitoringRoutes(app, metrics as never, generationService as never, fx.strategy);
 
     const response = await app.inject({ method: "GET", url: "/monitor/stats" });
 
@@ -89,6 +93,7 @@ describe("monitoring routes", () => {
       coverage: {
         totalCategories: 0,
         categoryCoverageRatio: 0,
+        ...(matrixCoverage ? { categoryCoverageRatioFromMatrix: 0 } : {}),
       },
     });
 

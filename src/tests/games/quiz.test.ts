@@ -20,6 +20,7 @@ describe("quiz strategy", () => {
         game: { questions: [{ question: "¿Capital de Perú?" }, { question: "Second   One" }] },
       }),
     ).toBe("capital de peru|second one");
+    expect(quizStrategy.contentSignature({ questions: [{ question: "Uno" }, { question: "Dos" }] })).toBe("uno|dos");
     expect(quizStrategy.contentSignature({ game: { questions: [] } })).toBeNull();
     expect(quizStrategy.contentSignature({ game: { words: [{ word: "x" }] } })).toBeNull();
   });

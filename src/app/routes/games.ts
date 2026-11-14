@@ -7,7 +7,6 @@ import {
   HistoryQuerySchema,
   createGameRoutes as createSharedGameRoutes,
 } from "@axiomnode/shared-sdk-client";
-import { quizStrategy } from "../games/quiz.js";
 import type { GameStrategy } from "../games/strategy.js";
 
 /** @module games — Fastify routes for game generation, ingestion, history, and model retrieval. */
@@ -16,9 +15,9 @@ import type { GameStrategy } from "../games/strategy.js";
 export async function gameRoutes(
   app: FastifyInstance,
   generationService: GenerationService,
-  onIngestedDocuments?: (total: number) => void,
-  runtimeGenerationWorker?: RuntimeGenerationWorker,
-  strategy: GameStrategy = quizStrategy
+  onIngestedDocuments: ((total: number) => void) | undefined,
+  runtimeGenerationWorker: RuntimeGenerationWorker | undefined,
+  strategy: GameStrategy
 ): Promise<void> {
   const InsightsQuerySchema = HistoryQuerySchema.pick({ categoryId: true, difficultyPercentage: true, status: true });
 

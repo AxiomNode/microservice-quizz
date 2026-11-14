@@ -6,7 +6,6 @@ import {
 } from "@axiomnode/shared-sdk-client";
 import { ServiceMetrics } from "../services/serviceMetrics.js";
 import { GenerationService } from "../services/generationService.js";
-import { quizStrategy } from "../games/quiz.js";
 import type { GameStrategy } from "../games/strategy.js";
 
 /** @module monitoring — Routes for service stats, logs, and Prometheus-compatible metrics. */
@@ -16,7 +15,7 @@ export async function monitoringRoutes(
   app: FastifyInstance,
   metrics: ServiceMetrics,
   generationService: GenerationService,
-  strategy: GameStrategy = quizStrategy
+  strategy: GameStrategy
 ): Promise<void> {
   app.get("/monitor/stats", async (_request, reply) => {
     const stats = metrics.snapshot();

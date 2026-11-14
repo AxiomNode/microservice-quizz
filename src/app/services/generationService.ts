@@ -39,7 +39,6 @@ import { createHash, randomUUID } from "node:crypto";
 
 import { AppConfig } from "../config.js";
 import { prisma } from "../db/client.js";
-import { quizStrategy } from "../games/quiz.js";
 import type { GameStrategy } from "../games/strategy.js";
 import {
   AiEngineClient,
@@ -265,9 +264,8 @@ export class GenerationService {
 
   constructor(
     private readonly config: AppConfig,
-    private readonly observer?: GenerationServiceObserver,
-    /** Transitional default (quiz) until GAME_TYPE becomes mandatory. */
-    private readonly strategy: GameStrategy = quizStrategy
+    private readonly observer: GenerationServiceObserver | undefined,
+    private readonly strategy: GameStrategy
   ) {
     this.aiAuthFailureThreshold = config.AI_AUTH_CIRCUIT_FAILURE_THRESHOLD;
     this.aiAuthCircuitCooldownMs = config.AI_AUTH_CIRCUIT_COOLDOWN_MS;

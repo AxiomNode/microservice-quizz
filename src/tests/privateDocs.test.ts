@@ -6,53 +6,25 @@ import Fastify from "fastify";
 import swagger from "@fastify/swagger";
 
 import { AppConfig } from "../app/config.js";
+import { GAME_FIXTURES, type GameFixture } from "./support/games.js";
 import {
   registerPrivateDocs,
   resolvePrivateDocsToken
 } from "@axiomnode/shared-sdk-client/private-docs";
 
-function baseConfig(overrides: Partial<AppConfig> = {}): AppConfig {
-  return {
-    SERVICE_NAME: "microservice-quiz",
-    SERVICE_PORT: 7100,
-    NODE_ENV: "test",
-    AI_ENGINE_BASE_URL: "http://localhost:7001",
-    AI_ENGINE_GENERATION_ENDPOINT: "/generate/quiz",
-    AI_ENGINE_INGEST_ENDPOINT: "/ingest/quiz",
-    AI_ENGINE_CATALOGS_ENDPOINT: "/catalogs",
-    AI_ENGINE_INGEST_SOURCE: "microservice-quiz",
+function baseConfig(fx: GameFixture, overrides: Partial<AppConfig> = {}): AppConfig {
+  return fx.createConfig({
     AI_ENGINE_API_KEY: "fallback_token",
     AI_ENGINE_INGEST_API_KEY: "bridge_token",
-    AI_ENGINE_REQUEST_TIMEOUT_MS: 420000,
-    GAME_GENERATION_ITEM_TIMEOUT_MS: 90000,
-    GAME_GENERATION_ITEM_RETRY_MAX_ATTEMPTS: 1,
-    AI_ENGINE_RETRY_MAX_ATTEMPTS: 3,
-    AI_ENGINE_RETRY_INITIAL_DELAY_MS: 1500,
-    AI_ENGINE_RETRY_MAX_DELAY_MS: 12000,
-    AI_AUTH_CIRCUIT_FAILURE_THRESHOLD: 3,
-    AI_AUTH_CIRCUIT_COOLDOWN_MS: 300000,
-    PRIVATE_DOCS_ENABLED: true,
-    PRIVATE_DOCS_PREFIX: "/private/docs",
     PRIVATE_DOCS_TOKEN: "private_token",
-    METRICS_LOG_BUFFER_SIZE: 500,
-    BATCH_GENERATION_ENABLED: true,
-    BATCH_GENERATION_INTERVAL_MINUTES: 20,
-    BATCH_GENERATION_TARGET_COUNT: 40,
-    BATCH_GENERATION_MAX_ATTEMPTS: 160,
-    BATCH_GENERATION_CONCURRENCY: 2,
-    BATCH_GENERATION_MIN_DIFFICULTY: 25,
-    BATCH_GENERATION_MAX_DIFFICULTY: 85,
-    BATCH_GENERATION_MIN_QUESTIONS: 5,
-    BATCH_GENERATION_MAX_QUESTIONS: 12,
-    DATABASE_URL: "postgresql://quiz:quiz@localhost:7432/quizdb?schema=public",
     ...overrides
-  };
+  });
 }
 
-describe("private docs plugin", () => {
+describe.each(GAME_FIXTURES)("private docs plugin ($gameType)", (fx) => {
   it("uses PRIVATE_DOCS_TOKEN over fallback", () => {
     const token = resolvePrivateDocsToken(
-      baseConfig({ PRIVATE_DOCS_TOKEN: "explicit_token", AI_ENGINE_API_KEY: "fallback_token" })
+      baseConfig(fx, { PRIVATE_DOCS_TOKEN: "explicit_token", AI_ENGINE_API_KEY: "fallback_token" })
     );
 
     expect(token).toBe("explicit_token");
@@ -60,7 +32,7 @@ describe("private docs plugin", () => {
 
   it("falls back to AI_ENGINE_API_KEY", () => {
     const token = resolvePrivateDocsToken(
-      baseConfig({ PRIVATE_DOCS_TOKEN: undefined, AI_ENGINE_API_KEY: "fallback_token" })
+      baseConfig(fx, { PRIVATE_DOCS_TOKEN: undefined, AI_ENGINE_API_KEY: "fallback_token" })
     );
 
     expect(token).toBe("fallback_token");
@@ -72,7 +44,7 @@ describe("private docs plugin", () => {
       openapi: { info: { title: "test", version: "1.0.0" } }
     });
 
-    await registerPrivateDocs(app, baseConfig({ PRIVATE_DOCS_TOKEN: "secret_value" }));
+    await registerPrivateDocs(app, baseConfig(fx, { PRIVATE_DOCS_TOKEN: "secret_value" }));
 
     const unauthorized = await app.inject({
       method: "GET",
@@ -97,7 +69,7 @@ describe("private docs plugin", () => {
       openapi: { info: { title: "test", version: "1.0.0" } }
     });
 
-    await registerPrivateDocs(app, baseConfig({ PRIVATE_DOCS_ENABLED: false }));
+    await registerPrivateDocs(app, baseConfig(fx, { PRIVATE_DOCS_ENABLED: false }));
 
     const response = await app.inject({
       method: "GET",
@@ -115,7 +87,7 @@ describe("private docs plugin", () => {
     });
 
     await expect(
-      registerPrivateDocs(app, baseConfig({ PRIVATE_DOCS_TOKEN: undefined, AI_ENGINE_API_KEY: undefined }))
+      registerPrivateDocs(app, baseConfig(fx, { PRIVATE_DOCS_TOKEN: undefined, AI_ENGINE_API_KEY: undefined }))
     ).rejects.toThrow("Private docs are enabled but no token is configured");
 
     await app.close();
