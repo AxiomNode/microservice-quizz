@@ -48,7 +48,7 @@ npm run db:push
 npm run dev
 ```
 
-To run word-pass, set `GAME_TYPE=word-pass` in `.env` (and a word-pass `DATABASE_URL`); `docker compose up --build` starts both games (quiz on 7100, word-pass on 7101).
+To run word-pass, set `GAME_TYPE=word-pass` in `.env` (it is mandatory; both games use the same database, since every row carries its `gameType`); `docker compose up --build` starts both games against one PostgreSQL (quiz on 7100, word-pass on 7101).
 
 ## Smoke path examples
 

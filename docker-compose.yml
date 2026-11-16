@@ -1,8 +1,13 @@
 # One image (microservice-quizz/src/Dockerfile) run as two services; GAME_TYPE selects the game.
-# The databases stay separate until the data merge (a later step of the games merge plan).
+# Both games share the quiz database (every row carries its gameType). The image does not sync the schema
+# on its own, so `command` runs `prisma db push` first; word-pass starts after quiz so the two pushes never
+# race on a fresh volume. Upgrading from the old two-database stack: `docker compose up -d --remove-orphans`
+# drops the old word-pass database container; remove its volume with `docker volume rm` once unneeded.
 x-games-api: &games-api
   image: "microservice_games_api_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
   restart: unless-stopped
+  command:
+    ["sh", "-c", "npx --no-install prisma db push --skip-generate && node dist/app/server.js"]
   build:
     context: ..
     dockerfile: microservice-quizz/src/Dockerfile
@@ -43,27 +48,6 @@ services:
     mem_reservation: 256m
     cpus: "1.0"
 
-  wordpass-db:
-    image: postgres:16-alpine
-    container_name: "microservice_wordpass_db_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: wordpassdb
-      POSTGRES_USER: wordpass
-      POSTGRES_PASSWORD: wordpass
-    ports:
-      - "7433:5432"
-    volumes:
-      - wordpass_db_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U wordpass -d wordpassdb"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    mem_limit: 512m
-    mem_reservation: 256m
-    cpus: "1.0"
-
   microservice-quiz:
     <<: *games-api
     container_name: "microservice_quizz_api_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}"
@@ -87,9 +71,11 @@ services:
       AI_ENGINE_BASE_URL: http://host.docker.internal:7001
       AI_ENGINE_API_KEY: dev_games_test_key_2026
       PRIVATE_DOCS_TOKEN: wordpass_private_docs_token
-      DATABASE_URL: postgresql://wordpass:wordpass@wordpass-db:5432/wordpassdb?schema=public&connection_limit=10&pool_timeout=20
+      DATABASE_URL: postgresql://quiz:quiz@quiz-db:5432/quizdb?schema=public&connection_limit=10&pool_timeout=20
     depends_on:
-      wordpass-db:
+      quiz-db:
+        condition: service_healthy
+      microservice-quiz:
         condition: service_healthy
     ports:
       - "7101:7100"
@@ -97,5 +83,3 @@ services:
 volumes:
   quizz_db_data:
     name: "microservice_quizz_db_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}_data"
-  wordpass_db_data:
-    name: "microservice_wordpass_db_${DISTRIBUTION:-dev}_${RELEASE_VERSION:-v1}_data"

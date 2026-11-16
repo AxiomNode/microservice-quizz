@@ -33,7 +33,7 @@ Nothing else in the code branches on the game type.
 
 - Default port is 7100 for both (`SERVICE_PORT` still overrides; docker-compose publishes word-pass on host 7101).
 - `GAME_TYPE` is validated at startup: an unknown value aborts with `Invalid GAME_TYPE "x". Expected one of: quiz, word-pass.`
-  While the deployments do not set it yet (transitional), a missing value falls back to `quiz` and logs a warning.
+  It is mandatory: a missing or blank value aborts with `GAME_TYPE is required. Set it to one of: quiz, word-pass.`; there is no default game.
 - Every query is filtered by `gameType`, and the content-uniqueness key includes it, so both games can share one table.
 - `SERVICE_NAME`, the endpoints, `AI_ENGINE_INGEST_SOURCE` and `BATCH_GENERATION_MAX_QUESTIONS` default from the strategy; set them only to override.
 

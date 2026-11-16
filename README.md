@@ -71,7 +71,7 @@ npm run db:push
 npm run dev
 ```
 
-Set `GAME_TYPE=word-pass` in `src/.env` to run the word-pass game instead (default `quiz`, transitional). `docker compose up --build` from this folder starts both games from the same image: quiz on `localhost:7100` and word-pass on `localhost:7101`, each with its own PostgreSQL for now.
+Set `GAME_TYPE=word-pass` in `src/.env` to run the word-pass game instead (`GAME_TYPE` is mandatory; `src/.env.example` sets `quiz`). `docker compose up --build` from this folder starts both games from the same image against one shared PostgreSQL: quiz on `localhost:7100` and word-pass on `localhost:7101`.
 
 Inject real secrets from the private `secrets` repository when needed:
 
