@@ -39,6 +39,9 @@ COPY --from=build --chown=node:node /workspace/microservice-quizz/src/prisma ./p
 COPY --from=build --chown=node:node /workspace/microservice-quizz/src/.env.example ./.env.example
 USER node
 EXPOSE 7100
-# prisma is a pinned production dependency, so npx resolves the local CLI and
-# never downloads anything at boot; the client was already generated at build.
-CMD ["sh", "-c", "npx --no-install prisma db push --skip-generate && node dist/app/server.js"]
+# The image does not touch the schema: the orchestrator runs it before the server (Kubernetes:
+# `prisma migrate deploy` in the Deployment args; compose: `prisma db push` in `command`), because
+# both games share one database that must not be reshaped by whichever container starts first.
+# prisma is a pinned production dependency, so `npx --no-install prisma` works without a download.
+# GAME_TYPE (quiz | word-pass) is mandatory: the process exits at start-up without it.
+CMD ["node", "dist/app/server.js"]
