@@ -4,7 +4,7 @@ Last updated: 2026-05-08.
 
 ## Scope
 
-This section groups repository-local guides for `microservice-quizz`.
+This section groups repository-local guides for `microservice-games`.
 
 ## Navigation
 

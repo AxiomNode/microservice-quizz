@@ -14,7 +14,7 @@ Generated-game (quiz and word-pass) generation and persistence microservice back
 - cd src && npm test && npm run lint && npm run build
 
 ## CI/CD notes
-- Push to main dispatches platform-infra build-push with service=microservice-quizz.
+- Push to main dispatches platform-infra build-push with service=microservice-games.
 - Platform-infra builds and publishes the image to GHCR; the automatic staging rollout is currently disabled.
 
 ## LLM editing rules

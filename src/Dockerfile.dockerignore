@@ -6,7 +6,7 @@
 # Send only what the Dockerfile copies.
 *
 !shared-sdk-client/typescript
-!microservice-quizz/src
+!microservice-games/src
 
 # Never send these, wherever they are.
 **/.git

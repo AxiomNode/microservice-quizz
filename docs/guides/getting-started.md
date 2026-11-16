@@ -2,7 +2,7 @@
 
 ## Scope
 
-This guide covers local development and basic runtime verification for `microservice-quizz`.
+This guide covers local development and basic runtime verification for `microservice-games`.
 
 ## Prerequisites
 
