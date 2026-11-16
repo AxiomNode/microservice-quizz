@@ -1,4 +1,4 @@
-# microservice-quizz docs
+# microservice-games docs
 
 Last updated: 2026-05-08.
 
@@ -6,7 +6,7 @@ Technical documentation for the quiz domain service.
 
 ## Purpose
 
-This local docs folder explains the concrete implementation surface of `microservice-quizz`:
+This local docs folder explains the concrete implementation surface of `microservice-games`:
 
 - quiz-domain ownership and service architecture
 - developer onboarding and local integration workflow
@@ -32,4 +32,4 @@ This local docs folder explains the concrete implementation surface of `microser
 ## CI/CD reference
 
 - Repository workflow: `.github/workflows/ci.yml`.
-- Push to `main` dispatches `platform-infra` image build for `microservice-quizz`.
+- Push to `main` dispatches `platform-infra` image build for `microservice-games`.

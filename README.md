@@ -1,14 +1,14 @@
-# microservice-quizz
+# microservice-games
 
 Last updated: 2026-05-08.
 
-[![codecov](https://codecov.io/gh/AxiomNode/microservice-quizz/branch/main/graph/badge.svg)](https://codecov.io/gh/AxiomNode/microservice-quizz)
+[![codecov](https://codecov.io/gh/AxiomNode/microservice-games/branch/main/graph/badge.svg)](https://codecov.io/gh/AxiomNode/microservice-games)
 
 TypeScript microservice for generated-game content (quiz and word-pass) and its persistence. One code base and one image; `GAME_TYPE` (`quiz` | `word-pass`) selects the game per process. See `docs/architecture/README.md`.
 
 ## Responsibility
 
-`microservice-quizz` is the quiz domain service responsible for generation orchestration, persistence of generated content, and read APIs for reusable quiz models.
+`microservice-games` (formerly `microservice-quizz`, which also absorbed `microservice-word-pass`) is the generated-game domain service responsible for generation orchestration, persistence of generated content, and read APIs for reusable quiz and word-pass models.
 
 It depends on `ai-engine` for content generation but remains the domain owner for request shaping, validation, persistence, and retrieval semantics.
 
@@ -24,7 +24,7 @@ Current platform status: this service participates in the CI-gated image build c
 
 ### Ownership boundary
 
-`microservice-quizz` owns quiz-domain correctness even when `ai-engine` produced the raw content.
+`microservice-games` owns game-domain correctness even when `ai-engine` produced the raw content.
 
 That includes:
 

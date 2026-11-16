@@ -2,7 +2,7 @@
 
 ## Scope
 
-This document covers repository-local packaging and deployment behavior for `microservice-quizz`.
+This document covers repository-local packaging and deployment behavior for `microservice-games`.
 
 ## Build image
 ```bash
@@ -40,7 +40,7 @@ Validate:
 ## CI/CD path
 
 1. Push to `main` in this repository.
-2. `.github/workflows/ci.yml` dispatches `platform-infra` build for `microservice-quizz`.
+2. `.github/workflows/ci.yml` dispatches `platform-infra` build for `microservice-games`.
 3. `platform-infra` publishes the image to GHCR.
 4. Nothing deploys the image automatically: the `platform-infra` staging rollout is currently disabled because its target host no longer exists.
 

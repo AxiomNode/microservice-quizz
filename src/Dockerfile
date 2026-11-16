@@ -7,22 +7,22 @@ COPY shared-sdk-client/typescript/package.json shared-sdk-client/typescript/pack
 RUN npm ci
 COPY shared-sdk-client/typescript ./
 RUN npm run build
-WORKDIR /workspace/microservice-quizz/src
-COPY microservice-quizz/src/package.json microservice-quizz/src/package-lock.json ./
+WORKDIR /workspace/microservice-games/src
+COPY microservice-games/src/package.json microservice-games/src/package-lock.json ./
 RUN npm ci
 
 FROM node:22-bookworm-slim AS build
-WORKDIR /workspace/microservice-quizz/src
+WORKDIR /workspace/microservice-games/src
 RUN apt-get update 	&& apt-get install -y --no-install-recommends openssl ca-certificates 	&& rm -rf /var/lib/apt/lists/*
 # node_modules/@axiomnode/shared-sdk-client is a relative symlink to
 # /workspace/shared-sdk-client/typescript, so the SDK must live at that path.
 COPY --from=deps /workspace/shared-sdk-client/typescript /workspace/shared-sdk-client/typescript
-COPY --from=deps /workspace/microservice-quizz/src/node_modules ./node_modules
-COPY microservice-quizz/src/package.json ./package.json
-COPY microservice-quizz/src/tsconfig*.json ./
-COPY microservice-quizz/src/.env.example ./.env.example
-COPY microservice-quizz/src/prisma ./prisma
-COPY microservice-quizz/src/app ./app
+COPY --from=deps /workspace/microservice-games/src/node_modules ./node_modules
+COPY microservice-games/src/package.json ./package.json
+COPY microservice-games/src/tsconfig*.json ./
+COPY microservice-games/src/.env.example ./.env.example
+COPY microservice-games/src/prisma ./prisma
+COPY microservice-games/src/app ./app
 RUN npm run db:generate && npm run build
 RUN npm prune --omit=dev
 
@@ -33,10 +33,10 @@ RUN apt-get update 	&& apt-get install -y --no-install-recommends openssl ca-cer
 # From /app/node_modules/@axiomnode the same relative symlink resolves to
 # /shared-sdk-client/typescript, so the SDK is copied once, to that path.
 COPY --from=build --chown=node:node /workspace/shared-sdk-client/typescript /shared-sdk-client/typescript
-COPY --from=build --chown=node:node /workspace/microservice-quizz/src/node_modules ./node_modules
-COPY --from=build --chown=node:node /workspace/microservice-quizz/src/dist ./dist
-COPY --from=build --chown=node:node /workspace/microservice-quizz/src/prisma ./prisma
-COPY --from=build --chown=node:node /workspace/microservice-quizz/src/.env.example ./.env.example
+COPY --from=build --chown=node:node /workspace/microservice-games/src/node_modules ./node_modules
+COPY --from=build --chown=node:node /workspace/microservice-games/src/dist ./dist
+COPY --from=build --chown=node:node /workspace/microservice-games/src/prisma ./prisma
+COPY --from=build --chown=node:node /workspace/microservice-games/src/.env.example ./.env.example
 USER node
 EXPOSE 7100
 # prisma is a pinned production dependency, so npx resolves the local CLI and

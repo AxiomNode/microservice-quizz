@@ -29,12 +29,12 @@ jobs:
     timeout-minutes: 20
     defaults:
       run:
-        working-directory: microservice-quizz/src
+        working-directory: microservice-games/src
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: microservice-quizz
+          path: microservice-games
 
       - name: Validate cross-repo token
         run: |
@@ -51,7 +51,7 @@ jobs:
           token: ${{ secrets.CROSS_REPO_READ_TOKEN }}
 
       - name: Enforce tracked artifact policy
-        working-directory: microservice-quizz
+        working-directory: microservice-games
         run: |
           set -euo pipefail
           forbidden=$(git ls-files | grep -E '(^|/)src/(node_modules|dist)/|[.]db$|(^|/)src/[.]coverage-agent[.]txt$' || true)
@@ -66,7 +66,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: microservice-quizz/src/package-lock.json
+          cache-dependency-path: microservice-games/src/package-lock.json
 
       - name: Build shared SDK package
         working-directory: shared-sdk-client/typescript
@@ -87,8 +87,8 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: microservice-quizz/src/coverage/lcov.info
-          flags: microservice-quizz
+          files: microservice-games/src/coverage/lcov.info
+          flags: microservice-games
           fail_ci_if_error: false
 
       - name: Lint
@@ -117,12 +117,12 @@ jobs:
       TEST_DATABASE_URL: postgresql://postgres:pw@localhost:5432/postgres
     defaults:
       run:
-        working-directory: microservice-quizz/src
+        working-directory: microservice-games/src
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: microservice-quizz
+          path: microservice-games
 
       - name: Validate cross-repo token
         run: |
@@ -143,7 +143,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: microservice-quizz/src/package-lock.json
+          cache-dependency-path: microservice-games/src/package-lock.json
 
       - name: Build shared SDK package
         working-directory: shared-sdk-client/typescript
@@ -272,7 +272,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: microservice-quizz
+          path: microservice-games
 
       - name: Validate cross-repo token
         run: |
@@ -297,14 +297,14 @@ jobs:
 
       - name: Prepare env file
         run: |
-          cp microservice-quizz/src/.env.example microservice-quizz/src/.env
+          cp microservice-games/src/.env.example microservice-games/src/.env
           # No ai-engine runs in this smoke test; a single catalog attempt avoids a
           # ~160 s retry loop before the server starts listening.
-          sed -i 's/^AI_ENGINE_RETRY_MAX_ATTEMPTS=.*/AI_ENGINE_RETRY_MAX_ATTEMPTS=1/' microservice-quizz/src/.env
-          : > microservice-quizz/src/.env.secrets
+          sed -i 's/^AI_ENGINE_RETRY_MAX_ATTEMPTS=.*/AI_ENGINE_RETRY_MAX_ATTEMPTS=1/' microservice-games/src/.env
+          : > microservice-games/src/.env.secrets
 
       - name: Start stack
-        run: docker compose -f microservice-quizz/docker-compose.yml up -d --build
+        run: docker compose -f microservice-games/docker-compose.yml up -d --build
 
       - name: Wait for health endpoint of both games
         run: |
@@ -362,8 +362,8 @@ jobs:
 
       - name: Dump logs on failure
         if: failure()
-        run: docker compose -f microservice-quizz/docker-compose.yml logs --no-color || true
+        run: docker compose -f microservice-games/docker-compose.yml logs --no-color || true
 
       - name: Stop stack
         if: always()
-        run: docker compose -f microservice-quizz/docker-compose.yml down -v
+        run: docker compose -f microservice-games/docker-compose.yml down -v

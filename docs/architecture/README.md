@@ -4,11 +4,11 @@ Last updated: 2026-05-08.
 
 ## Purpose
 
-This section documents the repository-local architecture of `microservice-quizz`.
+This section documents the repository-local architecture of `microservice-games`.
 
 ## Scope
 
-`microservice-quizz` follows a layered design:
+`microservice-games` follows a layered design:
 
 - Route layer (Fastify handlers)
 - Service layer (AI orchestration + business rules)
